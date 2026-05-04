@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../data/mock_questions.dart';
+import '../main.dart';
 import '../models/performance_tracker.dart';
 import '../models/premium_state.dart';
 import '../models/question_data.dart';
@@ -63,7 +64,33 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              const SizedBox(height: 40),
+              const SizedBox(height: 20),
+              // Theme toggle
+              Align(
+                alignment: Alignment.centerRight,
+                child: ValueListenableBuilder<ThemeMode>(
+                  valueListenable: themeNotifier,
+                  builder: (_, mode, child) {
+                    final isDark = mode == ThemeMode.dark;
+                    return IconButton(
+                      onPressed: () {
+                        themeNotifier.value =
+                            isDark ? ThemeMode.light : ThemeMode.dark;
+                      },
+                      icon: Icon(
+                        isDark ? Icons.light_mode : Icons.dark_mode,
+                        color: isDark
+                            ? Colors.amber.shade400
+                            : Colors.grey.shade700,
+                      ),
+                      tooltip: isDark
+                          ? 'Switch to Light Mode'
+                          : 'Switch to Dark Mode',
+                    );
+                  },
+                ),
+              ),
+              const SizedBox(height: 8),
               Icon(
                 Icons.schema_outlined,
                 size: 48,
@@ -83,44 +110,33 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Colors.grey.shade600,
                 ),
               ),
-              const SizedBox(height: 32),
+              const SizedBox(height: 24),
 
-              // Feature cards
-              _FeatureCard(
-                icon: Icons.touch_app,
-                title: 'Tap → Insight',
-                description:
-                    'Tap any element for contextual JEE hints',
-              ),
-              const SizedBox(height: 8),
-              _FeatureCard(
-                icon: Icons.assistant,
-                title: 'Guide Me',
-                description:
-                    'Progressive hint system — think, don\'t just solve',
-              ),
-              const SizedBox(height: 8),
-              _FeatureCard(
-                icon: Icons.edit,
-                title: 'Drawing Tools',
-                description:
-                    'Draw auxiliary lines, mark points, build constructions',
-              ),
-              const SizedBox(height: 8),
-              _FeatureCard(
-                icon: Icons.trending_up,
-                title: 'Performance Tracking',
-                description:
-                    'Weak area detection, time tracking, smart insights',
-              ),
-
-              const Spacer(),
-
-              // Diagram preview (first question)
+              // Diagram preview HERO (first thing user sees)
               if (mockQuestions.isNotEmpty) ...[
                 _DiagramPreviewCard(question: mockQuestions.first),
                 const SizedBox(height: 16),
               ],
+
+              // Feature chips (compact)
+              Wrap(
+                spacing: 6,
+                runSpacing: 6,
+                children: [
+                  _FeatureChip(
+                      icon: Icons.touch_app, label: 'Tap → Insight'),
+                  _FeatureChip(
+                      icon: Icons.assistant, label: 'Guide Me'),
+                  _FeatureChip(
+                      icon: Icons.edit, label: 'Drawing Tools'),
+                  _FeatureChip(
+                      icon: Icons.trending_up, label: 'Performance'),
+                  _FeatureChip(
+                      icon: Icons.auto_awesome, label: 'Smart Hints'),
+                ],
+              ),
+
+              const Spacer(),
 
               // Premium tier toggle
               ListenableBuilder(
@@ -211,8 +227,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         onPressed: _startPractice,
                         icon: const Icon(Icons.play_arrow),
                         label: Text(
-                          'Start Practice (${mockQuestions.length} Questions)',
-                          style: const TextStyle(fontSize: 16),
+                          'Solve with Interactive Diagrams (${mockQuestions.length})',
+                          style: const TextStyle(fontSize: 15),
                         ),
                       ),
                     ),
@@ -336,56 +352,31 @@ class _DiagramPreviewCard extends StatelessWidget {
   }
 }
 
-class _FeatureCard extends StatelessWidget {
+class _FeatureChip extends StatelessWidget {
   final IconData icon;
-  final String title;
-  final String description;
+  final String label;
 
-  const _FeatureCard({
-    required this.icon,
-    required this.title,
-    required this.description,
-  });
+  const _FeatureChip({required this.icon, required this.label});
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
       decoration: BoxDecoration(
-        color: Colors.grey.shade50,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        color: Theme.of(context).colorScheme.surfaceContainerHighest,
+        borderRadius: BorderRadius.circular(20),
       ),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: Colors.blue.shade50,
-              borderRadius: BorderRadius.circular(8),
-            ),
-            child: Icon(icon, size: 22, color: Colors.blue.shade600),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w600,
-                    fontSize: 14,
-                  ),
-                ),
-                Text(
-                  description,
-                  style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey.shade600,
-                  ),
-                ),
-              ],
+          Icon(icon, size: 14, color: Theme.of(context).colorScheme.primary),
+          const SizedBox(width: 4),
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
+              color: Theme.of(context).colorScheme.onSurface,
             ),
           ),
         ],

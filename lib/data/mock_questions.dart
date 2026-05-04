@@ -3,8 +3,14 @@ import 'dart:math' as math;
 import '../models/diagram_data.dart';
 import '../models/diagram_element.dart';
 import '../models/question_data.dart';
+import 'jee_questions.dart';
 
 final List<QuestionData> mockQuestions = [
+  ..._coreQuestions,
+  ...jeeQuestions,
+];
+
+final List<QuestionData> _coreQuestions = [
   // Q1: Regular octagon geometry
   QuestionData(
     id: 'geo_001',

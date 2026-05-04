@@ -13,6 +13,7 @@ class DiagramPainter extends CustomPainter {
   final bool showLabels;
   final Color backgroundColor;
   final double pulseValue;
+  final bool isDarkMode;
 
   DiagramPainter({
     required this.elements,
@@ -22,7 +23,11 @@ class DiagramPainter extends CustomPainter {
     this.showLabels = true,
     this.backgroundColor = Colors.white,
     this.pulseValue = 0.0,
+    this.isDarkMode = false,
   });
+
+  Color get _defaultColor => isDarkMode ? Colors.white70 : Colors.black87;
+  Color get _defaultLabelColor => isDarkMode ? Colors.white60 : Colors.black87;
 
   double get _pulseScale {
     if (pulseValue <= 0.0) return 1.0;
@@ -86,7 +91,7 @@ class DiagramPainter extends CustomPainter {
     }
 
     final paint = Paint()
-      ..color = highlighted ? Colors.orange : Colors.black
+      ..color = highlighted ? Colors.orange : _defaultColor
       ..style = PaintingStyle.fill;
 
     final radius = highlighted ? 6.0 * _pulseScale : 4.0;
@@ -98,7 +103,7 @@ class DiagramPainter extends CustomPainter {
         canvas,
         text,
         Offset(pos.dx + 8, pos.dy - 16),
-        highlighted ? Colors.orange.shade800 : Colors.black87,
+        highlighted ? Colors.orange.shade800 : _defaultLabelColor,
         fontSize: 14,
         fontWeight: highlighted ? FontWeight.bold : FontWeight.w600,
       );
@@ -121,7 +126,7 @@ class DiagramPainter extends CustomPainter {
 
     final isDashed = el.properties['dashed'] == true;
     final paint = Paint()
-      ..color = highlighted ? Colors.blue.shade600 : Colors.black87
+      ..color = highlighted ? Colors.blue.shade600 : _defaultColor
       ..strokeWidth = highlighted ? 3.0 : 2.0
       ..style = PaintingStyle.stroke;
 
@@ -167,7 +172,7 @@ class DiagramPainter extends CustomPainter {
     }
 
     final paint = Paint()
-      ..color = highlighted ? Colors.blue.shade400 : Colors.black87
+      ..color = highlighted ? Colors.blue.shade400 : _defaultColor
       ..strokeWidth = highlighted ? 3.0 : 2.0
       ..style = PaintingStyle.stroke;
 
@@ -187,7 +192,7 @@ class DiagramPainter extends CustomPainter {
         180;
 
     final paint = Paint()
-      ..color = highlighted ? Colors.orange : Colors.black54
+      ..color = highlighted ? Colors.orange : (isDarkMode ? Colors.white54 : Colors.black54)
       ..strokeWidth = 1.5
       ..style = PaintingStyle.stroke;
 
@@ -218,7 +223,7 @@ class DiagramPainter extends CustomPainter {
     canvas.drawPath(path, paint);
 
     final strokePaint = Paint()
-      ..color = highlighted ? Colors.blue.shade600 : Colors.black87
+      ..color = highlighted ? Colors.blue.shade600 : _defaultColor
       ..strokeWidth = 2.0
       ..style = PaintingStyle.stroke;
     canvas.drawPath(path, strokePaint);
@@ -262,11 +267,11 @@ class DiagramPainter extends CustomPainter {
     if (highlighted) {
       color = Colors.orange.shade800;
     } else if (el.isHint) {
-      color = Colors.green.shade700;
+      color = isDarkMode ? Colors.green.shade300 : Colors.green.shade700;
     } else if (el.isValue) {
-      color = Colors.indigo.shade700;
+      color = isDarkMode ? Colors.indigo.shade300 : Colors.indigo.shade700;
     } else {
-      color = Colors.black87;
+      color = _defaultLabelColor;
     }
 
     _drawText(
@@ -370,6 +375,7 @@ class DiagramPainter extends CustomPainter {
         oldDelegate.showHints != showHints ||
         oldDelegate.showLabels != showLabels ||
         oldDelegate.elements != elements ||
-        oldDelegate.pulseValue != pulseValue;
+        oldDelegate.pulseValue != pulseValue ||
+        oldDelegate.isDarkMode != isDarkMode;
   }
 }

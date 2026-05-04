@@ -170,6 +170,8 @@ class _DiagramCanvasState extends State<DiagramCanvas>
                 child: AnimatedBuilder(
                   animation: _pulseController,
                   builder: (context, _) {
+                    final isDark =
+                        Theme.of(context).brightness == Brightness.dark;
                     return CustomPaint(
                       painter: DiagramPainter(
                         elements: widget.diagram.elements,
@@ -178,6 +180,7 @@ class _DiagramCanvasState extends State<DiagramCanvas>
                         showHints: widget.showHints,
                         showLabels: widget.showLabels,
                         pulseValue: _pulseController.value,
+                        isDarkMode: isDark,
                       ),
                       size: Size(
                           widget.diagram.width, widget.diagram.height),

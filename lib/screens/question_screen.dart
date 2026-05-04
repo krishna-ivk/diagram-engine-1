@@ -356,11 +356,100 @@ class _QuestionScreenState extends State<QuestionScreen> {
   Widget _buildPostAnswerActions() {
     final insight =
         widget.tracker.getInsightForTopic(_currentQuestion.topic);
+    final q = _currentQuestion;
+    final wasCorrect = _selectedOption == q.correctIndex;
+    final reviseCount = widget.tracker.getAreasNeedingPractice().length;
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Concept + Mistake + Importance summary card
+          Container(
+            width: double.infinity,
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: wasCorrect
+                  ? Colors.green.shade50
+                  : Colors.orange.shade50,
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: wasCorrect
+                    ? Colors.green.shade200
+                    : Colors.orange.shade200,
+              ),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Concept
+                if (q.coreConcept != null) ...[
+                  Row(
+                    children: [
+                      Icon(Icons.lightbulb_outline,
+                          size: 14, color: Colors.amber.shade700),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          q.coreConcept!,
+                          style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.amber.shade900,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                ],
+                // Common mistake
+                if (q.commonMistake != null && !wasCorrect) ...[
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Icon(Icons.warning_amber,
+                          size: 14, color: Colors.red.shade600),
+                      const SizedBox(width: 6),
+                      Expanded(
+                        child: Text(
+                          q.commonMistake!,
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.red.shade800,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 6),
+                ],
+                // Importance
+                if (q.frequentlyAsked || q.highWeightTopic)
+                  Row(
+                    children: [
+                      Icon(Icons.star_outline,
+                          size: 14, color: Colors.indigo.shade600),
+                      const SizedBox(width: 6),
+                      Text(
+                        q.frequentlyAsked && q.highWeightTopic
+                            ? 'Frequently asked & High weight in JEE'
+                            : q.frequentlyAsked
+                                ? 'Frequently asked in JEE'
+                                : 'High weight topic in JEE',
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.indigo.shade700,
+                        ),
+                      ),
+                    ],
+                  ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 8),
+
           // Weak area insight (premium)
           if (insight != null && PremiumFeatures.weakAreaTracking(_tier)) ...[
             Container(
@@ -390,37 +479,80 @@ class _QuestionScreenState extends State<QuestionScreen> {
             ),
             const SizedBox(height: 8),
           ],
-          // Practice similar button
-          Row(
-            children: [
-              Expanded(
-                child: PremiumGate(
-                  tier: _tier,
-                  featureEnabled: PremiumFeatures.similarQuestions(_tier),
-                  featureName: 'Practice Similar',
-                  child: OutlinedButton.icon(
-                    onPressed: _practiceSimilar,
-                    icon: const Icon(Icons.replay, size: 16),
-                    label: const Text('2 More Like This'),
-                    style: OutlinedButton.styleFrom(
-                      foregroundColor: Colors.indigo,
-                      side: const BorderSide(color: Colors.indigo),
+
+          // Revision nudge
+          if (reviseCount > 0) ...[
+            Container(
+              width: double.infinity,
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.purple.shade50,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.purple.shade200),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.schedule,
+                      size: 16, color: Colors.purple.shade700),
+                  const SizedBox(width: 6),
+                  Text(
+                    'You have $reviseCount topic${reviseCount > 1 ? 's' : ''} to revise',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.w500,
+                      color: Colors.purple.shade800,
                     ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
+
+          // Practice similar + next (automatic feel)
+          if (q.similarQuestionIds.isNotEmpty &&
+              PremiumFeatures.similarQuestions(_tier))
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.icon(
+                onPressed: _practiceSimilar,
+                icon: const Icon(Icons.replay, size: 16),
+                label: const Text('Practice 2 More Like This'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: Colors.indigo,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                ),
+              ),
+            )
+          else if (!PremiumFeatures.similarQuestions(_tier))
+            PremiumGate(
+              tier: _tier,
+              featureEnabled: false,
+              featureName: 'Practice Similar',
+              child: SizedBox(
+                width: double.infinity,
+                child: OutlinedButton.icon(
+                  onPressed: () {},
+                  icon: const Icon(Icons.replay, size: 16),
+                  label: const Text('Practice 2 More Like This'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.indigo,
+                    side: const BorderSide(color: Colors.indigo),
                   ),
                 ),
               ),
-              if (_currentIndex < widget.questions.length - 1) ...[
-                const SizedBox(width: 8),
-                Expanded(
-                  child: FilledButton.icon(
-                    onPressed: _nextQuestion,
-                    icon: const Icon(Icons.arrow_forward, size: 16),
-                    label: const Text('Next Question'),
-                  ),
-                ),
-              ],
-            ],
-          ),
+            ),
+          const SizedBox(height: 6),
+          if (_currentIndex < widget.questions.length - 1)
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton.icon(
+                onPressed: _nextQuestion,
+                icon: const Icon(Icons.arrow_forward, size: 16),
+                label: const Text('Next Question'),
+              ),
+            ),
         ],
       ),
     );
@@ -428,7 +560,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
 
   Widget _buildDiagramSection(ThemeData theme) {
     return Container(
-      color: Colors.white,
+      color: theme.scaffoldBackgroundColor,
       child: Column(
         children: [
           // Layer toggles + drawing tools + expand button
