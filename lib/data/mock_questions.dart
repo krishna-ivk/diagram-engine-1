@@ -83,6 +83,13 @@ final List<QuestionData> mockQuestions = [
         'With side = 4, OA = OB = 4/(2sin(π/8)) ≈ 5.226. Area = ½ × 5.226² × sin(45°) ≈ 4√2 cm².',
     subject: 'Mathematics',
     topic: 'Geometry',
+    coreConcept: 'Central angle & triangle area in regular polygons',
+    difficulty: Difficulty.hard,
+    estimatedSeconds: 120,
+    frequentlyAsked: true,
+    highWeightTopic: true,
+    commonMistake: 'Students often confuse the circumradius with the side length when computing the triangle area.',
+    similarQuestionIds: ['geo_002', 'geo_003'],
     revealSteps: [
       RevealStep(
         text: 'A regular octagon has 8 equal sides and 8 equal angles. The center O divides it into 8 congruent triangles.',
@@ -212,6 +219,13 @@ final List<QuestionData> mockQuestions = [
         'Since QS + SR = 10, we get QS = 40/7 cm.',
     subject: 'Mathematics',
     topic: 'Geometry',
+    coreConcept: 'Angle Bisector Theorem',
+    difficulty: Difficulty.medium,
+    estimatedSeconds: 90,
+    frequentlyAsked: true,
+    highWeightTopic: false,
+    commonMistake: 'Students often apply the ratio in the wrong order (PR/PQ instead of PQ/PR).',
+    similarQuestionIds: ['geo_001', 'geo_003'],
     revealSteps: [
       RevealStep(
         text: 'PS is the angle bisector of ∠P. Recall the Angle Bisector Theorem.',
@@ -354,6 +368,13 @@ final List<QuestionData> mockQuestions = [
         'Ratio = 90/360 = 1/4.',
     subject: 'Mathematics',
     topic: 'Geometry',
+    coreConcept: 'Central angle & arc-circumference ratio',
+    difficulty: Difficulty.easy,
+    estimatedSeconds: 60,
+    frequentlyAsked: true,
+    highWeightTopic: false,
+    commonMistake: 'Students confuse inscribed angle with central angle, leading to halving the answer.',
+    similarQuestionIds: ['geo_001', 'geo_002'],
     revealSteps: [
       RevealStep(
         text: 'Identify the central angle. ∠PAQ is the angle at the center A subtended by arc PQ.',
@@ -490,6 +511,13 @@ final List<QuestionData> mockQuestions = [
         'By symmetry, i₁ = i₂ = 6/2 = 3A each through the two branches PQ and PR.',
     subject: 'Physics',
     topic: 'Current Electricity',
+    coreConcept: 'Kirchhoff\'s Junction Rule & symmetry',
+    difficulty: Difficulty.medium,
+    estimatedSeconds: 90,
+    frequentlyAsked: true,
+    highWeightTopic: true,
+    commonMistake: 'Students try to apply Ohm\'s law directly without recognizing the symmetric current split.',
+    similarQuestionIds: ['phy_002'],
     revealSteps: [
       RevealStep(
         text: 'Look at junction P. Total incoming current is 6A. It splits into branches PQ and PR.',
@@ -611,6 +639,13 @@ final List<QuestionData> mockQuestions = [
         'Using star-delta transformation and symmetry, the equivalent resistance between D and E is R.',
     subject: 'Physics',
     topic: 'Current Electricity',
+    coreConcept: 'Star-Delta transformation',
+    difficulty: Difficulty.hard,
+    estimatedSeconds: 150,
+    frequentlyAsked: false,
+    highWeightTopic: true,
+    commonMistake: 'Students forget the star-delta formula: R_delta = sum of (R1×R2)/R3 for each pair.',
+    similarQuestionIds: ['phy_001'],
     revealSteps: [
       RevealStep(
         text: 'Identify the star (A connected to D, E, B) and delta (D-C-E triangle) sub-networks.',

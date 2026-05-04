@@ -1,5 +1,7 @@
 import 'diagram_data.dart';
 
+enum Difficulty { easy, medium, hard }
+
 class RevealStep {
   final String text;
   final List<String>? highlightIds;
@@ -23,6 +25,19 @@ class QuestionData {
   final String topic;
   final List<RevealStep> revealSteps;
 
+  // Concept tagging
+  final String? coreConcept;
+  final Difficulty difficulty;
+  final int? estimatedSeconds;
+
+  // Exam relevance
+  final bool frequentlyAsked;
+  final bool highWeightTopic;
+  final String? commonMistake;
+
+  // Practice reinforcement
+  final List<String> similarQuestionIds;
+
   const QuestionData({
     required this.id,
     required this.text,
@@ -33,5 +48,12 @@ class QuestionData {
     required this.subject,
     required this.topic,
     this.revealSteps = const [],
+    this.coreConcept,
+    this.difficulty = Difficulty.medium,
+    this.estimatedSeconds,
+    this.frequentlyAsked = false,
+    this.highWeightTopic = false,
+    this.commonMistake,
+    this.similarQuestionIds = const [],
   });
 }

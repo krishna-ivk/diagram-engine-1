@@ -56,10 +56,10 @@ class _RevealPanelState extends State<RevealPanel> {
         children: [
           Row(
             children: [
-              Icon(Icons.lightbulb, size: 18, color: Colors.amber.shade700),
+              Icon(Icons.assistant, size: 18, color: Colors.amber.shade700),
               const SizedBox(width: 6),
               Text(
-                'Step-by-Step Hints',
+                'Guide Me',
                 style: TextStyle(
                   fontWeight: FontWeight.w700,
                   fontSize: 13,
@@ -95,8 +95,8 @@ class _RevealPanelState extends State<RevealPanel> {
                 icon: const Icon(Icons.visibility, size: 16),
                 label: Text(
                   _revealedCount == 0
-                      ? 'Show First Hint'
-                      : 'Show Next Hint',
+                      ? 'Guide Me'
+                      : 'Next Step',
                 ),
                 style: OutlinedButton.styleFrom(
                   foregroundColor: Colors.amber.shade800,
