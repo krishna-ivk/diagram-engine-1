@@ -26,13 +26,34 @@ class DiagramCanvas extends StatefulWidget {
   State<DiagramCanvas> createState() => _DiagramCanvasState();
 }
 
-class _DiagramCanvasState extends State<DiagramCanvas> {
+class _DiagramCanvasState extends State<DiagramCanvas>
+    with SingleTickerProviderStateMixin {
   final TransformationController _transformController =
       TransformationController();
+  late final AnimationController _pulseController;
+
+  @override
+  void initState() {
+    super.initState();
+    _pulseController = AnimationController(
+      duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    );
+  }
+
+  @override
+  void didUpdateWidget(DiagramCanvas oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.highlightedIds.isNotEmpty &&
+        widget.highlightedIds != oldWidget.highlightedIds) {
+      _pulseController.forward(from: 0.0);
+    }
+  }
 
   @override
   void dispose() {
     _transformController.dispose();
+    _pulseController.dispose();
     super.dispose();
   }
 
@@ -146,15 +167,22 @@ class _DiagramCanvasState extends State<DiagramCanvas> {
             child: Center(
               child: AspectRatio(
                 aspectRatio: widget.diagram.width / widget.diagram.height,
-                child: CustomPaint(
-                  painter: DiagramPainter(
-                    elements: widget.diagram.elements,
-                    highlightedIds: widget.highlightedIds,
-                    showValues: widget.showValues,
-                    showHints: widget.showHints,
-                    showLabels: widget.showLabels,
-                  ),
-                  size: Size(widget.diagram.width, widget.diagram.height),
+                child: AnimatedBuilder(
+                  animation: _pulseController,
+                  builder: (context, _) {
+                    return CustomPaint(
+                      painter: DiagramPainter(
+                        elements: widget.diagram.elements,
+                        highlightedIds: widget.highlightedIds,
+                        showValues: widget.showValues,
+                        showHints: widget.showHints,
+                        showLabels: widget.showLabels,
+                        pulseValue: _pulseController.value,
+                      ),
+                      size: Size(
+                          widget.diagram.width, widget.diagram.height),
+                    );
+                  },
                 ),
               ),
             ),

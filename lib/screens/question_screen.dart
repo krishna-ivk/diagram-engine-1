@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 
+import '../models/diagram_element.dart';
 import '../models/question_data.dart';
 import '../widgets/diagram_canvas.dart';
 import '../widgets/fullscreen_diagram.dart';
+import '../widgets/insight_panel.dart';
 import '../widgets/layer_toggle.dart';
 import '../widgets/question_panel.dart';
+import '../widgets/reveal_panel.dart';
 
 class QuestionScreen extends StatefulWidget {
   final List<QuestionData> questions;
@@ -25,6 +28,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
   bool _showLabels = true;
 
   final Set<String> _highlightedIds = {};
+  DiagramElement? _lastTappedElement;
 
   QuestionData get _currentQuestion => widget.questions[_currentIndex];
 
@@ -32,8 +36,12 @@ class _QuestionScreenState extends State<QuestionScreen> {
     setState(() {
       if (_highlightedIds.contains(id)) {
         _highlightedIds.remove(id);
+        _lastTappedElement = null;
       } else {
         _highlightedIds.add(id);
+        _lastTappedElement = _currentQuestion.diagram.elements
+            .where((e) => e.id == id)
+            .firstOrNull;
       }
     });
   }
@@ -54,6 +62,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
         _showAnswer = false;
         _highlightedIds.clear();
         _showHints = false;
+        _lastTappedElement = null;
       });
     }
   }
@@ -66,6 +75,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
         _showAnswer = false;
         _highlightedIds.clear();
         _showHints = false;
+        _lastTappedElement = null;
       });
     }
   }
@@ -87,6 +97,17 @@ class _QuestionScreenState extends State<QuestionScreen> {
         ),
       ),
     );
+  }
+
+  void _onRevealStep(RevealStep step) {
+    setState(() {
+      if (step.highlightIds != null) {
+        _highlightedIds.addAll(step.highlightIds!);
+      }
+      if (step.showHints == true) {
+        _showHints = true;
+      }
+    });
   }
 
   @override
@@ -151,13 +172,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
         // Question area (bottom ~55%)
         Expanded(
           flex: 55,
-          child: QuestionPanel(
-            question: _currentQuestion,
-            selectedIndex: _selectedOption,
-            showAnswer: _showAnswer,
-            onOptionSelected: _onOptionSelected,
-            onCheckAnswer: _checkAnswer,
-          ),
+          child: _buildQuestionSection(),
         ),
       ],
     );
@@ -176,6 +191,16 @@ class _QuestionScreenState extends State<QuestionScreen> {
 
         // Question (right half)
         Expanded(
+          child: _buildQuestionSection(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildQuestionSection() {
+    return Column(
+      children: [
+        Expanded(
           child: QuestionPanel(
             question: _currentQuestion,
             selectedIndex: _selectedOption,
@@ -184,6 +209,11 @@ class _QuestionScreenState extends State<QuestionScreen> {
             onCheckAnswer: _checkAnswer,
           ),
         ),
+        if (_currentQuestion.revealSteps.isNotEmpty && !_showAnswer)
+          RevealPanel(
+            steps: _currentQuestion.revealSteps,
+            onStepRevealed: _onRevealStep,
+          ),
       ],
     );
   }
@@ -250,8 +280,16 @@ class _QuestionScreenState extends State<QuestionScreen> {
             ),
           ),
 
+          // Insight panel (shows when element with insight is tapped)
+          if (_lastTappedElement != null &&
+              _lastTappedElement!.insight != null)
+            InsightPanel(
+              element: _lastTappedElement!,
+              onDismiss: () => setState(() => _lastTappedElement = null),
+            ),
+
           // Highlighted elements info
-          if (_highlightedIds.isNotEmpty)
+          if (_highlightedIds.isNotEmpty && _lastTappedElement?.insight == null)
             Container(
               width: double.infinity,
               padding:
@@ -272,7 +310,10 @@ class _QuestionScreenState extends State<QuestionScreen> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () => setState(() => _highlightedIds.clear()),
+                    onTap: () => setState(() {
+                      _highlightedIds.clear();
+                      _lastTappedElement = null;
+                    }),
                     child: Icon(Icons.clear,
                         size: 16, color: Colors.amber.shade700),
                   ),

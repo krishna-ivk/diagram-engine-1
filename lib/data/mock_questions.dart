@@ -22,6 +22,7 @@ final List<QuestionData> mockQuestions = [
           id: 'O',
           type: ElementType.point,
           properties: {'x': 150.0, 'y': 150.0, 'text': 'O'},
+          insight: 'Center of the regular octagon. All radii OA, OB, ... OH are equal.',
         ),
         // Octagon vertices (regular octagon centered at 150,150, radius ~100)
         ..._octagonVertices(),
@@ -40,6 +41,7 @@ final List<QuestionData> mockQuestions = [
             'isHint': true,
           },
           group: 'hint',
+          insight: 'Triangle AOB is one of 8 congruent triangles formed by connecting center to vertices.',
         ),
         // Angle at O
         const DiagramElement(
@@ -52,6 +54,7 @@ final List<QuestionData> mockQuestions = [
             'isValue': true,
           },
           group: 'values',
+          insight: 'Central angle = 360°/8 = 45°. This is key for computing the triangle area.',
         ),
         // Side length label
         const DiagramElement(
@@ -80,6 +83,21 @@ final List<QuestionData> mockQuestions = [
         'With side = 4, OA = OB = 4/(2sin(π/8)) ≈ 5.226. Area = ½ × 5.226² × sin(45°) ≈ 4√2 cm².',
     subject: 'Mathematics',
     topic: 'Geometry',
+    revealSteps: [
+      RevealStep(
+        text: 'A regular octagon has 8 equal sides and 8 equal angles. The center O divides it into 8 congruent triangles.',
+        highlightIds: ['O'],
+      ),
+      RevealStep(
+        text: 'Central angle at O for each triangle = 360°/8 = 45°.',
+        highlightIds: ['angle_AOB'],
+      ),
+      RevealStep(
+        text: 'Use the formula: Area = ½ × OA × OB × sin(∠AOB). Find OA using the side length.',
+        highlightIds: ['triangle_AOB'],
+        showHints: true,
+      ),
+    ],
   ),
 
   // Q2: Triangle with angle bisector
@@ -98,21 +116,25 @@ final List<QuestionData> mockQuestions = [
           id: 'P',
           type: ElementType.point,
           properties: {'x': 150.0, 'y': 30.0, 'text': 'P'},
+          insight: 'Vertex P where the angle bisector originates. ∠QPR is bisected by PS.',
         ),
         const DiagramElement(
           id: 'Q',
           type: ElementType.point,
           properties: {'x': 40.0, 'y': 250.0, 'text': 'Q'},
+          insight: 'QS is the unknown segment we need to find.',
         ),
         const DiagramElement(
           id: 'R',
           type: ElementType.point,
           properties: {'x': 270.0, 'y': 250.0, 'text': 'R'},
+          insight: 'SR = QR - QS. Use the angle bisector theorem to find the ratio.',
         ),
         const DiagramElement(
           id: 'S',
           type: ElementType.point,
           properties: {'x': 152.0, 'y': 250.0, 'text': 'S'},
+          insight: 'S divides QR in the ratio PQ:PR = 8:6 = 4:3 (Angle Bisector Theorem).',
         ),
         // Sides
         const DiagramElement(
@@ -148,6 +170,7 @@ final List<QuestionData> mockQuestions = [
             'toX': 152.0, 'toY': 250.0,
             'dashed': true,
           },
+          insight: 'Angle bisector of ∠P. By the Angle Bisector Theorem: QS/SR = PQ/PR.',
         ),
         // Labels
         const DiagramElement(
@@ -189,6 +212,21 @@ final List<QuestionData> mockQuestions = [
         'Since QS + SR = 10, we get QS = 40/7 cm.',
     subject: 'Mathematics',
     topic: 'Geometry',
+    revealSteps: [
+      RevealStep(
+        text: 'PS is the angle bisector of ∠P. Recall the Angle Bisector Theorem.',
+        highlightIds: ['PS', 'P'],
+      ),
+      RevealStep(
+        text: 'By the theorem: QS/SR = PQ/PR = 8/6 = 4/3.',
+        highlightIds: ['Q', 'S', 'R'],
+      ),
+      RevealStep(
+        text: 'Since QS + SR = QR = 10, solve: QS = 10 × 4/7 = 40/7 cm.',
+        highlightIds: ['label_QR'],
+        showHints: true,
+      ),
+    ],
   ),
 
   // Q3: Circle with chord
@@ -227,6 +265,7 @@ final List<QuestionData> mockQuestions = [
           id: 'main_circle',
           type: ElementType.circle,
           properties: {'x': 180.0, 'y': 150.0, 'radius': 100.0},
+          insight: 'The full circle. Arc PQ corresponds to the central angle ∠PAQ.',
         ),
         // Points
         const DiagramElement(
@@ -238,6 +277,7 @@ final List<QuestionData> mockQuestions = [
           id: 'A',
           type: ElementType.point,
           properties: {'x': 180.0, 'y': 150.0, 'text': 'A'},
+          insight: 'Center of the circle. AP = AQ = AB = radius.',
         ),
         const DiagramElement(
           id: 'B',
@@ -248,11 +288,13 @@ final List<QuestionData> mockQuestions = [
           id: 'P',
           type: ElementType.point,
           properties: {'x': 180.0, 'y': 50.0, 'text': 'P'},
+          insight: 'Point on the circle. AP is a radius.',
         ),
         const DiagramElement(
           id: 'Q_point',
           type: ElementType.point,
           properties: {'x': 180.0, 'y': 250.0, 'text': 'Q'},
+          insight: 'Point on the circle. AQ is a radius.',
         ),
         // Lines from A to P and A to Q
         const DiagramElement(
@@ -301,6 +343,7 @@ final List<QuestionData> mockQuestions = [
             'isValue': true,
           },
           group: 'values',
+          insight: '∠PAQ = 90° is the central angle. The arc it subtends equals this angle.',
         ),
       ],
     ),
@@ -311,6 +354,20 @@ final List<QuestionData> mockQuestions = [
         'Ratio = 90/360 = 1/4.',
     subject: 'Mathematics',
     topic: 'Geometry',
+    revealSteps: [
+      RevealStep(
+        text: 'Identify the central angle. ∠PAQ is the angle at the center A subtended by arc PQ.',
+        highlightIds: ['A', 'angle_PAQ'],
+      ),
+      RevealStep(
+        text: 'Central angle = 90°. The arc equals the central angle in a circle.',
+        highlightIds: ['main_circle'],
+      ),
+      RevealStep(
+        text: 'Ratio = arc/circumference = 90°/360° = 1/4.',
+        highlightIds: ['P', 'Q_point'],
+      ),
+    ],
   ),
 
   // Q4: Wheatstone bridge (physics)
@@ -331,16 +388,19 @@ final List<QuestionData> mockQuestions = [
           id: 'node_P',
           type: ElementType.point,
           properties: {'x': 140.0, 'y': 60.0, 'text': 'P'},
+          insight: 'Junction P: Apply Kirchhoff\'s junction rule. Total current 6A splits here.',
         ),
         const DiagramElement(
           id: 'node_Q',
           type: ElementType.point,
           properties: {'x': 40.0, 'y': 240.0, 'text': 'Q'},
+          insight: 'Node Q: Current i₁ flows through PQ branch. Check symmetry with node R.',
         ),
         const DiagramElement(
           id: 'node_R',
           type: ElementType.point,
           properties: {'x': 240.0, 'y': 240.0, 'text': 'R'},
+          insight: 'Node R: Current i₂ flows through PR branch. By symmetry, i₁ = i₂.',
         ),
         // Resistor lines (simplified as lines with labels)
         const DiagramElement(
@@ -358,6 +418,7 @@ final List<QuestionData> mockQuestions = [
             'fromX': 140.0, 'fromY': 60.0,
             'toX': 40.0, 'toY': 240.0,
           },
+          insight: 'Branch PQ: carries current i₁. Resistance = 2Ω.',
         ),
         const DiagramElement(
           id: 'R_PR',
@@ -366,6 +427,7 @@ final List<QuestionData> mockQuestions = [
             'fromX': 140.0, 'fromY': 60.0,
             'toX': 240.0, 'toY': 240.0,
           },
+          insight: 'Branch PR: carries current i₂. Resistance = 2Ω.',
         ),
         const DiagramElement(
           id: 'R_QR',
@@ -428,6 +490,21 @@ final List<QuestionData> mockQuestions = [
         'By symmetry, i₁ = i₂ = 6/2 = 3A each through the two branches PQ and PR.',
     subject: 'Physics',
     topic: 'Current Electricity',
+    revealSteps: [
+      RevealStep(
+        text: 'Look at junction P. Total incoming current is 6A. It splits into branches PQ and PR.',
+        highlightIds: ['node_P'],
+      ),
+      RevealStep(
+        text: 'All resistors are equal (2Ω). Check: is the circuit symmetric about P?',
+        highlightIds: ['R_PQ', 'R_PR'],
+        showHints: true,
+      ),
+      RevealStep(
+        text: 'By symmetry, i₁ = i₂ = 6/2 = 3A through each branch.',
+        highlightIds: ['node_Q', 'node_R'],
+      ),
+    ],
   ),
 
   // Q5: Star resistor network
@@ -447,27 +524,32 @@ final List<QuestionData> mockQuestions = [
           id: 'D',
           type: ElementType.point,
           properties: {'x': 150.0, 'y': 20.0, 'text': 'D'},
+          insight: 'Terminal D: one end of the equivalent resistance we need to find.',
         ),
         const DiagramElement(
           id: 'C',
           type: ElementType.point,
           properties: {'x': 270.0, 'y': 250.0, 'text': 'C'},
+          insight: 'Node C: connects delta and star networks. Analyze paths through C.',
         ),
         const DiagramElement(
           id: 'E',
           type: ElementType.point,
           properties: {'x': 30.0, 'y': 250.0, 'text': 'E'},
+          insight: 'Terminal E: other end of the equivalent resistance.',
         ),
         // Center node
         const DiagramElement(
           id: 'A_center',
           type: ElementType.point,
           properties: {'x': 165.0, 'y': 180.0, 'text': 'A'},
+          insight: 'Star center node A: connected to D, E, and B. Apply star-delta transformation.',
         ),
         const DiagramElement(
           id: 'B_center',
           type: ElementType.point,
           properties: {'x': 210.0, 'y': 210.0, 'text': 'B'},
+          insight: 'Node B: intermediate node in the star network.',
         ),
         // Star connections
         const DiagramElement(
@@ -529,6 +611,21 @@ final List<QuestionData> mockQuestions = [
         'Using star-delta transformation and symmetry, the equivalent resistance between D and E is R.',
     subject: 'Physics',
     topic: 'Current Electricity',
+    revealSteps: [
+      RevealStep(
+        text: 'Identify the star (A connected to D, E, B) and delta (D-C-E triangle) sub-networks.',
+        highlightIds: ['A_center', 'D', 'E'],
+      ),
+      RevealStep(
+        text: 'Apply star-delta transformation: convert the star at A into an equivalent delta.',
+        highlightIds: ['DA', 'EA', 'AB'],
+        showHints: true,
+      ),
+      RevealStep(
+        text: 'After transformation, use series-parallel simplification. R_eq between D and E = R.',
+        highlightIds: ['DC', 'CE'],
+      ),
+    ],
   ),
 ];
 
@@ -548,6 +645,7 @@ List<DiagramElement> _octagonVertices() {
       id: labels[i],
       type: ElementType.point,
       properties: {'x': x, 'y': y, 'text': labels[i]},
+      insight: 'Vertex ${labels[i]} of the regular octagon. All vertices are equidistant from center O.',
     ));
   }
   return elements;

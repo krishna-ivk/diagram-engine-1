@@ -8,6 +8,7 @@ class DiagramElement {
   final Map<String, dynamic> properties;
   final bool interactive;
   final String? group;
+  final String? insight;
 
   const DiagramElement({
     required this.id,
@@ -15,6 +16,7 @@ class DiagramElement {
     required this.properties,
     this.interactive = true,
     this.group,
+    this.insight,
   });
 
   Offset? get position {
@@ -75,6 +77,7 @@ class DiagramElement {
       properties: Map<String, dynamic>.from(json['properties'] as Map),
       interactive: json['interactive'] as bool? ?? true,
       group: json['group'] as String?,
+      insight: json['insight'] as String?,
     );
   }
 
@@ -84,5 +87,6 @@ class DiagramElement {
         'properties': properties,
         'interactive': interactive,
         if (group != null) 'group': group,
+        if (insight != null) 'insight': insight,
       };
 }

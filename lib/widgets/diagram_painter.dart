@@ -12,6 +12,7 @@ class DiagramPainter extends CustomPainter {
   final bool showHints;
   final bool showLabels;
   final Color backgroundColor;
+  final double pulseValue;
 
   DiagramPainter({
     required this.elements,
@@ -20,7 +21,20 @@ class DiagramPainter extends CustomPainter {
     this.showHints = false,
     this.showLabels = true,
     this.backgroundColor = Colors.white,
+    this.pulseValue = 0.0,
   });
+
+  double get _pulseScale {
+    if (pulseValue <= 0.0) return 1.0;
+    final t = pulseValue < 0.5 ? pulseValue * 2 : 2 - pulseValue * 2;
+    return 1.0 + t * 0.15;
+  }
+
+  double get _pulseGlow {
+    if (pulseValue <= 0.0) return 0.0;
+    final t = pulseValue < 0.3 ? pulseValue / 0.3 : 1.0 - (pulseValue - 0.3) / 0.7;
+    return t.clamp(0.0, 1.0);
+  }
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -63,11 +77,20 @@ class DiagramPainter extends CustomPainter {
     final pos = el.position;
     if (pos == null) return;
 
+    if (highlighted && _pulseGlow > 0) {
+      final glowPaint = Paint()
+        ..color = Colors.orange.withValues(alpha: 0.25 * _pulseGlow)
+        ..style = PaintingStyle.fill
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
+      canvas.drawCircle(pos, 12 * _pulseScale, glowPaint);
+    }
+
     final paint = Paint()
       ..color = highlighted ? Colors.orange : Colors.black
       ..style = PaintingStyle.fill;
 
-    canvas.drawCircle(pos, highlighted ? 6 : 4, paint);
+    final radius = highlighted ? 6.0 * _pulseScale : 4.0;
+    canvas.drawCircle(pos, radius, paint);
 
     final text = el.text;
     if (text != null && showLabels) {
@@ -86,6 +109,15 @@ class DiagramPainter extends CustomPainter {
     final from = el.from;
     final to = el.to;
     if (from == null || to == null) return;
+
+    if (highlighted && _pulseGlow > 0) {
+      final glowPaint = Paint()
+        ..color = Colors.blue.shade300.withValues(alpha: 0.3 * _pulseGlow)
+        ..strokeWidth = 8.0
+        ..style = PaintingStyle.stroke
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
+      canvas.drawLine(from, to, glowPaint);
+    }
 
     final isDashed = el.properties['dashed'] == true;
     final paint = Paint()
@@ -124,6 +156,15 @@ class DiagramPainter extends CustomPainter {
     final pos = el.position;
     final radius = el.radius;
     if (pos == null || radius == null) return;
+
+    if (highlighted && _pulseGlow > 0) {
+      final glowPaint = Paint()
+        ..color = Colors.blue.shade200.withValues(alpha: 0.25 * _pulseGlow)
+        ..strokeWidth = 8.0
+        ..style = PaintingStyle.stroke
+        ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
+      canvas.drawCircle(pos, radius, glowPaint);
+    }
 
     final paint = Paint()
       ..color = highlighted ? Colors.blue.shade400 : Colors.black87
@@ -328,6 +369,7 @@ class DiagramPainter extends CustomPainter {
         oldDelegate.showValues != showValues ||
         oldDelegate.showHints != showHints ||
         oldDelegate.showLabels != showLabels ||
-        oldDelegate.elements != elements;
+        oldDelegate.elements != elements ||
+        oldDelegate.pulseValue != pulseValue;
   }
 }
