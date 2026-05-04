@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import '../data/mock_questions.dart';
 import '../models/performance_tracker.dart';
+import '../models/premium_state.dart';
 import '../models/question_data.dart';
+import '../widgets/premium_gate.dart';
 import 'question_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -14,6 +16,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final PerformanceTracker _tracker = PerformanceTracker();
+  final PremiumState _premiumState = PremiumState();
 
   void _startPractice() {
     Navigator.push(
@@ -22,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
         builder: (_) => QuestionScreen(
           questions: mockQuestions,
           tracker: _tracker,
+          premiumState: _premiumState,
         ),
       ),
     );
@@ -117,6 +121,84 @@ class _HomeScreenState extends State<HomeScreen> {
                 _DiagramPreviewCard(question: mockQuestions.first),
                 const SizedBox(height: 16),
               ],
+
+              // Premium tier toggle
+              ListenableBuilder(
+                listenable: _premiumState,
+                builder: (context, _) {
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 14, vertical: 10),
+                    decoration: BoxDecoration(
+                      gradient: _premiumState.isPremium
+                          ? LinearGradient(colors: [
+                              Colors.amber.shade50,
+                              Colors.orange.shade50,
+                            ])
+                          : null,
+                      color: _premiumState.isPremium
+                          ? null
+                          : Colors.grey.shade50,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: _premiumState.isPremium
+                            ? Colors.amber.shade300
+                            : Colors.grey.shade300,
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        if (_premiumState.isPremium)
+                          const PremiumBadge()
+                        else
+                          Icon(Icons.lock_outline,
+                              size: 18, color: Colors.grey.shade600),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _premiumState.isPremium
+                                    ? 'Premium Active'
+                                    : 'Free Tier',
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13,
+                                  color: _premiumState.isPremium
+                                      ? Colors.amber.shade900
+                                      : Colors.grey.shade800,
+                                ),
+                              ),
+                              Text(
+                                _premiumState.isPremium
+                                    ? 'All features unlocked'
+                                    : 'Upgrade for insights, drawing & more',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: _premiumState.isPremium
+                                      ? Colors.amber.shade700
+                                      : Colors.grey.shade600,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Switch(
+                          value: _premiumState.isPremium,
+                          onChanged: (_) {
+                            _premiumState.toggle();
+                            setState(() {});
+                          },
+                          activeTrackColor: Colors.amber.shade200,
+                          activeThumbColor: Colors.amber.shade700,
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
+              const SizedBox(height: 12),
 
               // Buttons
               Row(

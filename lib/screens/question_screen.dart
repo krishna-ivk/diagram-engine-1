@@ -4,23 +4,27 @@ import 'package:flutter/material.dart';
 
 import '../models/diagram_element.dart';
 import '../models/performance_tracker.dart';
+import '../models/premium_state.dart';
 import '../models/question_data.dart';
 import '../widgets/diagram_canvas.dart';
 import '../widgets/drawing_overlay.dart';
 import '../widgets/fullscreen_diagram.dart';
 import '../widgets/insight_panel.dart';
 import '../widgets/layer_toggle.dart';
+import '../widgets/premium_gate.dart';
 import '../widgets/question_panel.dart';
 import '../widgets/reveal_panel.dart';
 
 class QuestionScreen extends StatefulWidget {
   final List<QuestionData> questions;
   final PerformanceTracker tracker;
+  final PremiumState premiumState;
 
   const QuestionScreen({
     super.key,
     required this.questions,
     required this.tracker,
+    required this.premiumState,
   });
 
   @override
@@ -57,6 +61,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
   int _tapCount = 0;
 
   QuestionData get _currentQuestion => widget.questions[_currentIndex];
+  PremiumTier get _tier => widget.premiumState.tier;
 
   @override
   void initState() {
@@ -85,7 +90,8 @@ class _QuestionScreenState extends State<QuestionScreen> {
     _inactivityTimer?.cancel();
     _autoHighlighted = false;
     _inactivityTimer = Timer(const Duration(seconds: 10), () {
-      if (!_showAnswer && _highlightedIds.isEmpty && mounted) {
+      if (!_showAnswer && _highlightedIds.isEmpty && mounted &&
+          PremiumFeatures.smartHighlighting(_tier)) {
         _autoHighlightRelevant();
       }
     });
@@ -237,6 +243,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
         builder: (_) => QuestionScreen(
           questions: similarQuestions,
           tracker: widget.tracker,
+          premiumState: widget.premiumState,
         ),
       ),
     );
@@ -329,9 +336,14 @@ class _QuestionScreenState extends State<QuestionScreen> {
           ),
         ),
         if (_currentQuestion.revealSteps.isNotEmpty && !_showAnswer)
-          RevealPanel(
-            steps: _currentQuestion.revealSteps,
-            onStepRevealed: _onRevealStep,
+          PremiumGate(
+            tier: _tier,
+            featureEnabled: PremiumFeatures.guideMe(_tier),
+            featureName: 'Guide Me',
+            child: RevealPanel(
+              steps: _currentQuestion.revealSteps,
+              onStepRevealed: _onRevealStep,
+            ),
           ),
         // Practice similar + performance after answering
         if (_showAnswer) ...[
@@ -349,8 +361,8 @@ class _QuestionScreenState extends State<QuestionScreen> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // Weak area insight
-          if (insight != null) ...[
+          // Weak area insight (premium)
+          if (insight != null && PremiumFeatures.weakAreaTracking(_tier)) ...[
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(10),
@@ -382,13 +394,18 @@ class _QuestionScreenState extends State<QuestionScreen> {
           Row(
             children: [
               Expanded(
-                child: OutlinedButton.icon(
-                  onPressed: _practiceSimilar,
-                  icon: const Icon(Icons.replay, size: 16),
-                  label: const Text('2 More Like This'),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.indigo,
-                    side: const BorderSide(color: Colors.indigo),
+                child: PremiumGate(
+                  tier: _tier,
+                  featureEnabled: PremiumFeatures.similarQuestions(_tier),
+                  featureName: 'Practice Similar',
+                  child: OutlinedButton.icon(
+                    onPressed: _practiceSimilar,
+                    icon: const Icon(Icons.replay, size: 16),
+                    label: const Text('2 More Like This'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.indigo,
+                      side: const BorderSide(color: Colors.indigo),
+                    ),
                   ),
                 ),
               ),
@@ -436,29 +453,37 @@ class _QuestionScreenState extends State<QuestionScreen> {
                               setState(() => _showLabels = v),
                         ),
                         const SizedBox(width: 8),
-                        DrawingToolbar(
-                          activeTool: _activeTool,
-                          drawingEnabled: _drawingEnabled,
-                          onToggleDrawing: () {
-                            setState(() {
-                              _drawingEnabled = !_drawingEnabled;
-                              _activeTool = _drawingEnabled
-                                  ? DrawingTool.line
-                                  : DrawingTool.none;
-                            });
-                          },
-                          onToolSelected: (tool) =>
-                              setState(() => _activeTool = tool),
-                          onUndo: () {
-                            if (_drawnElements.isNotEmpty) {
+                        PremiumGate(
+                          tier: _tier,
+                          featureEnabled: PremiumFeatures.drawingTools(_tier),
+                          featureName: 'Drawing Tools',
+                          child: DrawingToolbar(
+                            activeTool: _activeTool,
+                            drawingEnabled: _drawingEnabled,
+                            onToggleDrawing: () {
+                              if (!PremiumFeatures.drawingTools(_tier)) return;
                               setState(() {
-                                _drawnElements = _drawnElements.sublist(
-                                    0, _drawnElements.length - 1);
+                                _drawingEnabled = !_drawingEnabled;
+                                _activeTool = _drawingEnabled
+                                    ? DrawingTool.line
+                                    : DrawingTool.none;
                               });
-                            }
-                          },
-                          onClearAll: () =>
-                              setState(() => _drawnElements = []),
+                            },
+                            onToolSelected: (tool) {
+                              if (!PremiumFeatures.drawingTools(_tier)) return;
+                              setState(() => _activeTool = tool);
+                            },
+                            onUndo: () {
+                              if (_drawnElements.isNotEmpty) {
+                                setState(() {
+                                  _drawnElements = _drawnElements.sublist(
+                                      0, _drawnElements.length - 1);
+                                });
+                              }
+                            },
+                            onClearAll: () =>
+                                setState(() => _drawnElements = []),
+                          ),
                         ),
                       ],
                     ),
@@ -535,9 +560,10 @@ class _QuestionScreenState extends State<QuestionScreen> {
             ),
           ),
 
-          // Insight panel
+          // Insight panel (premium)
           if (_lastTappedElement != null &&
-              _lastTappedElement!.insight != null)
+              _lastTappedElement!.insight != null &&
+              PremiumFeatures.tapInsight(_tier))
             InsightPanel(
               element: _lastTappedElement!,
               onDismiss: () => setState(() => _lastTappedElement = null),
