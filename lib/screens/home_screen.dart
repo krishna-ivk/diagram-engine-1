@@ -5,6 +5,7 @@ import '../main.dart';
 import '../models/performance_tracker.dart';
 import '../models/premium_state.dart';
 import '../models/question_data.dart';
+import '../models/revision_manager.dart';
 import '../widgets/premium_gate.dart';
 import 'question_screen.dart';
 
@@ -18,6 +19,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   final PerformanceTracker _tracker = PerformanceTracker();
   final PremiumState _premiumState = PremiumState();
+  final RevisionManager _revisionManager = RevisionManager();
 
   void _startPractice() {
     Navigator.push(
@@ -27,6 +29,31 @@ class _HomeScreenState extends State<HomeScreen> {
           questions: mockQuestions,
           tracker: _tracker,
           premiumState: _premiumState,
+          revisionManager: _revisionManager,
+        ),
+      ),
+    );
+  }
+
+  void _startRevision() {
+    final dueIds = _revisionManager.dueItems.map((i) => i.questionId).toSet();
+    final dueQuestions =
+        mockQuestions.where((q) => dueIds.contains(q.id)).toList();
+    if (dueQuestions.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No questions due for revision!')),
+      );
+      return;
+    }
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => QuestionScreen(
+          questions: dueQuestions,
+          tracker: _tracker,
+          premiumState: _premiumState,
+          revisionManager: _revisionManager,
+          isRevisionMode: true,
         ),
       ),
     );
@@ -134,6 +161,119 @@ class _HomeScreenState extends State<HomeScreen> {
                   _FeatureChip(
                       icon: Icons.auto_awesome, label: 'Smart Hints'),
                 ],
+              ),
+
+              const SizedBox(height: 16),
+
+              // Revision nudge
+              ListenableBuilder(
+                listenable: _revisionManager,
+                builder: (context, _) {
+                  final dueCount = _revisionManager.dueCount;
+                  final mastered = _revisionManager.masteredItems.length;
+                  if (dueCount == 0 && mastered == 0) {
+                    return const SizedBox.shrink();
+                  }
+                  return Column(
+                    children: [
+                      if (dueCount > 0)
+                        GestureDetector(
+                          onTap: _startRevision,
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 12),
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Colors.purple.shade50,
+                                  Colors.deepPurple.shade50,
+                                ],
+                              ),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(
+                                  color: Colors.purple.shade200),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: BoxDecoration(
+                                    color: Colors.purple.shade100,
+                                    borderRadius:
+                                        BorderRadius.circular(10),
+                                  ),
+                                  child: Icon(Icons.replay,
+                                      size: 20,
+                                      color: Colors.purple.shade700),
+                                ),
+                                const SizedBox(width: 12),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        '$dueCount question${dueCount > 1 ? 's' : ''} to revise today',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14,
+                                          color:
+                                              Colors.purple.shade800,
+                                        ),
+                                      ),
+                                      Text(
+                                        '~${_revisionManager.estimatedMinutes} min · Tap to start',
+                                        style: TextStyle(
+                                          fontSize: 12,
+                                          color:
+                                              Colors.purple.shade600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Icon(Icons.arrow_forward_ios,
+                                    size: 14,
+                                    color: Colors.purple.shade400),
+                              ],
+                            ),
+                          ),
+                        ),
+                      if (mastered > 0) ...[
+                        const SizedBox(height: 8),
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade50,
+                            borderRadius: BorderRadius.circular(10),
+                            border: Border.all(
+                                color: Colors.green.shade200),
+                          ),
+                          child: Row(
+                            children: [
+                              Icon(Icons.check_circle,
+                                  size: 16,
+                                  color: Colors.green.shade600),
+                              const SizedBox(width: 8),
+                              Text(
+                                '$mastered question${mastered > 1 ? 's' : ''} mastered',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.green.shade700,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                      const SizedBox(height: 8),
+                    ],
+                  );
+                },
               ),
 
               const Spacer(),

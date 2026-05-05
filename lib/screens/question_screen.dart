@@ -6,6 +6,7 @@ import '../models/diagram_element.dart';
 import '../models/performance_tracker.dart';
 import '../models/premium_state.dart';
 import '../models/question_data.dart';
+import '../models/revision_manager.dart';
 import '../widgets/diagram_canvas.dart';
 import '../widgets/drawing_overlay.dart';
 import '../widgets/fullscreen_diagram.dart';
@@ -19,12 +20,16 @@ class QuestionScreen extends StatefulWidget {
   final List<QuestionData> questions;
   final PerformanceTracker tracker;
   final PremiumState premiumState;
+  final RevisionManager revisionManager;
+  final bool isRevisionMode;
 
   const QuestionScreen({
     super.key,
     required this.questions,
     required this.tracker,
     required this.premiumState,
+    required this.revisionManager,
+    this.isRevisionMode = false,
   });
 
   @override
@@ -149,6 +154,23 @@ class _QuestionScreenState extends State<QuestionScreen> {
       timestamp: DateTime.now(),
     ));
 
+    // Auto-add wrong answers to revision queue
+    if (!isCorrect) {
+      widget.revisionManager.autoAddWrongAnswer(
+        questionId: _currentQuestion.id,
+        topic: _currentQuestion.topic,
+        coreConcept: _currentQuestion.coreConcept ?? _currentQuestion.topic,
+      );
+    }
+
+    // Update revision result if in revision mode
+    if (widget.isRevisionMode) {
+      widget.revisionManager.recordReviewResult(
+        _currentQuestion.id,
+        isCorrect,
+      );
+    }
+
     setState(() {
       _showAnswer = true;
       // Auto-highlight after wrong answer
@@ -244,6 +266,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
           questions: similarQuestions,
           tracker: widget.tracker,
           premiumState: widget.premiumState,
+          revisionManager: widget.revisionManager,
         ),
       ),
     );
@@ -256,9 +279,22 @@ class _QuestionScreenState extends State<QuestionScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          'Q${_currentIndex + 1} of ${widget.questions.length}',
-          style: const TextStyle(fontWeight: FontWeight.w600),
+        title: Column(
+          children: [
+            Text(
+              'Q${_currentIndex + 1} of ${widget.questions.length}',
+              style: const TextStyle(fontWeight: FontWeight.w600),
+            ),
+            if (widget.isRevisionMode)
+              Text(
+                'Revision Mode',
+                style: TextStyle(
+                  fontSize: 11,
+                  color: Colors.purple.shade400,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+          ],
         ),
         centerTitle: true,
         actions: [
@@ -449,6 +485,88 @@ class _QuestionScreenState extends State<QuestionScreen> {
             ),
           ),
           const SizedBox(height: 8),
+
+          // Mark for revision button
+          SizedBox(
+            width: double.infinity,
+            child: ListenableBuilder(
+              listenable: widget.revisionManager,
+              builder: (context, _) {
+                final isMarked = widget.revisionManager
+                    .isMarkedForRevision(q.id);
+                return OutlinedButton.icon(
+                  onPressed: () {
+                    widget.revisionManager.toggleRevision(
+                      questionId: q.id,
+                      topic: q.topic,
+                      coreConcept: q.coreConcept ?? q.topic,
+                    );
+                  },
+                  icon: Icon(
+                    isMarked
+                        ? Icons.bookmark
+                        : Icons.bookmark_border,
+                    size: 16,
+                    color: isMarked
+                        ? Colors.purple.shade700
+                        : Colors.purple.shade400,
+                  ),
+                  label: Text(
+                    isMarked
+                        ? 'Marked for Revision'
+                        : 'Add to Revision',
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Colors.purple.shade700,
+                    side: BorderSide(
+                      color: isMarked
+                          ? Colors.purple.shade400
+                          : Colors.purple.shade200,
+                    ),
+                    backgroundColor: isMarked
+                        ? Colors.purple.shade50
+                        : null,
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                  ),
+                );
+              },
+            ),
+          ),
+          const SizedBox(height: 8),
+
+          // Revision mode badge
+          if (widget.isRevisionMode) ...[
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 12, vertical: 8),
+              decoration: BoxDecoration(
+                color: Colors.deepPurple.shade50,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(
+                    color: Colors.deepPurple.shade200),
+              ),
+              child: Row(
+                children: [
+                  Icon(Icons.replay,
+                      size: 16,
+                      color: Colors.deepPurple.shade700),
+                  const SizedBox(width: 6),
+                  Text(
+                    wasCorrect
+                        ? 'Great! Interval increased. Next review later.'
+                        : 'Needs more practice. Will appear again tomorrow.',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: Colors.deepPurple.shade800,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 8),
+          ],
 
           // Weak area insight (premium)
           if (insight != null && PremiumFeatures.weakAreaTracking(_tier)) ...[
