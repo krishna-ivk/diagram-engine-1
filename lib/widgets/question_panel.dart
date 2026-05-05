@@ -372,6 +372,80 @@ class _ExplanationCardState extends State<_ExplanationCard>
     super.dispose();
   }
 
+  List<Widget> _buildExplanationBody() {
+    final lines = widget.explanation.split('\n');
+    final widgets = <Widget>[];
+    for (final line in lines) {
+      if (line.trim().isEmpty) continue;
+      final isStep = line.trimLeft().startsWith('Step ');
+      final isKey =
+          line.trimLeft().startsWith('Key') ||
+          line.trimLeft().startsWith('Answer:') ||
+          line.trimLeft().startsWith('Verification:');
+      if (isStep) {
+        widgets.add(Padding(
+          padding: const EdgeInsets.only(top: 4, bottom: 2),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(Icons.arrow_right, size: 16, color: Colors.blue.shade600),
+              const SizedBox(width: 4),
+              Expanded(
+                child: Text(
+                  line.trim(),
+                  style: TextStyle(
+                    color: Colors.blue.shade900,
+                    fontSize: 13,
+                    height: 1.4,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ));
+      } else if (isKey) {
+        widgets.add(Padding(
+          padding: const EdgeInsets.only(top: 6),
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              color: Colors.amber.shade50,
+              borderRadius: BorderRadius.circular(6),
+              border: Border.all(color: Colors.amber.shade200),
+            ),
+            child: Row(
+              children: [
+                Icon(Icons.star, size: 14, color: Colors.amber.shade700),
+                const SizedBox(width: 4),
+                Expanded(
+                  child: Text(
+                    line.trim(),
+                    style: TextStyle(
+                      color: Colors.amber.shade900,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w600,
+                      height: 1.4,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ));
+      } else {
+        widgets.add(Text(
+          line.trim(),
+          style: TextStyle(
+            color: Colors.blue.shade900,
+            fontSize: 13,
+            height: 1.4,
+          ),
+        ));
+      }
+    }
+    return widgets;
+  }
+
   @override
   Widget build(BuildContext context) {
     return FadeTransition(
@@ -402,13 +476,7 @@ class _ExplanationCardState extends State<_ExplanationCard>
               ],
             ),
             const SizedBox(height: 8),
-            Text(
-              widget.explanation,
-              style: TextStyle(
-                color: Colors.blue.shade900,
-                height: 1.4,
-              ),
-            ),
+            ..._buildExplanationBody(),
           ],
         ),
       ),
