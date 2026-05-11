@@ -10,6 +10,7 @@ import '../models/question_data.dart';
 import '../models/revision_manager.dart';
 import '../models/rescue_system.dart';
 import '../models/concept_graph.dart';
+import '../services/content_loader.dart';
 import '../widgets/diagram_canvas.dart';
 import '../widgets/drawing_overlay.dart';
 import '../widgets/fullscreen_diagram.dart';
@@ -76,7 +77,10 @@ class _QuestionScreenState extends State<QuestionScreen>
   late Animation<Offset> _slideAnimation;
   late Animation<double> _fadeAnimation;
 
-  QuestionData get _currentQuestion => widget.questions[_currentIndex];
+  // Local session questions (avoid mutating _sessionQuestions)
+  late List<QuestionData> _sessionQuestions;
+
+  QuestionData get _currentQuestion => _sessionQuestions[_currentIndex];
   PremiumTier get _tier => widget.premiumState.tier;
 
   // Mode-based feature control
@@ -110,6 +114,13 @@ class _QuestionScreenState extends State<QuestionScreen>
   @override
   void initState() {
     super.initState();
+    
+    // Initialize local session questions (avoid mutating widget.questions)
+    _sessionQuestions = List.of(widget.questions);
+    
+    // Load curated content if available
+    _loadCuratedContent();
+    
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 400),
       vsync: this,
@@ -127,12 +138,35 @@ class _QuestionScreenState extends State<QuestionScreen>
     _slideController.forward();
     _startTimer();
     
-    // Initialize RescueSystem
-    _conceptGraph = ConceptGraph();
+    // Initialize RescueSystem with default concept graph
+    _conceptGraph = defaultConceptGraph;
     _rescueSystem = RescueSystem(
-      allQuestions: widget.questions,
+      allQuestions: _sessionQuestions,
       conceptGraph: _conceptGraph,
     );
+  }
+  
+  /// Load curated content from JSON files
+  Future<void> _loadCuratedContent() async {
+    try {
+      // Load geometry rescue ladder
+      final rescueQuestions = await ContentLoader.loadGeometryRescueLadder();
+      
+      // Add rescue questions to session (they come first in the ladder)
+      _sessionQuestions.insertAll(0, rescueQuestions);
+      
+      // Update RescueSystem with new questions
+      _rescueSystem = RescueSystem(
+        allQuestions: _sessionQuestions,
+        conceptGraph: _conceptGraph,
+      );
+      
+      setState(() {});
+      print('Loaded ${rescueQuestions.length} rescue questions');
+    } catch (e) {
+      print('Error loading curated content: $e');
+      // Continue with in-code questions if loading fails
+    }
   }
 
   @override
@@ -259,7 +293,7 @@ class _QuestionScreenState extends State<QuestionScreen>
   }
 
   void _nextQuestion() {
-    if (_currentIndex < widget.questions.length - 1) {
+    if (_currentIndex < _sessionQuestions.length - 1) {
       _navigateToQuestion(_currentIndex + 1);
     }
   }
@@ -360,11 +394,11 @@ class _QuestionScreenState extends State<QuestionScreen>
   void _loadRescueQuestion(RescueQuestion rescue) {
     _slideController.reset();
     setState(() {
-      _currentIndex = widget.questions.indexOf(rescue.question);
+      _currentIndex = _sessionQuestions.indexOf(rescue.question);
       if (_currentIndex == -1) {
         // Question not in list - add temporarily
-        widget.questions.add(rescue.question);
-        _currentIndex = widget.questions.length - 1;
+        _sessionQuestions.add(rescue.question);
+        _currentIndex = _sessionQuestions.length - 1;
       }
       _selectedOption = null;
       _showAnswer = false;
@@ -426,7 +460,7 @@ class _QuestionScreenState extends State<QuestionScreen>
 
   void _returnToOriginalQuestion() {
     _slideController.reset();
-    final originalIndex = widget.questions.indexOf(_originalQuestion!);
+    final originalIndex = _sessionQuestions.indexOf(_originalQuestion!);
     setState(() {
       _isRescueMode = false;
       _currentIndex = originalIndex >= 0 ? originalIndex : 0;
@@ -499,7 +533,7 @@ class _QuestionScreenState extends State<QuestionScreen>
       );
       return;
     }
-    final similarQuestions = widget.questions
+    final similarQuestions = _sessionQuestions
         .where((q) => similar.contains(q.id))
         .toList();
     if (similarQuestions.isEmpty) {
@@ -531,7 +565,7 @@ class _QuestionScreenState extends State<QuestionScreen>
         title: Column(
           children: [
             Text(
-              'Q${_currentIndex + 1} of ${widget.questions.length}',
+              'Q${_currentIndex + 1} of ${_sessionQuestions.length}',
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
             Text(
@@ -556,7 +590,7 @@ class _QuestionScreenState extends State<QuestionScreen>
           ),
           IconButton(
             icon: const Icon(Icons.navigate_next),
-            onPressed: _currentIndex < widget.questions.length - 1
+            onPressed: _currentIndex < _sessionQuestions.length - 1
                 ? _nextQuestion
                 : null,
           ),
@@ -573,7 +607,7 @@ class _QuestionScreenState extends State<QuestionScreen>
   }
 
   Widget _buildMobileLayout(ThemeData theme) {
-    final progress = (_currentIndex + 1) / widget.questions.length;
+    final progress = (_currentIndex + 1) / _sessionQuestions.length;
     return Column(
       children: [
         Expanded(
@@ -632,7 +666,7 @@ class _QuestionScreenState extends State<QuestionScreen>
                     ),
                   ),
                   Text(
-                    '${widget.questions.length}',
+                    '${_sessionQuestions.length}',
                     style: TextStyle(
                       fontSize: 11,
                       fontWeight: FontWeight.w600,
@@ -653,7 +687,7 @@ class _QuestionScreenState extends State<QuestionScreen>
   }
 
   Widget _buildWideLayout(ThemeData theme) {
-    final progress = (_currentIndex + 1) / widget.questions.length;
+    final progress = (_currentIndex + 1) / _sessionQuestions.length;
     return Column(
       children: [
         Expanded(
@@ -677,7 +711,7 @@ class _QuestionScreenState extends State<QuestionScreen>
           child: Row(
             children: [
               Text(
-                'Q${_currentIndex + 1}/${widget.questions.length}',
+                'Q${_currentIndex + 1}/${_sessionQuestions.length}',
                 style: TextStyle(
                   fontSize: 11,
                   fontWeight: FontWeight.w600,
@@ -1030,7 +1064,7 @@ class _QuestionScreenState extends State<QuestionScreen>
               ),
             ),
           ],
-          if (_currentIndex < widget.questions.length - 1)
+          if (_currentIndex < _sessionQuestions.length - 1)
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
