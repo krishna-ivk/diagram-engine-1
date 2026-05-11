@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/services.dart';
 import 'dart:async';
 import '../models/question_data.dart';
+import '../models/diagram_data.dart';
 import '../models/rescue_system.dart';
 
 /// Service for loading curated content from JSON files
@@ -40,52 +41,88 @@ class ContentLoader {
   
   /// Convert JSON data to QuestionData (simplified version)
   static QuestionData _convertToQuestionData(Map<String, dynamic> json) {
-    // This is a simplified conversion - in a real implementation,
-    // you would need to properly map all fields from your content schema
+    // Parse correct answer as index
+    final correctAns = json['correct_answer'];
+    int correctIdx = 0;
+    if (correctAns is int) {
+      correctIdx = correctAns;
+    } else if (correctAns is String) {
+      correctIdx = correctAns.codeUnitAt(0) - 65; // 'A' -> 0, 'B' -> 1, etc.
+    }
+    
+    // Parse why wrong explanations - need Map<int, String>
+    final whyWrongRaw = json['why_wrong_explanations'];
+    final whyWrongMap = <int, String>{};
+    if (whyWrongRaw is Map) {
+      for (final entry in whyWrongRaw.entries) {
+        final key = entry.key;
+        final value = entry.value;
+        final k = key is int ? key : (key.toString().codeUnitAt(0) - 65);
+        whyWrongMap[k] = value.toString();
+      }
+    }
+    
+    // Parse solution steps as List<String>
+    final stepsRaw = json['solution_steps'];
+    List<String> solSteps = [];
+    if (stepsRaw is List) {
+      solSteps = stepsRaw.map((s) => s['description']?.toString() ?? s.toString()).toList();
+    }
+    
+    // Parse options as List<String>
+    final opts = _convertOptions(json['options']);
+    
     return QuestionData(
-      id: json['question_id'] ?? '',
-      questionText: json['question_text'] ?? '',
-      options: _convertOptions(json['options']),
-      correctAnswer: json['correct_answer']?.toString() ?? '',
+      id: json['question_id'] ?? json['id'] ?? '',
+      text: json['question_text'] ?? json['text'] ?? '',
+      diagram: DiagramData(
+        id: json['question_id'] ?? json['id'] ?? 'default',
+        type: DiagramType.geometry,
+        elements: [],
+      ),
+      options: opts.isNotEmpty ? opts : ['A', 'B', 'C', 'D'],
+      correctIndex: correctIdx.clamp(0, 3),
+      explanation: json['explanation'] ?? '',
+      subject: json['subject'] ?? 'Mathematics',
+      chapter: json['chapter'] ?? '',
+      topic: json['topic'] ?? '',
       primaryConcept: json['primary_concept'] ?? '',
+      secondaryConcepts: List<String>.from(json['secondary_concepts'] ?? []),
       prerequisites: List<String>.from(json['prerequisites'] ?? []),
-      solutionSteps: _convertSolutionSteps(json['solution_steps']),
-      whyWrongExplanations: Map<String, String>.from(json['why_wrong_explanations'] ?? {}),
-      rescueLadderIds: List<String>.from(json['rescue_question_ids'] ?? []),
-      diagramRequired: json['diagram_required'] ?? false,
-      diagramId: json['diagram_id'],
+      exam: ExamType.jeeMain,
+      classLevel: json['class_level'] ?? '11',
+      questionType: QuestionType.mcq,
       difficulty: _mapDifficulty(json['difficulty']),
-      estimatedTime: json['expected_time_seconds'] ?? 120,
-      questionRole: _mapQuestionRole(json['bridge_level']),
-      learningObjectiveScore: 85.0, // Default score
-      reviewStatus: json['review_status'] ?? 'draft',
+      estimatedSeconds: json['expected_time_seconds'] ?? 120,
+      revealSteps: [],
+      solutionSteps: solSteps,
+      whyWrongExplanations: whyWrongMap,
+      frequentlyAsked: json['frequently_asked'] ?? false,
+      highWeightTopic: json['high_weight'] ?? false,
+      coreConcept: json['core_concept'] ?? json['primary_concept'],
+      similarQuestionIds: List<String>.from(json['similar_questions'] ?? []),
     );
   }
   
-  /// Convert options from JSON
-  static List<QuestionOption> _convertOptions(dynamic optionsData) {
+  /// Convert options from JSON - returns List<String>
+  static List<String> _convertOptions(dynamic optionsData) {
     if (optionsData is List) {
       return (optionsData as List).map((opt) {
-        final Map<String, dynamic> option = opt as Map<String, dynamic>;
-        return QuestionOption(
-          id: option['label'] ?? '',
-          text: option['text'] ?? '',
-          isCorrect: option['isCorrect'] ?? false,
-        );
+        if (opt is String) return opt;
+        if (opt is Map) return opt['text']?.toString() ?? '';
+        return opt.toString();
       }).toList();
     }
     return [];
   }
   
-  /// Convert solution steps from JSON
-  static List<SolutionStep> _convertSolutionSteps(dynamic stepsData) {
+  /// Convert solution steps from JSON - returns List<RevealStep>
+  static List<RevealStep> _convertSolutionSteps(dynamic stepsData) {
     if (stepsData is List) {
       return (stepsData as List).map((step) {
-        final Map<String, dynamic> stepData = step as Map<String, dynamic>;
-        return SolutionStep(
-          stepNumber: stepData['step_number'] ?? 1,
-          description: stepData['description'] ?? '',
-          calculation: stepData['calculation'] ?? '',
+        final Map<String, dynamic> stepData = step is Map ? Map<String, dynamic>.from(step) : <String, dynamic>{};
+        return RevealStep(
+          text: stepData['description']?.toString() ?? stepData['calculation']?.toString() ?? '',
         );
       }).toList();
     }
@@ -96,27 +133,16 @@ class ContentLoader {
   static Difficulty _mapDifficulty(String? difficultyStr) {
     switch (difficultyStr) {
       case 'easy':
-        return Difficulty.foundation;
-      case 'medium':
-        return Difficulty.bridge;
-      case 'hard':
-        return Difficulty.jeePattern;
-      default:
-        return Difficulty.foundation;
-    }
-  }
-  
-  /// Map question role from string to enum
-  static QuestionRole _mapQuestionRole(String? roleStr) {
-    switch (roleStr) {
       case 'foundation':
-        return QuestionRole.foundation;
-      case 'school':
-        return QuestionRole.bridge;
+        return Difficulty.easy;
+      case 'medium':
+      case 'bridge':
+        return Difficulty.medium;
+      case 'hard':
       case 'jee':
-        return QuestionRole.mockExam;
+        return Difficulty.hard;
       default:
-        return QuestionRole.foundation;
+        return Difficulty.medium;
     }
   }
   
@@ -156,47 +182,46 @@ class ContentLoader {
     required String id,
     required String text,
     required String primaryConcept,
-    required String correctAnswer,
+    required int correctIndex,
     List<String> prerequisites = const [],
     String difficulty = 'easy',
-    String questionRole = 'foundation',
   }) {
     return QuestionData(
       id: id,
-      questionText: text,
-      options: [
-        QuestionOption(id: 'A', text: 'Option A', isCorrect: false),
-        QuestionOption(id: 'B', text: 'Option B', isCorrect: true),
-        QuestionOption(id: 'C', text: 'Option C', isCorrect: false),
-        QuestionOption(id: 'D', text: 'Option D', isCorrect: false),
-      ],
-      correctAnswer: correctAnswer,
+      text: text,
+      diagram: DiagramData(
+        id: id,
+        type: DiagramType.geometry,
+        elements: [],
+      ),
+      options: ['Option A', 'Option B', 'Option C', 'Option D'],
+      correctIndex: correctIndex,
+      explanation: 'This is the correct answer.',
+      subject: 'Mathematics',
+      chapter: 'Geometry',
+      topic: 'Regular Polygons',
       primaryConcept: primaryConcept,
+      secondaryConcepts: [],
       prerequisites: prerequisites,
-      solutionSteps: [
-        SolutionStep(
-          stepNumber: 1,
-          description: 'Solution step 1',
-          calculation: 'Calculation 1',
-        ),
-        SolutionStep(
-          stepNumber: 2,
-          description: 'Solution step 2',
-          calculation: 'Calculation 2',
-        ),
-      ],
-      whyWrongExplanations: {
-        'A': 'This option is incorrect.',
-        'C': 'This option is incorrect.',
-        'D': 'This option is incorrect.',
-      },
-      rescueLadderIds: [],
-      diagramRequired: false,
+      exam: ExamType.jeeMain,
+      classLevel: '11',
+      questionType: QuestionType.mcq,
       difficulty: _mapDifficulty(difficulty),
-      estimatedTime: 60,
-      questionRole: _mapQuestionRole(questionRole),
-      learningObjectiveScore: 85.0,
-      reviewStatus: 'published',
+      estimatedSeconds: 60,
+      revealSteps: [
+        RevealStep(text: 'Step 1: Understand the problem'),
+        RevealStep(text: 'Step 2: Apply the formula'),
+      ],
+      solutionSteps: ['Step 1 explanation', 'Step 2 explanation'],
+      whyWrongExplanations: {
+        0: 'Option A is incorrect because...',
+        2: 'Option C is incorrect because...',
+        3: 'Option D is incorrect because...',
+      },
+      frequentlyAsked: false,
+      highWeightTopic: false,
+      coreConcept: primaryConcept,
+      similarQuestionIds: [],
     );
   }
 }
