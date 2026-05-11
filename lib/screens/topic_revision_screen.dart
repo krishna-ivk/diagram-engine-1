@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import '../models/question_data.dart';
+import '../models/diagram_element.dart';
 
 class TopicRevisionScreen extends StatefulWidget {
   final List<QuestionData> questions;
@@ -399,6 +400,133 @@ class _DiagramAnimationPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    // Use actual diagram elements if available
+    final elements = question.diagram.elements;
+    
+    if (elements.isNotEmpty) {
+      _paintActualDiagram(canvas, size, elements);
+    } else {
+      // Fall back to generic topic-based animation
+      _paintGenericAnimation(canvas, size);
+    }
+  }
+
+  void _paintActualDiagram(Canvas canvas, Size size, List<DiagramElement> elements) {
+    final scaleX = (size.width - 40) / 300;
+    final scaleY = (size.height - 40) / 300;
+    final offsetX = 20.0;
+    final offsetY = size.height - 20;
+
+    for (final element in elements) {
+      _paintElement(canvas, element, scaleX, scaleY, offsetX, offsetY);
+    }
+  }
+
+  void _paintElement(Canvas canvas, DiagramElement element, double scaleX, double scaleY, double offsetX, double offsetY) {
+    final paint = Paint()
+      ..color = _getElementColor(element.type).withOpacity(0.7 * progress)
+      ..strokeWidth = 2
+      ..style = PaintingStyle.stroke;
+
+    switch (element.type) {
+      case ElementType.point:
+        final pos = element.position;
+        if (pos != null) {
+          final x = offsetX + pos.dx * scaleX;
+          final y = offsetY - pos.dy * scaleY;
+          canvas.drawCircle(Offset(x, y), 4 * progress, paint..style = PaintingStyle.fill);
+          
+          // Draw label
+          final label = element.properties['text']?.toString();
+          if (label != null) {
+            final textPainter = TextPainter(
+              text: TextSpan(text: label, style: TextStyle(color: Colors.black87, fontSize: 12)),
+              textDirection: TextDirection.ltr,
+            );
+            textPainter.layout();
+            textPainter.paint(canvas, Offset(x + 6, y - 6));
+          }
+        }
+        break;
+        
+      case ElementType.line:
+        final fromX = element.properties['fromX'];
+        final fromY = element.properties['fromY'];
+        final toX = element.properties['toX'];
+        final toY = element.properties['toY'];
+        if (fromX != null && fromY != null && toX != null && toY != null) {
+          final path = Path()
+            ..moveTo(offsetX + (fromX as num).toDouble() * scaleX, offsetY - (fromY as num).toDouble() * scaleY)
+            ..lineTo(offsetX + (toX as num).toDouble() * scaleX, offsetY - (toY as num).toDouble() * scaleY);
+          canvas.drawPath(path, paint);
+        }
+        break;
+        
+      case ElementType.polygon:
+      case ElementType.region:
+        final points = element.properties['points'];
+        if (points is List && points.isNotEmpty) {
+          final path = Path();
+          for (var i = 0; i < points.length; i++) {
+            final pt = points[i];
+            if (pt is Map && pt['x'] != null && pt['y'] != null) {
+              final x = offsetX + (pt['x'] as num).toDouble() * scaleX;
+              final y = offsetY - (pt['y'] as num).toDouble() * scaleY;
+              if (i == 0) {
+                path.moveTo(x, y);
+              } else {
+                path.lineTo(x, y);
+              }
+            }
+          }
+          path.close();
+          canvas.drawPath(path, paint..style = PaintingStyle.fill);
+        }
+        break;
+        
+      case ElementType.label:
+        final text = element.properties['text']?.toString();
+        final x = element.properties['x'];
+        final y = element.properties['y'];
+        if (text != null && x != null && y != null) {
+          final textPainter = TextPainter(
+            text: TextSpan(text: text, style: TextStyle(color: Colors.black87, fontSize: 12, fontWeight: FontWeight.w500)),
+            textDirection: TextDirection.ltr,
+          );
+          textPainter.layout();
+          textPainter.paint(canvas, Offset(offsetX + (x as num).toDouble() * scaleX, offsetY - (y as num).toDouble() * scaleY));
+        }
+        break;
+        
+      default:
+        break;
+    }
+  }
+
+  Color _getElementColor(ElementType type) {
+    switch (type) {
+      case ElementType.point:
+        return Colors.blue;
+      case ElementType.line:
+        return Colors.grey.shade700;
+      case ElementType.polygon:
+      case ElementType.region:
+        return Colors.orange;
+      case ElementType.circle:
+      case ElementType.arc:
+        return Colors.purple;
+      case ElementType.vector:
+        return Colors.green;
+      case ElementType.label:
+        return Colors.black87;
+      case ElementType.angle:
+        return Colors.teal;
+      default:
+        return Colors.blue;
+    }
+  }
+
+  void _paintGenericAnimation(Canvas canvas, Size size) {
     final paint = Paint()
       ..color = Colors.blue.withOpacity(0.6)
       ..style = PaintingStyle.fill;
@@ -434,19 +562,6 @@ class _DiagramAnimationPainter extends CustomPainter {
     }
     
     canvas.drawPath(path, paint..style = PaintingStyle.stroke..strokeWidth = 2);
-    
-    // Draw points
-    for (var i = 0; i < points.length; i++) {
-      final point = points[i];
-      final animatedY = size.height - 20 - (point.dy * progress);
-      if (i * progress >= 1) {
-        canvas.drawCircle(
-          Offset(point.dx, animatedY),
-          4,
-          paint..style = PaintingStyle.fill,
-        );
-      }
-    }
   }
 
   List<Offset> _getDiagramPoints(String topic) {
