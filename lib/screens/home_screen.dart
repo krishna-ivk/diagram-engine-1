@@ -53,6 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
       context,
       MaterialPageRoute(
         builder: (_) => FoundationJourneyScreen(
+          journeyId: 'geometry_foundation_journey', // Load from content
           tracker: _tracker,
           premiumState: _premiumState,
         ),
