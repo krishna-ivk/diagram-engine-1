@@ -1,0 +1,351 @@
+{
+  "ladder_info": {
+    "ladder_id": "geometry_regular_polygon_progression",
+    "target_concept": "central_angle_regular_polygon",
+    "target_question_id": "jee_math_regular_polygon_2023_session_1_Q12",
+    "description": "Three-level rescue ladder for regular polygon central angle concepts",
+    "total_questions": 3
+  },
+  "questions": [
+    {
+      "question_id": "rescue_foundation_square_center_angle_001",
+      "source_type": "ncert_aligned",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Square Central Angle",
+      "primary_concept": "square_center_angle",
+      "prerequisites": ["circle_angle_360"],
+      "class_level": "Class 8",
+      "bridge_level": "foundation",
+      "difficulty": "easy",
+      "expected_time_seconds": 60,
+      "question_text": "A square is divided from its center into 4 equal triangles. What is the measure of each central angle?",
+      "question_type": "multiple_choice",
+      "options": [
+        {
+          "label": "A",
+          "text": "45°",
+          "isCorrect": false
+        },
+        {
+          "label": "B",
+          "text": "90°",
+          "isCorrect": true
+        },
+        {
+          "label": "C",
+          "text": "180°",
+          "isCorrect": false
+        },
+        {
+          "label": "D",
+          "text": "360°",
+          "isCorrect": false
+        }
+      ],
+      "correct_answer": "B",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "A full circle around a point measures 360°",
+          "calculation": "Total angle = 360°"
+        },
+        {
+          "step_number": 2,
+          "description": "A square divides the circle into 4 equal central angles",
+          "calculation": "Number of parts = 4"
+        },
+        {
+          "step_number": 3,
+          "description": "Each central angle = Total angle ÷ Number of parts",
+          "calculation": "360° ÷ 4 = 90°"
+        }
+      ],
+      "why_wrong_explanations": {
+        "A": "45° would be for an octagon, not a square. A square has 4 equal parts.",
+        "C": "180° is a straight angle, not the central angle of a square.",
+        "D": "360° is the total angle around a point, not each individual central angle."
+      },
+      "rescue_question_ids": [],
+      "diagram_required": true,
+      "diagram_id": "diag_square_center_angle_001",
+      "diagram_specification": {
+        "type": "geometry",
+        "elements": [
+          {
+            "id": "square",
+            "type": "polygon",
+            "properties": {"sides": 4, "centermarked": true}
+          },
+          {
+            "id": "central_angles",
+            "type": "angle",
+            "properties": {"count": 4, "measure": 90}
+          }
+        ]
+      },
+      "review_status": "ai_generated",
+      "review_history": [
+        {
+          "status": "ai_generated",
+          "timestamp": "2026-05-11T13:15:00.000000",
+          "reviewer": "ai_importer",
+          "comments": "Foundation level rescue question for square central angle"
+        }
+      ],
+      "learning_objectives": [
+        "Understand that angles around a point sum to 360°",
+        "Calculate central angles in regular polygons"
+      ],
+      "common_mistakes": [
+        {
+          "mistake": "Confusing central angle with interior angle",
+          "explanation": "Central angle is at the center, interior angle is at the vertex",
+          "frequency": "very_common"
+        },
+        {
+          "mistake": "Using wrong division",
+          "explanation": "Central angle = 360° ÷ number of sides, not other operations",
+          "frequency": "common"
+        }
+      ]
+    },
+    {
+      "question_id": "rescue_bridge_hexagon_center_angle_001",
+      "source_type": "ncert_aligned",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Hexagon Central Angle",
+      "primary_concept": "hexagon_center_angle",
+      "prerequisites": ["square_center_angle", "circle_angle_360"],
+      "class_level": "Class 9-10",
+      "bridge_level": "school",
+      "difficulty": "medium",
+      "expected_time_seconds": 90,
+      "question_text": "A regular hexagon has a side length of 6 cm. Find the area of one of the central triangles formed by drawing lines from the center to the vertices.",
+      "question_type": "multiple_choice",
+      "options": [
+        {
+          "label": "A",
+          "text": "6√3 cm²",
+          "isCorrect": false
+        },
+        {
+          "label": "B",
+          "text": "9√3 cm²",
+          "isCorrect": true
+        },
+        {
+          "label": "C",
+          "text": "12√3 cm²",
+          "isCorrect": false
+        },
+        {
+          "label": "D",
+          "text": "18√3 cm²",
+          "isCorrect": false
+        }
+      ],
+      "correct_answer": "B",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "Central angle of regular hexagon = 360° ÷ 6",
+          "calculation": "Central angle = 60°"
+        },
+        {
+          "step_number": 2,
+          "description": "Each central triangle is isosceles with vertex angle 60°",
+          "calculation": "Triangle type: isosceles with vertex angle 60°"
+        },
+        {
+          "step_number": 3,
+          "description": "Area of triangle = (1/2) × r² × sin(vertex angle)",
+          "calculation": "Area = (1/2) × 6² × sin(60°) = 18 × (√3/2) = 9√3 cm²"
+        }
+      ],
+      "why_wrong_explanations": {
+        "A": "You may have used the wrong formula or incorrect trigonometric value.",
+        "C": "Check your calculation of the area formula for the triangle.",
+        "D": "This would be the area if the triangle was equilateral with side 6, but we need the central triangle."
+      },
+      "rescue_question_ids": ["rescue_foundation_square_center_angle_001"],
+      "diagram_required": true,
+      "diagram_id": "diag_hexagon_center_angle_001",
+      "diagram_specification": {
+        "type": "geometry",
+        "elements": [
+          {
+            "id": "hexagon",
+            "type": "polygon",
+            "properties": {"sides": 6, "regular": true, "centermarked": true}
+          },
+          {
+            "id": "central_triangle",
+            "type": "triangle",
+            "properties": {"isosceles": true, "vertex_angle": 60}
+          },
+          {
+            "id": "radius_lines",
+            "type": "line",
+            "properties": {"length": 6, "from_center": true}
+          }
+        ]
+      },
+      "review_status": "ai_generated",
+      "review_history": [
+        {
+          "status": "ai_generated",
+          "timestamp": "2026-05-11T13:15:00.000000",
+          "reviewer": "ai_importer",
+          "comments": "Bridge level rescue question for hexagon central angle"
+        }
+      ],
+      "learning_objectives": [
+        "Apply central angle formula to regular hexagon",
+        "Calculate area using trigonometric methods",
+        "Understand properties of regular polygons"
+      ],
+      "common_mistakes": [
+        {
+          "mistake": "Using wrong central angle",
+          "explanation": "For hexagon, central angle is 60°, not 45° or 90°",
+          "frequency": "common"
+        },
+        {
+          "mistake": "Wrong trigonometric value",
+          "explanation": "sin(60°) = √3/2, not 1/2 or other values",
+          "frequency": "occasional"
+        }
+      ]
+    },
+    {
+      "question_id": "rescue_intermediate_octagon_center_angle_001",
+      "source_type": "ncert_aligned",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Octagon Central Angle",
+      "primary_concept": "octagon_center_angle",
+      "prerequisites": ["hexagon_center_angle", "square_center_angle"],
+      "class_level": "Class 10-11",
+      "bridge_level": "school",
+      "difficulty": "medium",
+      "expected_time_seconds": 120,
+      "question_text": "A regular octagon is inscribed in a circle of radius 5 cm. Find the length of each side of the octagon.",
+      "question_type": "multiple_choice",
+      "options": [
+        {
+          "label": "A",
+          "text": "5√2 cm",
+          "isCorrect": false
+        },
+        {
+          "label": "B",
+          "text": "5√(2-√2) cm",
+          "isCorrect": true
+        },
+        {
+          "label": "C",
+          "text": "10 cm",
+          "isCorrect": false
+        },
+        {
+          "label": "D",
+          "text": "5 cm",
+          "isCorrect": false
+        }
+      ],
+      "correct_answer": "B",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "Central angle of regular octagon = 360° ÷ 8 = 45°",
+          "calculation": "Central angle = 45°"
+        },
+        {
+          "step_number": 2,
+          "description": "Each central triangle is isosceles with vertex angle 45°",
+          "calculation": "Triangle with two sides = 5 cm, included angle = 45°"
+        },
+        {
+          "step_number": 3,
+          "description": "Using cosine law: side² = r² + r² - 2r²cos(45°)",
+          "calculation": "side² = 25 + 25 - 50(√2/2) = 50 - 25√2 = 25(2-√2)"
+        },
+        {
+          "step_number": 4,
+          "description": "Side length = 5√(2-√2) cm",
+          "calculation": "Answer: 5√(2-√2) cm"
+        }
+      ],
+      "why_wrong_explanations": {
+        "A": "This would be the diagonal, not the side length.",
+        "C": "This would be the diameter, not the side length.",
+        "D": "The side is shorter than the radius in a regular octagon."
+      },
+      "rescue_question_ids": ["rescue_foundation_square_center_angle_001", "rescue_bridge_hexagon_center_angle_001"],
+      "diagram_required": true,
+      "diagram_id": "diag_octagon_center_angle_001",
+      "diagram_specification": {
+        "type": "geometry",
+        "elements": [
+          {
+            "id": "octagon",
+            "type": "polygon",
+            "properties": {"sides": 8, "regular": true, "inscribed": true}
+          },
+          {
+            "id": "circumcircle",
+            "type": "circle",
+            "properties": {"radius": 5}
+          },
+          {
+            "id": "central_triangle",
+            "type": "triangle",
+            "properties": {"isosceles": true, "vertex_angle": 45}
+          }
+        ]
+      },
+      "review_status": "ai_generated",
+      "review_history": [
+        {
+          "status": "ai_generated",
+          "timestamp": "2026-05-11T13:15:00.000000",
+          "reviewer": "ai_importer",
+          "comments": "Intermediate level rescue question for octagon central angle"
+        }
+      ],
+      "learning_objectives": [
+        "Apply cosine law to regular polygon problems",
+        "Calculate side lengths from circumradius",
+        "Understand relationship between central angle and side length"
+      ],
+      "common_mistakes": [
+        {
+          "mistake": "Using sine law instead of cosine law",
+          "explanation": "For side opposite known angle with two known sides, use cosine law",
+          "frequency": "common"
+        },
+        {
+          "mistake": "Wrong angle value",
+          "explanation": "Central angle for octagon is 45°, not 60° or 90°",
+          "frequency": "occasional"
+        }
+      ]
+    }
+  ],
+  "ladder_metadata": {
+    "progression_path": [
+      "square_center_angle → hexagon_center_angle → octagon_center_angle → central_angle_regular_polygon"
+    ],
+    "success_criteria": {
+      "foundation_mastery": "Can calculate central angles for square and triangle",
+      "bridge_mastery": "Can apply central angle formula to hexagon with trigonometry",
+      "intermediate_mastery": "Can use cosine law for octagon problems",
+      "target_mastery": "Can solve complex octagon-square JEE problems"
+    },
+    "estimated_total_time": 270,
+    "difficulty_progression": ["easy", "medium", "medium"],
+    "class_progression": ["Class 8", "Class 9-10", "Class 10-11"]
+  }
+}

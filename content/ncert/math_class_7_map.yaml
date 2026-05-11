@@ -1,0 +1,246 @@
+# NCERT Class 7 Mathematics - Concept Mapping
+# Maps NCERT chapters to concepts WITHOUT copying textbook content
+
+class_7_chapters:
+  chapter_1_integers:
+    ncert_chapter: "Integers"
+    ncert_book: "Mathematics - Class 7"
+    concepts_mapped:
+      - integer_basics
+      - number_line
+    prerequisite_concepts: []
+    learning_outcomes:
+      - "Understand integer operations"
+      - "Apply integers in real-world contexts"
+    diagram_requirements: false
+    jee_relevance: low
+    
+  chapter_2_fractions_decimals:
+    ncert_chapter: "Fractions and Decimals"
+    ncert_book: "Mathematics - Class 7"
+    concepts_mapped:
+      - fraction_operations
+      - decimal_operations
+    prerequisite_concepts: [integer_basics]
+    learning_outcomes:
+      - "Perform operations with fractions and decimals"
+      - "Convert between fractions and decimals"
+    diagram_requirements: false
+    jee_relevance: low
+    
+  chapter_3_data_handling:
+    ncert_chapter: "Data Handling"
+    ncert_book: "Mathematics - Class 7"
+    concepts_mapped:
+      - data_representation
+      - basic_statistics
+    prerequisite_concepts: [fraction_operations]
+    learning_outcomes:
+      - "Represent data visually"
+      - "Calculate basic statistics"
+    diagram_requirements: true
+    jee_relevance: low
+    
+  chapter_4_simple_equations:
+    ncert_chapter: "Simple Equations"
+    ncert_book: "Mathematics - Class 7"
+    concepts_mapped:
+      - linear_equations_basics
+      - equation_solving
+    prerequisite_concepts: [integer_basics]
+    learning_outcomes:
+      - "Solve simple linear equations"
+      - "Apply equations to word problems"
+    diagram_requirements: false
+    jee_relevance: medium
+    
+  chapter_5_lines_and_angles:
+    ncert_chapter: "Lines and Angles"
+    ncert_book: "Mathematics - Class 7"
+    concepts_mapped:
+      - basic_angle
+      - angle_types
+      - line_properties
+    prerequisite_concepts: []
+    learning_outcomes:
+      - "Identify different types of angles"
+      - "Understand angle relationships"
+      - "Apply angle properties in problems"
+    diagram_requirements: true
+    jee_relevance: medium
+    
+  chapter_6_triangle_properties:
+    ncert_chapter: "The Triangle and its Properties"
+    ncert_book: "Mathematics - Class 7"
+    concepts_mapped:
+      - triangle_basics
+      - triangle_types
+      - triangle_angle_sum
+    prerequisite_concepts: [basic_angle, angle_types]
+    learning_outcomes:
+      - "Classify triangles by sides and angles"
+      - "Apply triangle angle sum property"
+      - "Understand triangle inequalities"
+    diagram_requirements: true
+    jee_relevance: high
+    
+  chapter_7_congruence:
+    ncert_chapter: "Congruence of Triangles"
+    ncert_book: "Mathematics - Class 7"
+    concepts_mapped:
+      - triangle_congruence
+      - congruence_criteria
+    prerequisite_concepts: [triangle_basics, triangle_types]
+    learning_outcomes:
+      - "Understand triangle congruence"
+      - "Apply congruence criteria"
+    diagram_requirements: true
+    jee_relevance: medium
+    
+  chapter_8_comparing_quantities:
+    ncert_chapter: "Comparing Quantities"
+    ncert_book: "Mathematics - Class 7"
+    concepts_mapped:
+      - ratio_proportion
+      - percentage_basics
+    prerequisite_concepts: [fraction_operations]
+    learning_outcomes:
+      - "Work with ratios and proportions"
+      - "Convert between fractions and percentages"
+    diagram_requirements: false
+    jee_relevance: medium
+    
+  chapter_9_rational_numbers:
+    ncert_chapter: "Rational Numbers"
+    ncert_book: "Mathematics - Class 7"
+    concepts_mapped:
+      - rational_numbers
+      - rational_operations
+    prerequisite_concepts: [fraction_operations, integer_basics]
+    learning_outcomes:
+      - "Understand rational numbers"
+      - "Perform operations with rational numbers"
+    diagram_requirements: false
+    jee_relevance: medium
+    
+  chapter_10_practical_geometry:
+    ncert_chapter: "Practical Geometry"
+    ncert_book: "Mathematics - Class 7"
+    concepts_mapped:
+      - geometric_construction
+      - compass_constructions
+    prerequisite_concepts: [triangle_basics, line_properties]
+    learning_outcomes:
+      - "Construct basic geometric figures"
+      - "Use compass and straightedge constructions"
+    diagram_requirements: true
+    jee_relevance: low
+    
+  chapter_11_perimeter_area:
+    ncert_chapter: "Perimeter and Area"
+    ncert_book: "Mathematics - Class 7"
+    concepts_mapped:
+      - perimeter_basics
+      - area_basics
+      - rectangle_area
+      - triangle_area
+    prerequisite_concepts: [triangle_basics]
+    learning_outcomes:
+      - "Calculate perimeter of basic shapes"
+      - "Calculate area of rectangles and triangles"
+      - "Apply area concepts to real problems"
+    diagram_requirements: true
+    jee_relevance: high
+    
+  chapter_12_algebraic_expressions:
+    ncert_chapter: "Algebraic Expressions"
+    ncert_book: "Mathematics - Class 7"
+    concepts_mapped:
+      - algebraic_expressions
+      - expression_simplification
+    prerequisite_concepts: [integer_basics]
+    learning_outcomes:
+      - "Understand algebraic expressions"
+      - "Simplify algebraic expressions"
+    diagram_requirements: false
+    jee_relevance: medium
+    
+  chapter_13_exponents_powers:
+    ncert_chapter: "Exponents and Powers"
+    ncert_book: "Mathematics - Class 7"
+    concepts_mapped:
+      - exponents_basics
+      - exponent_laws
+    prerequisite_concepts: [integer_basics]
+    learning_outcomes:
+      - "Understand exponents and powers"
+      - "Apply exponent laws"
+    diagram_requirements: false
+    jee_relevance: medium
+    
+  chapter_14_symmetry:
+    ncert_chapter: "Symmetry"
+    ncert_book: "Mathematics - Class 7"
+    concepts_mapped:
+      - symmetry_basics
+      - line_symmetry
+      - rotational_symmetry
+    prerequisite_concepts: [basic_angle]
+    learning_outcomes:
+      - "Identify symmetrical figures"
+      - "Understand line and rotational symmetry"
+    diagram_requirements: true
+    jee_relevance: low
+    
+  chapter_15_visualising_solid_shapes:
+    ncert_chapter: "Visualising Solid Shapes"
+    ncert_book: "Mathematics - Class 7"
+    concepts_mapped:
+      - 3d_shapes
+      - shape_nets
+      - spatial_reasoning
+    prerequisite_concepts: [triangle_basics, geometric_construction]
+    learning_outcomes:
+      - "Identify 3D shapes and their properties"
+      - "Understand nets of solid shapes"
+      - "Develop spatial reasoning"
+    diagram_requirements: true
+    jee_relevance: low
+
+# Important notes for content generation:
+# 1. DO NOT copy NCERT textbook examples, exercises, or explanations verbatim
+# 2. Use NCERT only for concept sequencing and prerequisite mapping
+# 3. Generate original questions aligned to these concepts
+# 4. Focus on JEE-relevant concepts (marked with high/medium relevance)
+# 5. Create rescue ladders for high-relevance concepts
+
+# Geometry focus for rescue ladder generation:
+geometry_focus_concepts:
+  primary_concepts:
+    - basic_angle          # Chapter 5
+    - triangle_basics      # Chapter 6  
+    - triangle_area        # Chapter 11
+    - line_properties     # Chapter 5
+  
+  jee_preparation_concepts:
+    - These concepts form foundation for:
+    - Coordinate Geometry (Class 10)
+    - Trigonometry (Class 10)
+    - Advanced Geometry (Class 11-12)
+
+# Rescue ladder templates based on NCERT progression:
+rescue_ladder_templates:
+  angle_concepts:
+    foundation: "basic_angle"           # Class 7, Chapter 5
+    intermediate: "triangle_angle_sum"   # Class 7, Chapter 6
+    advanced: "circle_angle_360"        # Derived concept
+  
+  triangle_concepts:
+    foundation: "triangle_basics"       # Class 7, Chapter 6
+    intermediate: "triangle_area"        # Class 7, Chapter 11
+    advanced: "regular_polygon"         # Class 8-9 concept
+  
+  area_concepts:
+    foundation: "area_basics"           # Class 7, Chapter 11
+    intermediate: "triangle_area"         # Class 7, Chapter 11
+    advanced: "coordinate_geometry_area" # Class 10-11 concept

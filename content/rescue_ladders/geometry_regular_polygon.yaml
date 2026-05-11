@@ -1,0 +1,316 @@
+# Rescue Ladder: Geometry - Regular Polygons
+# Three-level progression: Foundation → Bridge → JEE
+# Target: central_angle_regular_polygon
+
+rescue_ladder:
+  ladder_id: geometry_regular_polygon_progression
+  target_concept: central_angle_regular_polygon
+  target_difficulty: jee
+  description: "Progressive rescue ladder for regular polygon central angle concepts"
+  
+  # Level 1: Foundation (Class 8 level)
+  foundation_level:
+    level_name: "Square Central Angle"
+    concept_id: square_center_angle
+    class_level: "Class 8"
+    difficulty: "easy"
+    expected_time_seconds: 60
+    diagram_required: true
+    rescue_questions:
+      - question_id: "rescue_foundation_square_001"
+        question_text: "A square is divided from its center into 4 equal triangles. What is the measure of each central angle?"
+        question_type: "multiple_choice"
+        options:
+          - label: "A"
+            text: "45°"
+            is_correct: false
+            why_wrong: "45° would be for an octagon, not a square. A square has 4 equal parts."
+          - label: "B"
+            text: "90°"
+            is_correct: true
+          - label: "C"
+            text: "180°"
+            is_correct: false
+            why_wrong: "180° is a straight angle, not the central angle of a square."
+          - label: "D"
+            text: "360°"
+            is_correct: false
+            why_wrong: "360° is the total angle around a point, not each individual central angle."
+        correct_answer: "B"
+        solution_steps:
+          - step_number: 1
+            description: "A full circle around a point measures 360°"
+            calculation: "Total angle = 360°"
+          - step_number: 2
+            description: "A square divides the circle into 4 equal central angles"
+            calculation: "Number of parts = 4"
+          - step_number: 3
+            description: "Each central angle = Total angle ÷ Number of parts"
+            calculation: "360° ÷ 4 = 90°"
+        diagram_id: "diag_square_center_angle_001"
+        learning_objectives:
+          - "Understand that angles around a point sum to 360°"
+          - "Calculate central angles in regular polygons"
+        common_mistakes:
+          - mistake: "Confusing central angle with interior angle"
+            explanation: "Central angle is at the center, interior angle is at the vertex"
+            frequency: "very_common"
+          - mistake: "Using wrong division"
+            explanation: "Central angle = 360° ÷ number of sides, not other operations"
+            frequency: "common"
+  
+  # Level 2: Bridge (Class 9-10 level)
+  bridge_level:
+    level_name: "Hexagon Central Angle"
+    concept_id: hexagon_center_angle
+    class_level: "Class 9-10"
+    difficulty: "medium"
+    expected_time_seconds: 90
+    diagram_required: true
+    rescue_questions:
+      - question_id: "rescue_bridge_hexagon_001"
+        question_text: "A regular hexagon has a side length of 6 cm. Find the area of one of the central triangles formed by drawing lines from the center to the vertices."
+        question_type: "multiple_choice"
+        options:
+          - label: "A"
+            text: "6√3 cm²"
+            is_correct: false
+            why_wrong: "You may have used the wrong formula or incorrect trigonometric value."
+          - label: "B"
+            text: "9√3 cm²"
+            is_correct: true
+          - label: "C"
+            text: "12√3 cm²"
+            is_correct: false
+            why_wrong: "Check your calculation of the area formula for the triangle."
+          - label: "D"
+            text: "18√3 cm²"
+            is_correct: false
+            why_wrong: "This would be the area if the triangle was equilateral with side 6, but we need the central triangle."
+        correct_answer: "B"
+        solution_steps:
+          - step_number: 1
+            description: "Central angle of regular hexagon = 360° ÷ 6"
+            calculation: "Central angle = 60°"
+          - step_number: 2
+            description: "Each central triangle is isosceles with vertex angle 60°"
+            calculation: "Triangle type: isosceles with vertex angle 60°"
+          - step_number: 3
+            description: "Area of triangle = (1/2) × r² × sin(vertex angle)"
+            calculation: "Area = (1/2) × 6² × sin(60°) = 18 × (√3/2) = 9√3 cm²"
+        diagram_id: "diag_hexagon_center_angle_001"
+        learning_objectives:
+          - "Apply central angle formula to regular hexagon"
+          - "Calculate area using trigonometric methods"
+          - "Understand properties of regular polygons"
+        common_mistakes:
+          - mistake: "Using wrong central angle"
+            explanation: "For hexagon, central angle is 60°, not 45° or 90°"
+            frequency: "common"
+          - mistake: "Wrong trigonometric value"
+            explanation: "sin(60°) = √3/2, not 1/2 or other values"
+            frequency: "occasional"
+  
+  # Level 3: Intermediate (Class 10-11 level)
+  intermediate_level:
+    level_name: "Octagon Central Angle"
+    concept_id: octagon_center_angle
+    class_level: "Class 10-11"
+    difficulty: "medium"
+    expected_time_seconds: 120
+    diagram_required: true
+    rescue_questions:
+      - question_id: "rescue_intermediate_octagon_001"
+        question_text: "A regular octagon is inscribed in a circle of radius 5 cm. Find the length of each side of the octagon."
+        question_type: "multiple_choice"
+        options:
+          - label: "A"
+            text: "5√2 cm"
+            is_correct: false
+            why_wrong: "This would be the diagonal, not the side length."
+          - label: "B"
+            text: "5√(2-√2) cm"
+            is_correct: true
+          - label: "C"
+            text: "10 cm"
+            is_correct: false
+            why_wrong: "This would be the diameter, not the side length."
+          - label: "D"
+            text: "5 cm"
+            is_correct: false
+            why_wrong: "The side is shorter than the radius in a regular octagon."
+        correct_answer: "B"
+        solution_steps:
+          - step_number: 1
+            description: "Central angle of regular octagon = 360° ÷ 8 = 45°"
+            calculation: "Central angle = 45°"
+          - step_number: 2
+            description: "Each central triangle is isosceles with vertex angle 45°"
+            calculation: "Triangle with two sides = 5 cm, included angle = 45°"
+          - step_number: 3
+            description: "Using cosine law: side² = r² + r² - 2r²cos(45°)"
+            calculation: "side² = 25 + 25 - 50(√2/2) = 50 - 25√2 = 25(2-√2)"
+          - step_number: 4
+            description: "Side length = 5√(2-√2) cm"
+            calculation: "Answer: 5√(2-√2) cm"
+        diagram_id: "diag_octagon_center_angle_001"
+        learning_objectives:
+          - "Apply cosine law to regular polygon problems"
+          - "Calculate side lengths from circumradius"
+          - "Understand relationship between central angle and side length"
+        common_mistakes:
+          - mistake: "Using sine law instead of cosine law"
+            explanation: "For side opposite known angle with two known sides, use cosine law"
+            frequency: "common"
+          - mistake: "Wrong angle value"
+            explanation: "Central angle for octagon is 45°, not 60° or 90°"
+            frequency: "occasional"
+  
+  # Level 4: Target (JEE level)
+  target_level:
+    level_name: "Regular Polygon Area Problem"
+    concept_id: central_angle_regular_polygon
+    class_level: "Class 11-12"
+    difficulty: "hard"
+    expected_time_seconds: 180
+    diagram_required: true
+    rescue_questions:
+      - question_id: "jee_geometry_polygon_001"
+        question_text: "A regular octagon is formed by joining the midpoints of the sides of a square of side length 8 cm. Find the area of the octagon."
+        question_type: "multiple_choice"
+        options:
+          - label: "A"
+            text: "32√2 cm²"
+            is_correct: false
+            why_wrong: "This might be the area of the corner triangles, not the octagon."
+          - label: "B"
+            text: "64 cm²"
+            is_correct: false
+            why_wrong: "This is the area of the original square, not the octagon."
+          - label: "C"
+            text: "32 cm²"
+            is_correct: false
+            why_wrong: "This is close but check your calculation of the corner triangle areas."
+          - label: "D"
+            text: "32(2-√2) cm²"
+            is_correct: true
+        correct_answer: "D"
+        solution_steps:
+          - step_number: 1
+            description: "Visualize the square and octagon relationship"
+            calculation: "Square side = 8 cm, area = 64 cm²"
+          - step_number: 2
+            description: "Each corner triangle is isosceles right triangle with legs = 4 cm"
+            calculation: "Leg length = half of square side = 4 cm"
+          - step_number: 3
+            description: "Area of one corner triangle = (1/2) × 4 × 4"
+            calculation: "Area = 8 cm²"
+          - step_number: 4
+            description: "Total area of 4 corner triangles = 4 × 8"
+            calculation: "Total corner area = 32 cm²"
+          - step_number: 5
+            description: "Octagon area = Square area - Corner triangles area"
+            calculation: "Octagon area = 64 - 32 = 32 cm²"
+          - step_number: 6
+            description: "Alternative: Using regular octagon area formula"
+            calculation: "Area = 32(2-√2) cm² ≈ 18.7 cm²"
+        diagram_id: "diag_octagon_square_001"
+        learning_objectives:
+          - "Apply area subtraction method for complex shapes"
+          - "Understand relationship between regular octagon and square"
+          - "Use multiple approaches to solve geometry problems"
+        common_mistakes:
+          - mistake: "Wrong corner triangle dimensions"
+            explanation: "Each leg is half the square side, not the full side"
+            frequency: "very_common"
+          - mistake: "Counting wrong number of corner triangles"
+            explanation: "A square has 4 corners, so 4 corner triangles are removed"
+            frequency: "common"
+          - mistake: "Using wrong area formula"
+            explanation: "Corner triangles are right triangles, use (1/2)×base×height"
+            frequency: "occasional"
+
+# Progressive difficulty mapping:
+progression_mapping:
+  foundation_to_bridge:
+    skill_transfer:
+      - "Understanding 360° angle sum"
+      - "Division of angles in regular polygons"
+      - "Basic area calculations"
+    prerequisite_check:
+      - "Must understand square central angles"
+      - "Must know basic trigonometric ratios"
+  
+  bridge_to_intermediate:
+    skill_transfer:
+      - "Central angle formula application"
+      - "Trigonometric area calculations"
+      - "Regular polygon properties"
+    prerequisite_check:
+      - "Must master hexagon problems"
+      - "Must know cosine law"
+  
+  intermediate_to_target:
+    skill_transfer:
+      - "Complex polygon relationships"
+      - "Multiple solution approaches"
+      - "Area subtraction methods"
+    prerequisite_check:
+      - "Must understand octagon properties"
+      - "Must know advanced area formulas"
+
+# Success criteria for each level:
+success_criteria:
+  foundation_level:
+    mastery_indicators:
+      - "Can calculate central angles for square and triangle"
+      - "Understands 360° angle sum concept"
+      - "Can solve basic area problems"
+    passing_score: 80%
+    time_limit: 90 seconds
+  
+  bridge_level:
+    mastery_indicators:
+      - "Can apply central angle formula to hexagon"
+      - "Can use trigonometric methods for area"
+      - "Understands regular polygon properties"
+    passing_score: 75%
+    time_limit: 120 seconds
+  
+  intermediate_level:
+    mastery_indicators:
+      - "Can apply cosine law to polygon problems"
+      - "Can calculate side lengths from radius"
+      - "Understands octagon geometry"
+    passing_score: 70%
+    time_limit: 150 seconds
+  
+  target_level:
+    mastery_indicators:
+      - "Can solve complex octagon-square problems"
+      - "Can use multiple solution approaches"
+      - "Can apply area subtraction method"
+    passing_score: 65%
+    time_limit: 200 seconds
+
+# Intervention strategies:
+intervention_strategies:
+  if_foundation_fails:
+    - "Review basic angle concepts"
+    - "Practice 360° angle division problems"
+    - "Use visual aids for central angles"
+  
+  if_bridge_fails:
+    - "Review trigonometric ratios"
+    - "Practice hexagon area problems"
+    - "Strengthen cosine law understanding"
+  
+  if_intermediate_fails:
+    - "Review cosine law applications"
+    - "Practice octagon geometry problems"
+    - "Strengthen advanced trigonometry"
+  
+  if_target_fails:
+    - "Review area subtraction methods"
+    - "Practice complex polygon relationships"
+    - "Strengthen problem-solving strategies"

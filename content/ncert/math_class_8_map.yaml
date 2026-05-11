@@ -1,0 +1,290 @@
+# NCERT Class 8 Mathematics - Concept Mapping
+# Maps NCERT chapters to concepts WITHOUT copying textbook content
+
+class_8_chapters:
+  chapter_1_rational_numbers:
+    ncert_chapter: "Rational Numbers"
+    ncert_book: "Mathematics - Class 8"
+    concepts_mapped:
+      - rational_numbers_advanced
+      - rational_properties
+    prerequisite_concepts: [rational_numbers]
+    learning_outcomes:
+      - "Master rational number operations"
+      - "Understand rational number properties"
+    diagram_requirements: false
+    jee_relevance: medium
+    
+  chapter_2_linear_equations:
+    ncert_chapter: "Linear Equations in One Variable"
+    ncert_book: "Mathematics - Class 8"
+    concepts_mapped:
+      - linear_equations_advanced
+      - word_problems_linear
+    prerequisite_concepts: [linear_equations_basics]
+    learning_outcomes:
+      - "Solve complex linear equations"
+      - "Apply equations to word problems"
+    diagram_requirements: false
+    jee_relevance: high
+    
+  chapter_3_understanding_quadrilaterals:
+    ncert_chapter: "Understanding Quadrilaterals"
+    ncert_book: "Mathematics - Class 8"
+    concepts_mapped:
+      - quadrilateral_basics
+      - quadrilateral_types
+      - quadrilateral_properties
+      - polygon_vertices
+    prerequisite_concepts: [triangle_basics, line_properties]
+    learning_outcomes:
+      - "Classify different types of quadrilaterals"
+      - "Apply quadrilateral properties"
+      - "Understand polygon structure"
+    diagram_requirements: true
+    jee_relevance: high
+    
+  chapter_4_practical_geometry:
+    ncert_chapter: "Practical Geometry"
+    ncert_book: "Mathematics - Class 8"
+    concepts_mapped:
+      - quadrilateral_construction
+      - geometric_construction_advanced
+    prerequisite_concepts: [quadrilateral_basics, compass_constructions]
+    learning_outcomes:
+      - "Construct quadrilaterals given specific conditions"
+      - "Master geometric construction techniques"
+    diagram_requirements: true
+    jee_relevance: low
+    
+  chapter_5_data_handling:
+    ncert_chapter: "Data Handling"
+    ncert_book: "Mathematics - Class 8"
+    concepts_mapped:
+      - data_organization
+      - graphical_representation
+      - probability_basics
+    prerequisite_concepts: [data_representation]
+    learning_outcomes:
+      - "Organize and analyze data"
+      - "Create various types of graphs"
+      - "Understand basic probability"
+    diagram_requirements: true
+    jee_relevance: low
+    
+  chapter_6_squares_square_roots:
+    ncert_chapter: "Squares and Square Roots"
+    ncert_book: "Mathematics - Class 8"
+    concepts_mapped:
+      - squares_basics
+      - square_roots
+      - perfect_squares
+    prerequisite_concepts: [integer_basics, exponents_basics]
+    learning_outcomes:
+      - "Understand squares and square roots"
+      - "Find square roots of numbers"
+      - "Identify perfect squares"
+    diagram_requirements: false
+    jee_relevance: medium
+    
+  chapter_7_cubes_cube_roots:
+    ncert_chapter: "Cubes and Cube Roots"
+    ncert_book: "Mathematics - Class 8"
+    concepts_mapped:
+      - cubes_basics
+      - cube_roots
+    prerequisite_concepts: [squares_basics]
+    learning_outcomes:
+      - "Understand cubes and cube roots"
+      - "Find cube roots of numbers"
+    diagram_requirements: false
+    jee_relevance: low
+    
+  chapter_8_comparing_quantities:
+    ncert_chapter: "Comparing Quantities"
+    ncert_book: "Mathematics - Class 8"
+    concepts_mapped:
+      - percentage_advanced
+      - profit_loss
+      - simple_interest
+      - compound_interest
+    prerequisite_concepts: [percentage_basics, ratio_proportion]
+    learning_outcomes:
+      - "Apply percentages to real-world problems"
+      - "Calculate profit, loss, and interest"
+      - "Understand compound interest"
+    diagram_requirements: false
+    jee_relevance: low
+    
+  chapter_9_algebraic_expressions:
+    ncert_chapter: "Algebraic Expressions and Identities"
+    ncert_book: "Mathematics - Class 8"
+    concepts_mapped:
+      - algebraic_identities
+      - expression_factorization
+      - algebraic_manipulation
+    prerequisite_concepts: [algebraic_expressions]
+    learning_outcomes:
+      - "Apply important algebraic identities"
+      - "Factorize algebraic expressions"
+      - "Manipulate complex expressions"
+    diagram_requirements: false
+    jee_relevance: high
+    
+  chapter_10_visualising_solid_shapes:
+    ncert_chapter: "Visualising Solid Shapes"
+    ncert_book: "Mathematics - Class 8"
+    concepts_mapped:
+      - 3d_shapes_advanced
+      - solid_geometry
+      - volume_surface_area
+    prerequisite_concepts: [3d_shapes]
+    learning_outcomes:
+      - "Understand properties of 3D shapes"
+      - "Calculate volume and surface area"
+      - "Visualize solid shapes in 2D"
+    diagram_requirements: true
+    jee_relevance: medium
+    
+  chapter_11_mensuration:
+    ncert_chapter: "Mensuration"
+    ncert_book: "Mathematics - Class 8"
+    concepts_mapped:
+      - perimeter_advanced
+      - area_advanced
+      - circle_basics
+      - circle_area_circumference
+    prerequisite_concepts: [perimeter_basics, area_basics]
+    learning_outcomes:
+      - "Calculate perimeter and area of complex shapes"
+      - "Understand circle properties"
+      - "Apply mensuration formulas"
+    diagram_requirements: true
+    jee_relevance: high
+    
+  chapter_12_exponents_powers:
+    ncert_chapter: "Exponents and Powers"
+    ncert_book: "Mathematics - Class 8"
+    concepts_mapped:
+      - exponents_advanced
+      - scientific_notation
+      - exponent_laws_advanced
+    prerequisite_concepts: [exponent_laws]
+    learning_outcomes:
+      - "Master exponent laws"
+      - "Use scientific notation"
+      - "Work with very large and small numbers"
+    diagram_requirements: false
+    jee_relevance: medium
+    
+  chapter_13_direct_inverse_proportions:
+    ncert_chapter: "Direct and Inverse Proportions"
+    ncert_book: "Mathematics - Class 8"
+    concepts_mapped:
+      - direct_proportion
+      - inverse_proportion
+      - proportion_word_problems
+    prerequisite_concepts: [ratio_proportion]
+    learning_outcomes:
+      - "Understand direct and inverse proportions"
+      - "Apply proportions to word problems"
+    diagram_requirements: false
+    jee_relevance: medium
+    
+  chapter_14_factorization:
+    ncert_chapter: "Factorization"
+    ncert_book: "Mathematics - Class 8"
+    concepts_mapped:
+      - factorization_methods
+      - algebraic_factorization
+      - polynomial_basics
+    prerequisite_concepts: [expression_factorization]
+    learning_outcomes:
+      - "Master various factorization methods"
+      - "Factorize complex algebraic expressions"
+      - "Understand polynomial basics"
+    diagram_requirements: false
+    jee_relevance: high
+    
+  chapter_15_introduction_to_graphs:
+    ncert_chapter: "Introduction to Graphs"
+    ncert_book: "Mathematics - Class 8"
+    concepts_mapped:
+      - graph_basics
+      - coordinate_plotting
+      - linear_graphs
+    prerequisite_concepts: [linear_equations_advanced]
+    learning_outcomes:
+      - "Plot points on coordinate plane"
+      - "Interpret linear graphs"
+      - "Understand graph relationships"
+    diagram_requirements: true
+    jee_relevance: high
+    
+  chapter_16_playing_with_numbers:
+    ncert_chapter: "Playing with Numbers"
+    ncert_book: "Mathematics - Class 8"
+    concepts_mapped:
+      - number_patterns
+      - divisibility_rules
+      - number_games
+    prerequisite_concepts: [integer_basics]
+    learning_outcomes:
+      - "Identify number patterns"
+      - "Apply divisibility rules"
+      - "Understand number properties through games"
+    diagram_requirements: false
+    jee_relevance: low
+
+# Geometry focus for JEE preparation:
+geometry_focus_concepts:
+  primary_concepts:
+    - quadrilateral_basics      # Chapter 3 - Foundation for polygons
+    - polygon_vertices          # Chapter 3 - Essential for regular polygons
+    - circle_basics             # Chapter 11 - Foundation for trigonometry
+    - circle_area_circumference # Chapter 11 - Important for JEE
+    - graph_basics              # Chapter 15 - Foundation for coordinate geometry
+    - coordinate_plotting       # Chapter 15 - Essential for coordinate geometry
+  
+  jee_bridge_concepts:
+    - These lead to:
+    - Regular polygons (Class 9-10)
+    - Coordinate geometry (Class 10-11)
+    - Trigonometry (Class 10)
+    - Advanced geometry (Class 11-12)
+
+# Rescue ladder progression for geometry:
+rescue_ladder_templates:
+  polygon_progression:
+    foundation: "quadrilateral_basics"     # Class 8, Chapter 3
+    intermediate: "regular_polygon"          # Class 9 concept
+    advanced: "regular_polygon_area"        # Class 10-11 concept
+  
+  coordinate_progression:
+    foundation: "graph_basics"              # Class 8, Chapter 15
+    intermediate: "coordinate_plotting"     # Class 8, Chapter 15
+    advanced: "cartesian_system"            # Class 9-10 concept
+  
+  circle_progression:
+    foundation: "circle_basics"             # Class 8, Chapter 11
+    intermediate: "circle_area_circumference" # Class 8, Chapter 11
+    advanced: "trigonometric_ratios"        # Class 10 concept
+
+# Content generation guidelines:
+content_generation_rules:
+  do_copy:
+    - Concept sequences from NCERT
+    - Prerequisite relationships
+    - Learning outcome structures
+  
+  do_not_copy:
+    - NCERT textbook examples
+    - Exercise problems verbatim
+    - Explanations and solutions
+    - Diagrams from textbooks
+  
+  create_instead:
+    - Original questions aligned to concepts
+    - New examples demonstrating concepts
+    - Original explanations and solutions
+    - Custom diagrams for visualization

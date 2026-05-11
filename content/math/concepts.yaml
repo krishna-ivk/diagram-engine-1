@@ -1,0 +1,348 @@
+# Math Concepts Taxonomy - Geometry Focus
+# Structured for rescue ladder generation and prerequisite mapping
+
+# Geometry Concepts - Regular Polygons Focus
+basic_angle:
+  name: Basic Angle Concepts
+  subject: Mathematics
+  chapter: Geometry
+  class_level: Class 7-8
+  prerequisites: []
+  description: Understanding angle measurement and basic angle types
+  rescue_templates: []
+  diagram_required: false
+
+circle_angle_360:
+  name: Circle Angle Sum (360°)
+  subject: Mathematics
+  chapter: Geometry
+  class_level: Class 7-8
+  prerequisites: [basic_angle]
+  description: Understanding that angles around a point sum to 360°
+  rescue_templates: []
+  diagram_required: true
+
+polygon_vertices:
+  name: Polygon Vertices and Sides
+  subject: Mathematics
+  chapter: Geometry
+  class_level: Class 7-8
+  prerequisites: [basic_angle]
+  description: Understanding polygon structure, vertices, and sides
+  rescue_templates: []
+  diagram_required: true
+
+regular_polygon:
+  name: Regular Polygons
+  subject: Mathematics
+  chapter: Geometry
+  class_level: Class 8-9
+  prerequisites: [polygon_vertices]
+  description: Properties of regular polygons with equal sides and angles
+  rescue_templates: []
+  diagram_required: true
+
+square_center_angle:
+  name: Square Central Angle
+  subject: Mathematics
+  chapter: Geometry
+  class_level: Class 8
+  prerequisites: [regular_polygon, circle_angle_360]
+  description: Central angles in a square (90° each)
+  rescue_templates: [triangle_center_angle]
+  diagram_required: true
+
+triangle_center_angle:
+  name: Triangle Central Angle
+  subject: Mathematics
+  chapter: Geometry
+  class_level: Class 8
+  prerequisites: [regular_polygon, circle_angle_360]
+  description: Central angles in an equilateral triangle (120° each)
+  rescue_templates: []
+  diagram_required: true
+
+hexagon_center_angle:
+  name: Hexagon Central Angle
+  subject: Mathematics
+  chapter: Geometry
+  class_level: Class 9
+  prerequisites: [square_center_angle]
+  description: Central angles in a regular hexagon (60° each)
+  rescue_templates: [square_center_angle, triangle_center_angle]
+  diagram_required: true
+
+octagon_center_angle:
+  name: Octagon Central Angle
+  subject: Mathematics
+  chapter: Geometry
+  class_level: Class 9-10
+  prerequisites: [hexagon_center_angle]
+  description: Central angles in a regular octagon (45° each)
+  rescue_templates: [square_center_angle, triangle_center_angle, hexagon_center_angle]
+  diagram_required: true
+
+central_angle_regular_polygon:
+  name: Central Angle of Regular Polygon
+  subject: Mathematics
+  chapter: Geometry
+  class_level: Class 9-11
+  prerequisites: [octagon_center_angle]
+  description: "General formula for central angles: 360°/n"
+  rescue_templates: [square_center_angle, hexagon_center_angle, octagon_center_angle]
+  diagram_required: true
+
+triangle_area:
+  name: Triangle Area
+  subject: Mathematics
+  chapter: Geometry
+  class_level: Class 7-9
+  prerequisites: [polygon_vertices]
+  description: Area of triangle using base and height
+  rescue_templates: []
+  diagram_required: true
+
+regular_polygon_area:
+  name: Regular Polygon Area
+  subject: Mathematics
+  chapter: Geometry
+  class_level: Class 10-11
+  prerequisites: [central_angle_regular_polygon, triangle_area]
+  description: Area of regular polygon using triangulation method
+  rescue_templates: [triangle_area, square_center_angle, hexagon_center_angle]
+  diagram_required: true
+
+# Coordinate Geometry Concepts
+cartesian_system:
+  name: Cartesian Coordinate System
+  subject: Mathematics
+  chapter: Coordinate Geometry
+  class_level: Class 9-10
+  prerequisites: [basic_angle]
+  description: Understanding x-y coordinate plane and quadrants
+  rescue_templates: []
+  diagram_required: true
+
+distance_formula:
+  name: Distance Formula
+  subject: Mathematics
+  chapter: Coordinate Geometry
+  class_level: Class 10
+  prerequisites: [cartesian_system]
+  description: Distance between two points using Pythagorean theorem
+  rescue_templates: [cartesian_system]
+  diagram_required: true
+
+section_formula:
+  name: Section Formula
+  subject: Mathematics
+  chapter: Coordinate Geometry
+  class_level: Class 10-11
+  prerequisites: [distance_formula]
+  description: Finding point dividing line segment in given ratio
+  rescue_templates: [distance_formula, cartesian_system]
+  diagram_required: true
+
+coordinate_geometry_area:
+  name: Area using Coordinates
+  subject: Mathematics
+  chapter: Coordinate Geometry
+  class_level: Class 10-11
+  prerequisites: [section_formula, triangle_area]
+  description: Area of triangle using coordinate formula
+  rescue_templates: [triangle_area, section_formula]
+  diagram_required: true
+
+# Trigonometry Concepts
+trigonometric_ratios:
+  name: Trigonometric Ratios
+  subject: Mathematics
+  chapter: Trigonometry
+  class_level: Class 10
+  prerequisites: [triangle_area]
+  description: Sin, Cos, Tan ratios in right triangles
+  rescue_templates: [triangle_area]
+  diagram_required: true
+
+unit_circle:
+  name: Unit Circle
+  subject: Mathematics
+  chapter: Trigonometry
+  class_level: Class 11
+  prerequisites: [trigonometric_ratios, circle_angle_360]
+  description: Trigonometric ratios on unit circle
+  rescue_templates: [trigonometric_ratios, circle_angle_360]
+  diagram_required: true
+
+trigonometric_identities:
+  name: Trigonometric Identities
+  subject: Mathematics
+  chapter: Trigonometry
+  class_level: Class 11
+  prerequisites: [unit_circle]
+  description: Basic trigonometric identities and their applications
+  rescue_templates: [unit_circle, trigonometric_ratios]
+  diagram_required: false
+
+# Quadratic Equations Concepts
+quadratic_standard_form:
+  name: Quadratic Standard Form
+  subject: Mathematics
+  chapter: Quadratic Equations
+  class_level: Class 10
+  prerequisites: []
+  description: Standard form ax² + bx + c = 0
+  rescue_templates: []
+  diagram_required: false
+
+discriminant:
+  name: Discriminant
+  subject: Mathematics
+  chapter: Quadratic Equations
+  class_level: Class 10
+  prerequisites: [quadratic_standard_form]
+  description: Nature of roots using discriminant b²-4ac
+  rescue_templates: [quadratic_standard_form]
+  diagram_required: false
+
+quadratic_formula:
+  name: Quadratic Formula
+  subject: Mathematics
+  chapter: Quadratic Equations
+  class_level: Class 10-11
+  prerequisites: [discriminant]
+  description: Solution of quadratic equations using formula
+  rescue_templates: [discriminant, quadratic_standard_form]
+  diagram_required: false
+
+# Functions and Graphs Concepts
+function_basics:
+  name: Function Basics
+  subject: Mathematics
+  chapter: Functions and Graphs
+  class_level: Class 10-11
+  prerequisites: [cartesian_system]
+  description: Understanding functions, domain, and range
+  rescue_templates: [cartesian_system]
+  diagram_required: true
+
+linear_functions:
+  name: Linear Functions
+  subject: Mathematics
+  chapter: Functions and Graphs
+  class_level: Class 10-11
+  prerequisites: [function_basics]
+  description: Linear functions and their graphs
+  rescue_templates: [function_basics, cartesian_system]
+  diagram_required: true
+
+quadratic_functions:
+  name: Quadratic Functions
+  subject: Mathematics
+  chapter: Functions and Graphs
+  class_level: Class 11
+  prerequisites: [quadratic_formula, linear_functions]
+  description: Quadratic functions, parabolas, and their properties
+  rescue_templates: [quadratic_formula, linear_functions]
+  diagram_required: true
+
+# Calculus Concepts
+limits_intuitive:
+  name: Limits (Intuitive)
+  subject: Mathematics
+  chapter: Limits, Derivatives, Integrals
+  class_level: Class 11
+  prerequisites: [quadratic_functions]
+  description: Intuitive understanding of limits
+  rescue_templates: [quadratic_functions]
+  diagram_required: true
+
+derivative_geometric:
+  name: Derivative (Geometric)
+  subject: Mathematics
+  chapter: Limits, Derivatives, Integrals
+  class_level: Class 11-12
+  prerequisites: [limits_intuitive]
+  description: Derivative as slope of tangent line
+  rescue_templates: [limits_intuitive, linear_functions]
+  diagram_required: true
+
+integral_area:
+  name: Integral as Area
+  subject: Mathematics
+  chapter: Limits, Derivatives, Integrals
+  class_level: Class 12
+  prerequisites: [derivative_geometric]
+  description: Understanding definite integrals as area under curve
+  rescue_templates: [derivative_geometric, coordinate_geometry_area]
+  diagram_required: true
+
+# Vector Concepts
+vector_basics:
+  name: Vector Basics
+  subject: Mathematics
+  chapter: Vectors
+  class_level: Class 12
+  prerequisites: [cartesian_system]
+  description: Vector representation and basic operations
+  rescue_templates: [cartesian_system]
+  diagram_required: true
+
+vector_addition:
+  name: Vector Addition
+  subject: Mathematics
+  chapter: Vectors
+  class_level: Class 12
+  prerequisites: [vector_basics]
+  description: Triangle and parallelogram laws of vector addition
+  rescue_templates: [vector_basics]
+  diagram_required: true
+
+dot_product:
+  name: Dot Product
+  subject: Mathematics
+  chapter: Vectors
+  class_level: Class 12
+  prerequisites: [vector_addition, trigonometric_ratios]
+  description: Scalar product and its applications
+  rescue_templates: [vector_addition, trigonometric_ratios]
+  diagram_required: true
+
+# Concept Relationships for Rescue Ladder Generation
+rescue_ladders:
+  regular_polygon_progression:
+    target: central_angle_regular_polygon
+    levels:
+      foundation: square_center_angle
+      bridge: hexagon_center_angle
+      intermediate: octagon_center_angle
+      target: central_angle_regular_polygon
+    
+  coordinate_geometry_progression:
+    target: coordinate_geometry_area
+    levels:
+      foundation: cartesian_system
+      bridge: distance_formula
+      intermediate: section_formula
+      target: coordinate_geometry_area
+    
+  trigonometry_progression:
+    target: trigonometric_identities
+    levels:
+      foundation: trigonometric_ratios
+      bridge: unit_circle
+      target: trigonometric_identities
+    
+  quadratic_progression:
+    target: quadratic_formula
+    levels:
+      foundation: quadratic_standard_form
+      bridge: discriminant
+      target: quadratic_formula
+    
+  calculus_progression:
+    target: integral_area
+    levels:
+      foundation: limits_intuitive
+      bridge: derivative_geometric
+      target: integral_area

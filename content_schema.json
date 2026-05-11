@@ -1,0 +1,359 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Math Content Curation Schema",
+  "description": "Schema for structured Math learning objects with rescue ladders",
+  "type": "object",
+  "required": [
+    "question_id",
+    "source_type",
+    "subject",
+    "chapter",
+    "topic",
+    "primary_concept",
+    "prerequisites",
+    "class_level",
+    "bridge_level",
+    "difficulty",
+    "expected_time_seconds",
+    "question_text",
+    "correct_answer",
+    "solution_steps",
+    "rescue_question_ids",
+    "review_status"
+  ],
+  "properties": {
+    "question_id": {
+      "type": "string",
+      "description": "Unique identifier following pattern: {source}_{subject}_{topic}_{number}",
+      "pattern": "^[a-z_]+_[a-z]+_[a-z_]+_\\d{3}$"
+    },
+    "source_type": {
+      "type": "string",
+      "enum": ["jee_previous_paper", "ncert_aligned", "original_content"],
+      "description": "Type of source material"
+    },
+    "source_metadata": {
+      "type": "object",
+      "description": "Source metadata for JEE papers",
+      "properties": {
+        "source_year": {
+          "type": "integer",
+          "minimum": 2015,
+          "maximum": 2024
+        },
+        "source_session": {
+          "type": "string",
+          "enum": ["session_1", "session_2"]
+        },
+        "source_paper": {
+          "type": "string",
+          "enum": ["paper_1", "paper_2"]
+        },
+        "source_shift": {
+          "type": "string",
+          "enum": ["shift_1", "shift_2"]
+        },
+        "question_number": {
+          "type": "string",
+          "description": "Original question number in source paper"
+        }
+      }
+    },
+    "subject": {
+      "type": "string",
+      "enum": ["Mathematics"],
+      "description": "Subject area"
+    },
+    "chapter": {
+      "type": "string",
+      "enum": ["Geometry", "Coordinate Geometry", "Trigonometry", "Quadratic Equations", "Functions and Graphs", "Limits, Derivatives, Integrals", "Vectors"],
+      "description": "Chapter classification"
+    },
+    "topic": {
+      "type": "string",
+      "description": "Specific topic within chapter",
+      "examples": ["Regular Polygons", "Central Angle", "Distance Formula", "Trigonometric Ratios"]
+    },
+    "primary_concept": {
+      "type": "string",
+      "description": "Main concept being tested",
+      "pattern": "^[a-z_]+$"
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z_]+$"
+      },
+      "minItems": 0,
+      "description": "Required prerequisite concepts"
+    },
+    "class_level": {
+      "type": "string",
+      "enum": ["Class 7", "Class 8", "Class 9", "Class 10", "Class 11", "Class 12"],
+      "description": "NCERT class level alignment"
+    },
+    "bridge_level": {
+      "type": "string",
+      "enum": ["foundation", "school", "jee"],
+      "description": "Bridge level for progression"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["easy", "medium", "hard"],
+      "description": "Difficulty level for student progression"
+    },
+    "expected_time_seconds": {
+      "type": "integer",
+      "minimum": 30,
+      "maximum": 300,
+      "description": "Expected solving time in seconds"
+    },
+    "question_text": {
+      "type": "string",
+      "minLength": 10,
+      "description": "Full question text"
+    },
+    "question_type": {
+      "type": "string",
+      "enum": ["multiple_choice", "numerical", "integer_type"],
+      "description": "Type of question"
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["label", "text", "isCorrect"],
+        "properties": {
+          "label": {
+            "type": "string",
+            "pattern": "^[A-D]$"
+          },
+          "text": {
+            "type": "string",
+            "minLength": 1
+          },
+          "isCorrect": {
+            "type": "boolean"
+          }
+        }
+      },
+      "minItems": 4,
+      "maxItems": 4,
+      "description": "Multiple choice options (required for MCQ type)"
+    },
+    "correct_answer": {
+      "oneOf": [
+        {
+          "type": "string",
+          "pattern": "^[A-D]$",
+          "description": "Correct option for MCQ"
+        },
+        {
+          "type": "number",
+          "description": "Numerical answer"
+        },
+        {
+          "type": "integer",
+          "description": "Integer type answer"
+        }
+      ]
+    },
+    "solution_steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["step_number", "description"],
+        "properties": {
+          "step_number": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "description": {
+            "type": "string",
+            "minLength": 5
+          },
+          "calculation": {
+            "type": "string",
+            "description": "Mathematical calculation or formula"
+          },
+          "diagram_reference": {
+            "type": "string",
+            "description": "Reference to diagram element if applicable"
+          }
+        }
+      },
+      "minItems": 1,
+      "description": "Step-by-step solution"
+    },
+    "why_wrong_explanations": {
+      "type": "object",
+      "patternProperties": {
+        "^[A-D]$": {
+          "type": "string",
+          "minLength": 10,
+          "description": "Explanation for why this option is wrong"
+        }
+      },
+      "description": "Why-wrong explanations for incorrect options"
+    },
+    "rescue_question_ids": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[a-z_]+_[a-z]+_[a-z_]+_\\d{3}$"
+      },
+      "description": "IDs of rescue questions (foundation and bridge levels)"
+    },
+    "diagram_required": {
+      "type": "boolean",
+      "description": "Whether this question requires a diagram"
+    },
+    "diagram_id": {
+      "type": "string",
+      "pattern": "^diag_[a-z_]+_\\d{3}$",
+      "description": "Diagram identifier if required"
+    },
+    "diagram_specification": {
+      "type": "object",
+      "description": "Diagram specification if required",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["coordinate_system", "geometry", "trigonometric_circle", "graph"]
+        },
+        "elements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "type"],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": ["point", "line", "circle", "polygon", "angle", "label"]
+              },
+              "properties": {
+                "type": "object",
+                "description": "Element-specific properties"
+              }
+            }
+          }
+        }
+      }
+    },
+    "review_status": {
+      "type": "string",
+      "enum": ["draft", "ai_generated", "subject_reviewed", "diagram_reviewed", "approved", "published"],
+      "description": "Review workflow status"
+    },
+    "review_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["status", "timestamp", "reviewer"],
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reviewer": {
+            "type": "string"
+          },
+          "comments": {
+            "type": "string"
+          }
+        }
+      },
+      "description": "Review workflow history"
+    },
+    "learning_objectives": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 5
+      },
+      "description": "Learning objectives for this question"
+    },
+    "common_mistakes": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["mistake", "explanation"],
+        "properties": {
+          "mistake": {
+            "type": "string",
+            "minLength": 5
+          },
+          "explanation": {
+            "type": "string",
+            "minLength": 10
+          },
+          "frequency": {
+            "type": "string",
+            "enum": ["rare", "occasional", "common", "very_common"]
+          }
+        }
+      },
+      "description": "Common mistakes students make"
+    }
+  },
+  "conditional_requirements": {
+    "jee_questions": {
+      "if": {
+        "properties": {
+          "bridge_level": {
+            "const": "jee"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "prerequisites": {
+            "minItems": 1
+          },
+          "rescue_question_ids": {
+            "minItems": 2
+          },
+          "diagram_required": {
+            "const": true
+          }
+        }
+      }
+    },
+    "multiple_choice": {
+      "if": {
+        "properties": {
+          "question_type": {
+            "const": "multiple_choice"
+          }
+        }
+      },
+      "then": {
+        "required": ["options"],
+        "properties": {
+          "why_wrong_explanations": {
+            "minProperties": 3
+          }
+        }
+      }
+    },
+    "diagram_questions": {
+      "if": {
+        "properties": {
+          "diagram_required": {
+            "const": true
+          }
+        }
+      },
+      "then": {
+        "required": ["diagram_id", "diagram_specification"]
+      }
+    }
+  }
+}

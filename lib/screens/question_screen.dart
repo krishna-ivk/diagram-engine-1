@@ -8,6 +8,8 @@ import '../models/practice_mode.dart';
 import '../models/premium_state.dart';
 import '../models/question_data.dart';
 import '../models/revision_manager.dart';
+import '../models/rescue_system.dart';
+import '../models/concept_graph.dart';
 import '../widgets/diagram_canvas.dart';
 import '../widgets/drawing_overlay.dart';
 import '../widgets/fullscreen_diagram.dart';
@@ -84,6 +86,14 @@ class _QuestionScreenState extends State<QuestionScreen>
   bool get _showTimer => widget.practiceMode == PracticeMode.mockExam;
   bool get _isRevisionMode => widget.practiceMode == PracticeMode.revision || widget.isRevisionMode;
 
+  // Smart Rescue Flow
+  bool _isRescueMode = false;
+  QuestionData? _originalQuestion;
+  List<RescueQuestion> _rescuePath = [];
+  int _rescueIndex = 0;
+  late RescueSystem _rescueSystem;
+  late ConceptGraph _conceptGraph;
+
   String _getPrimaryConcept(QuestionData q) {
     // Use primaryConcept if available, fallback to coreConcept, then topic
     if (q.primaryConcept.isNotEmpty) return q.primaryConcept;
@@ -116,6 +126,13 @@ class _QuestionScreenState extends State<QuestionScreen>
     );
     _slideController.forward();
     _startTimer();
+    
+    // Initialize RescueSystem
+    _conceptGraph = ConceptGraph();
+    _rescueSystem = RescueSystem(
+      allQuestions: widget.questions,
+      conceptGraph: _conceptGraph,
+    );
   }
 
   @override
@@ -232,6 +249,13 @@ class _QuestionScreenState extends State<QuestionScreen>
         _autoHighlightRelevant();
       }
     });
+
+    // If in rescue mode, notify about answer
+    if (_isRescueMode) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _onRescueAnswered(isCorrect);
+      });
+    }
   }
 
   void _nextQuestion() {
@@ -244,6 +268,175 @@ class _QuestionScreenState extends State<QuestionScreen>
     if (_currentIndex > 0) {
       _navigateToQuestion(_currentIndex - 1);
     }
+  }
+
+  // Smart Rescue Flow
+  void _startRescueFlow() {
+    final currentQ = _isRescueMode ? _originalQuestion! : _currentQuestion;
+    final rescuePath = _rescueSystem.getRescuePath(currentQ);
+    
+    if (rescuePath.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No rescue questions available for this topic.')),
+      );
+      return;
+    }
+
+    setState(() {
+      _isRescueMode = true;
+      _originalQuestion = _isRescueMode ? _originalQuestion : currentQ;
+      _rescuePath = rescuePath;
+      _rescueIndex = 0;
+      _selectedOption = null;
+      _showAnswer = false;
+      _highlightedIds.clear();
+    });
+
+    _showRescueDialog(rescuePath.first);
+  }
+
+  void _showRescueDialog(RescueQuestion rescue) {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.flutter_dash, color: Colors.purple.shade600),
+            const SizedBox(width: 8),
+            const Text('Let\'s build the foundation'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('You got the previous question wrong. Let\'s try a simpler one first:'),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.purple.shade50,
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    rescue.question.text,
+                    style: const TextStyle(fontWeight: FontWeight.w500),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Reason: ${rescue.reason}',
+                    style: TextStyle(fontSize: 12, color: Colors.grey.shade600),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+            },
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              _loadRescueQuestion(rescue);
+            },
+            child: const Text('Try This Question'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _loadRescueQuestion(RescueQuestion rescue) {
+    _slideController.reset();
+    setState(() {
+      _currentIndex = widget.questions.indexOf(rescue.question);
+      if (_currentIndex == -1) {
+        // Question not in list - add temporarily
+        widget.questions.add(rescue.question);
+        _currentIndex = widget.questions.length - 1;
+      }
+      _selectedOption = null;
+      _showAnswer = false;
+      _highlightedIds.clear();
+    });
+    _slideController.forward();
+  }
+
+  void _onRescueAnswered(bool wasCorrect) {
+    if (wasCorrect) {
+      if (_rescueIndex < _rescuePath.length - 1) {
+        // More rescue questions to go
+        setState(() {
+          _rescueIndex++;
+          _selectedOption = null;
+          _showAnswer = false;
+          _highlightedIds.clear();
+        });
+        _showRescueDialog(_rescuePath[_rescueIndex]);
+      } else {
+        // All rescue questions done - show completion
+        _showRescueCompleteDialog();
+      }
+    } else {
+      // Still wrong - retry same rescue or show try again
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Keep trying! Review the explanation and try again.')),
+      );
+    }
+  }
+
+  void _showRescueCompleteDialog() {
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: Row(
+          children: [
+            Icon(Icons.celebration, color: Colors.amber.shade600),
+            const SizedBox(width: 8),
+            const Text('Great progress!'),
+          ],
+        ),
+        content: const Text(
+          'You\'ve completed the rescue questions. Now let\'s retry the original question with your refreshed understanding.',
+        ),
+        actions: [
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(ctx);
+              _returnToOriginalQuestion();
+            },
+            child: const Text('Retry Original Question'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _returnToOriginalQuestion() {
+    _slideController.reset();
+    final originalIndex = widget.questions.indexOf(_originalQuestion!);
+    setState(() {
+      _isRescueMode = false;
+      _currentIndex = originalIndex >= 0 ? originalIndex : 0;
+      _selectedOption = null;
+      _showAnswer = false;
+      _highlightedIds.clear();
+      _rescuePath = [];
+      _rescueIndex = 0;
+    });
+    _slideController.forward();
   }
 
   void _navigateToQuestion(int index) {
@@ -819,6 +1012,23 @@ class _QuestionScreenState extends State<QuestionScreen>
                 ),
               ),
             const SizedBox(height: 6),
+          ],
+          // Smart Rescue - only in Learner mode for wrong answers
+          if (!wasCorrect && _allowsHints) ...[
+            const SizedBox(height: 8),
+            SizedBox(
+              width: double.infinity,
+              child: FilledButton.tonalIcon(
+                onPressed: _startRescueFlow,
+                icon: const Icon(Icons.flutter_dash, size: 16),
+                label: const Text('Smart Rescue: Build the foundation'),
+                style: FilledButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  backgroundColor: Colors.purple.shade100,
+                  foregroundColor: Colors.purple.shade800,
+                ),
+              ),
+            ),
           ],
           if (_currentIndex < widget.questions.length - 1)
             SizedBox(

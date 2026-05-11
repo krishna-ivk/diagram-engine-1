@@ -1,0 +1,293 @@
+# NCERT Class 9 Mathematics - Concept Mapping
+# Maps NCERT chapters to concepts WITHOUT copying textbook content
+
+class_9_chapters:
+  chapter_1_number_system:
+    ncert_chapter: "Number Systems"
+    ncert_book: "Mathematics - Class 9"
+    concepts_mapped:
+      - number_systems
+      - irrational_numbers
+      - real_numbers
+      - number_line_expanded
+    prerequisite_concepts: [rational_numbers_advanced]
+    learning_outcomes:
+      - "Understand different number systems"
+      - "Work with irrational numbers"
+      - "Apply real number properties"
+    diagram_requirements: true
+    jee_relevance: medium
+    
+  chapter_2_polynomials:
+    ncert_chapter: "Polynomials"
+    ncert_book: "Mathematics - Class 9"
+    concepts_mapped:
+      - polynomial_basics
+      - polynomial_operations
+      - factorization_polynomials
+      - remainder_theorem
+    prerequisite_concepts: [algebraic_identities, factorization_methods]
+    learning_outcomes:
+      - "Understand polynomial concepts"
+      - "Perform polynomial operations"
+      - "Apply factorization techniques"
+    diagram_requirements: false
+    jee_relevance: high
+    
+  chapter_3_coordinate_geometry:
+    ncert_chapter: "Coordinate Geometry"
+    ncert_book: "Mathematics - Class 9"
+    concepts_mapped:
+      - cartesian_system
+      - plotting_points
+      - distance_formula
+      - section_formula
+    prerequisite_concepts: [coordinate_plotting, graph_basics]
+    learning_outcomes:
+      - "Master Cartesian coordinate system"
+      - "Calculate distances between points"
+      - "Find points dividing line segments"
+    diagram_requirements: true
+    jee_relevance: high
+    
+  chapter_4_linear_equations_two_variables:
+    ncert_chapter: "Linear Equations in Two Variables"
+    ncert_book: "Mathematics - Class 9"
+    concepts_mapped:
+      - linear_equations_two_variables
+      - graph_linear_equations
+      - simultaneous_equations
+    prerequisite_concepts: [linear_equations_advanced, coordinate_plotting]
+    learning_outcomes:
+      - "Solve linear equations in two variables"
+      - "Graph linear equations"
+      - "Understand simultaneous equations"
+    diagram_requirements: true
+    jee_relevance: high
+    
+  chapter_5_introduction_to_euclid_geometry:
+    ncert_chapter: "Introduction to Euclid's Geometry"
+    ncert_book: "Mathematics - Class 9"
+    concepts_mapped:
+      - euclid_geometry
+      - geometric_axioms
+      - geometric_postulates
+    prerequisite_concepts: [triangle_basics, quadrilateral_properties]
+    learning_outcomes:
+      - "Understand Euclid's geometric system"
+      - "Apply geometric axioms and postulates"
+    diagram_requirements: true
+    jee_relevance: medium
+    
+  chapter_6_lines_and_angles:
+    ncert_chapter: "Lines and Angles"
+    ncert_book: "Mathematics - Class 9"
+    concepts_mapped:
+      - angle_properties_advanced
+      - parallel_lines
+      - transversal_angles
+      - angle_sum_polygon
+    prerequisite_concepts: [basic_angle, angle_types, line_properties]
+    learning_outcomes:
+      - "Master angle properties"
+      - "Understand parallel lines and transversals"
+      - "Apply angle sum properties"
+    diagram_requirements: true
+    jee_relevance: high
+    
+  chapter_7_triangles:
+    ncert_chapter: "Triangles"
+    ncert_book: "Mathematics - Class 9"
+    concepts_mapped:
+      - triangle_congruence_advanced
+      - triangle_similarity
+      - triangle_inequalities
+      - pythagorean_theorem
+    prerequisite_concepts: [triangle_congruence, triangle_angle_sum]
+    learning_outcomes:
+      - "Master triangle congruence and similarity"
+      - "Apply triangle inequalities"
+      - "Use Pythagorean theorem"
+    diagram_requirements: true
+    jee_relevance: high
+    
+  chapter_8_quadrilaterals:
+    ncert_chapter: "Quadrilaterals"
+    ncert_book: "Mathematics - Class 9"
+    concepts_mapped:
+      - quadrilateral_properties_advanced
+      - parallelogram_properties
+      - special_quadrilaterals
+      - mid_point_theorem
+    prerequisite_concepts: [quadrilateral_basics, triangle_congruence]
+    learning_outcomes:
+      - "Master quadrilateral properties"
+      - "Understand parallelogram properties"
+      - "Apply mid-point theorem"
+    diagram_requirements: true
+    jee_relevance: high
+    
+  chapter_9_area_parallelograms_triangles:
+    ncert_chapter: "Areas of Parallelograms and Triangles"
+    ncert_book: "Mathematics - Class 9"
+    concepts_mapped:
+      - area_parallelograms
+      - area_triangles_advanced
+      - area_same_base_same_height
+    prerequisite_concepts: [triangle_area, parallelogram_properties]
+    learning_outcomes:
+      - "Calculate areas of parallelograms and triangles"
+      - "Understand area relationships"
+      - "Apply area theorems"
+    diagram_requirements: true
+    jee_relevance: high
+    
+  chapter_10_circles:
+    ncert_chapter: "Circles"
+    ncert_book: "Mathematics - Class 9"
+    concepts_mapped:
+      - circle_properties
+      - circle_theorems
+      - cyclic_quadrilaterals
+      - tangents_circles
+    prerequisite_concepts: [circle_basics, triangle_properties_advanced]
+    learning_outcomes:
+      - "Master circle properties and theorems"
+      - "Understand cyclic quadrilaterals"
+      - "Apply tangent properties"
+    diagram_requirements: true
+    jee_relevance: high
+    
+  chapter_11_constructions:
+    ncert_chapter: "Constructions"
+    ncert_book: "Mathematics - Class 9"
+    concepts_mapped:
+      - geometric_constructions_advanced
+      - triangle_constructions
+      - circle_constructions
+    prerequisite_concepts: [compass_constructions, quadrilateral_construction]
+    learning_outcomes:
+      - "Master geometric constructions"
+      - "Construct triangles with given conditions"
+      - "Construct circles and tangents"
+    diagram_requirements: true
+    jee_relevance: low
+    
+  chapter_12_heron_formula:
+    ncert_chapter: "Heron's Formula"
+    ncert_book: "Mathematics - Class 9"
+    concepts_mapped:
+      - heron_formula
+      - area_applications
+    prerequisite_concepts: [area_triangles_advanced, square_roots]
+    learning_outcomes:
+      - "Apply Heron's formula"
+      - "Solve area application problems"
+    diagram_requirements: true
+    jee_relevance: medium
+    
+  chapter_13_surface_area_volumes:
+    ncert_chapter: "Surface Areas and Volumes"
+    ncert_book: "Mathematics - Class 9"
+    concepts_mapped:
+      - surface_area_3d
+      - volume_3d
+      - composite_solids
+    prerequisite_concepts: [volume_surface_area, 3d_shapes_advanced]
+    learning_outcomes:
+      - "Calculate surface areas and volumes"
+      - "Work with composite solids"
+      - "Apply 3D geometry concepts"
+    diagram_requirements: true
+    jee_relevance: medium
+    
+  chapter_14_statistics:
+    ncert_chapter: "Statistics"
+    ncert_book: "Mathematics - Class 9"
+    concepts_mapped:
+      - statistics_basics
+      - data_organization_advanced
+      - graphical_representation_advanced
+      - measures_central_tendency
+    prerequisite_concepts: [data_organization, graphical_representation]
+    learning_outcomes:
+      - "Organize and analyze statistical data"
+      - "Create advanced graphical representations"
+      - "Calculate measures of central tendency"
+    diagram_requirements: true
+    jee_relevance: low
+    
+  chapter_15_probability:
+    ncert_chapter: "Probability"
+    ncert_book: "Mathematics - Class 9"
+    concepts_mapped:
+      - probability_theory
+      - experimental_probability
+      - theoretical_probability
+    prerequisite_concepts: [probability_basics]
+    learning_outcomes:
+      - "Understand probability theory"
+      - "Calculate experimental and theoretical probability"
+    diagram_requirements: false
+    jee_relevance: low
+
+# Critical JEE foundation concepts from Class 9:
+jee_foundation_concepts:
+  primary_concepts:
+    - cartesian_system              # Chapter 3 - Essential for coordinate geometry
+    - distance_formula              # Chapter 3 - JEE staple
+    - section_formula               # Chapter 3 - Important for JEE
+    - triangle_similarity           # Chapter 7 - Foundation for trigonometry
+    - pythagorean_theorem           # Chapter 7 - Used throughout JEE
+    - circle_properties            # Chapter 10 - Foundation for trigonometry
+    - circle_theorems               # Chapter 10 - Important for JEE geometry
+    - area_triangles_advanced       # Chapter 9 - Used in coordinate geometry
+  
+  algebra_foundation:
+    - polynomial_basics             # Chapter 2 - Foundation for advanced algebra
+    - remainder_theorem             # Chapter 2 - Important for JEE
+    - linear_equations_two_variables # Chapter 4 - Used in coordinate geometry
+
+# Rescue ladder templates for Class 9 concepts:
+rescue_ladder_templates:
+  coordinate_geometry_progression:
+    foundation: "plotting_points"           # Class 8 foundation
+    intermediate: "distance_formula"         # Class 9, Chapter 3
+    advanced: "section_formula"              # Class 9, Chapter 3
+    jee_level: "coordinate_geometry_area"    # Class 10-11 concept
+  
+  triangle_progression:
+    foundation: "triangle_basics"            # Class 7 foundation
+    intermediate: "triangle_congruence"      # Class 7-8 concept
+    advanced: "triangle_similarity"          # Class 9, Chapter 7
+    jee_level: "advanced_triangle_geometry" # Class 11-12 concept
+  
+  circle_progression:
+    foundation: "circle_basics"             # Class 8 foundation
+    intermediate: "circle_properties"        # Class 9, Chapter 10
+    advanced: "circle_theorems"              # Class 9, Chapter 10
+    jee_level: "advanced_circle_geometry"   # Class 11-12 concept
+  
+  polynomial_progression:
+    foundation: "algebraic_expressions"     # Class 7-8 foundation
+    intermediate: "polynomial_basics"         # Class 9, Chapter 2
+    advanced: "remainder_theorem"            # Class 9, Chapter 2
+    jee_level: "polynomial_equations"        # Class 10-11 concept
+
+# Content generation priorities for JEE preparation:
+content_generation_priorities:
+  highest_priority:
+    - cartesian_system and related concepts
+    - triangle similarity and Pythagorean theorem
+    - circle properties and theorems
+    - distance and section formulas
+  
+  high_priority:
+    - polynomial concepts and remainder theorem
+    - area formulas and applications
+    - linear equations in two variables
+  
+  medium_priority:
+    - Statistics and probability (less JEE relevant)
+    - Constructions (practical but less theoretical)
+    - Surface areas and volumes (moderate JEE relevance)

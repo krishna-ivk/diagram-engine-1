@@ -1,0 +1,70 @@
+{
+  "question_id": "jee_math_regular_polygon_2023_session_1_Q12",
+  "source_type": "jee_previous_paper",
+  "source_metadata": {
+    "source_year": 2023,
+    "source_session": "session_1",
+    "source_paper": "paper_1",
+    "source_shift": "shift_1",
+    "question_number": "Q12"
+  },
+  "subject": "Mathematics",
+  "chapter": "Geometry",
+  "topic": "regular polygon",
+  "primary_concept": "regular_polygon",
+  "prerequisites": [
+    "polygon_vertices"
+  ],
+  "class_level": "Class 11-12",
+  "bridge_level": "jee",
+  "difficulty": "medium",
+  "expected_time_seconds": 120,
+  "question_text": "A regular octagon is formed by joining the midpoints of the sides of a square of side length 8 cm. Find the area of the octagon.",
+  "question_type": "multiple_choice",
+  "correct_answer": "D",
+  "solution_steps": [
+    {
+      "step_number": 1,
+      "description": "The octagon area = square area - 4 corner triangles = 64 - 4\u00d78 = 32 cm\u00b2",
+      "calculation": ""
+    }
+  ],
+  "rescue_question_ids": [],
+  "diagram_required": false,
+  "review_status": "ai_generated",
+  "review_history": [
+    {
+      "status": "ai_generated",
+      "timestamp": "2026-05-11T13:09:59.131120",
+      "reviewer": "ai_importer",
+      "comments": "Auto-imported from JEE source"
+    }
+  ],
+  "options": [
+    {
+      "label": "A",
+      "text": "32\u221a2 cm\u00b2"
+    },
+    {
+      "label": "B",
+      "text": "64 cm\u00b2"
+    },
+    {
+      "label": "C",
+      "text": "32 cm\u00b2"
+    },
+    {
+      "label": "D",
+      "text": "32(2-\u221a2) cm\u00b2"
+    }
+  ],
+  "why_wrong_explanations": {
+    "A": "This option is incorrect. 32\u221a2 cm\u00b2 is not the right answer based on the given conditions.",
+    "B": "This option is incorrect. 64 cm\u00b2 is not the right answer based on the given conditions.",
+    "C": "This option is incorrect. 32 cm\u00b2 is not the right answer based on the given conditions."
+  },
+  "learning_objectives": [
+    "Understand Properties of regular polygons with equal sides and angles"
+  ],
+  "common_mistakes": []
+}
