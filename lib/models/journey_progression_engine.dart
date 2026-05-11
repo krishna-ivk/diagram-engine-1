@@ -1,9 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
-import 'question_attempt.dart';
-import 'journey_state.dart';
-import 'foundation_journey.dart';
+import '../models/question_data.dart';
+import '../models/journey_state.dart';
+import '../models/foundation_journey.dart';
+import '../models/question_attempt.dart';
 
 class JourneyProgressionEngine {
   final Map<String, FoundationJourney> _journeyCache = {};

@@ -1,9 +1,5 @@
-import 'package:json_annotation/json_annotation.dart';
 import 'question_attempt.dart';
 
-part 'journey_state.g.dart';
-
-@JsonSerializable()
 class StudentJourneyState {
   final String journeyId;
   final String studentId;
@@ -26,10 +22,60 @@ class StudentJourneyState {
   }) : levelStates = levelStates ?? {},
        attempts = attempts ?? [];
 
-  factory StudentJourneyState.fromJson(Map<String, dynamic> json) =>
-      _$StudentJourneyStateFromJson(json);
+  factory StudentJourneyState.fromJson(Map<String, dynamic> json) {
+    return StudentJourneyState(
+      journeyId: json['journeyId'] as String,
+      studentId: json['studentId'] as String,
+      currentLevelIndex: json['currentLevelIndex'] as int? ?? 0,
+      levelStates: (json['levelStates'] as Map<String, dynamic>?)?.map(
+        (key, value) => MapEntry(
+          key: int.parse(key),
+          value: _parseLevelState(value as String),
+        ),
+      ) ?? {},
+      attempts: (json['attempts'] as List<dynamic>?)
+          ?.map((e) => QuestionAttempt.fromJson(e as Map<String, dynamic>))
+          .toList() ?? [],
+      isCompleted: json['isCompleted'] as bool? ?? false,
+      completionDate: json['completionDate'] != null 
+          ? DateTime.parse(json['completionDate'] as String) 
+          : null,
+      startDate: json['startDate'] != null 
+          ? DateTime.parse(json['startDate'] as String) 
+          : null,
+    );
+  }
 
-  Map<String, dynamic> toJson() => _$StudentJourneyStateToJson(this);
+  Map<String, dynamic> toJson() {
+    return {
+      'journeyId': journeyId,
+      'studentId': studentId,
+      'currentLevelIndex': currentLevelIndex,
+      'levelStates': levelStates.map((key, value) => MapEntry(
+        key: key.toString(),
+        value: value.name,
+      )),
+      'attempts': attempts.map((attempt) => attempt.toJson()).toList(),
+      'isCompleted': isCompleted,
+      'completionDate': completionDate?.toIso8601String(),
+      'startDate': startDate?.toIso8601String(),
+    };
+  }
+
+  static LevelState _parseLevelState(String value) {
+    switch (value) {
+      case 'notStarted':
+        return LevelState.notStarted;
+      case 'inProgress':
+        return LevelState.inProgress;
+      case 'needsPractice':
+        return LevelState.needsPractice;
+      case 'mastered':
+        return LevelState.mastered;
+      default:
+        return LevelState.notStarted;
+    }
+  }
 
   void addAttempt(QuestionAttempt attempt) {
     attempts.add(attempt);
