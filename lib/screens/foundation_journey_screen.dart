@@ -10,11 +10,13 @@ import '../models/student_profile.dart';
 import 'question_screen.dart';
 
 class FoundationJourneyScreen extends StatefulWidget {
+  final String journeyId;
   final PerformanceTracker tracker;
   final PremiumState premiumState;
 
   const FoundationJourneyScreen({
     super.key,
+    required this.journeyId,
     required this.tracker,
     required this.premiumState,
   });
@@ -36,7 +38,7 @@ class _FoundationJourneyScreenState extends State<FoundationJourneyScreen> {
   void initState() {
     super.initState();
     _engine = JourneyProgressionEngine();
-    _journeyFuture = _engine.loadJourney('geometry_foundation_journey');
+    _journeyFuture = _engine.loadJourney(widget.journeyId);
     
     // Create mock student profile for now
     _studentProfile = StudentProfile(
@@ -49,7 +51,7 @@ class _FoundationJourneyScreenState extends State<FoundationJourneyScreen> {
     
     _studentState = _engine.getStudentState(
       _studentProfile.studentId, 
-      'geometry_foundation_journey'
+      widget.journeyId
     );
   }
 
@@ -113,7 +115,7 @@ class _FoundationJourneyScreenState extends State<FoundationJourneyScreen> {
             FilledButton(
               onPressed: () {
                 setState(() {
-                  _journeyFuture = _engine.loadJourney('geometry_foundation_journey');
+                  _journeyFuture = _engine.loadJourney(widget.journeyId);
                 });
               },
               child: const Text('Try Again'),
