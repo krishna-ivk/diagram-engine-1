@@ -4,12 +4,15 @@ import 'package:flutter/material.dart';
 
 import '../models/diagram_element.dart';
 import '../models/performance_tracker.dart';
+import '../models/question_data.dart';
 import '../models/practice_mode.dart';
 import '../models/premium_state.dart';
 import '../models/question_data.dart';
 import '../models/revision_manager.dart';
 import '../models/rescue_system.dart';
 import '../models/concept_graph.dart';
+import '../models/exam_diagnosis.dart';
+import '../screens/post_exam_diagnosis_screen.dart';
 import '../services/content_loader.dart';
 import '../widgets/diagram_canvas.dart';
 import '../widgets/drawing_overlay.dart';
@@ -295,7 +298,63 @@ class _QuestionScreenState extends State<QuestionScreen>
   void _nextQuestion() {
     if (_currentIndex < _sessionQuestions.length - 1) {
       _navigateToQuestion(_currentIndex + 1);
+    } else {
+      // Quiz complete - show diagnosis for Mock Exam
+      _showExamDiagnosis();
     }
+  }
+
+  void _showExamDiagnosis() {
+    final diagnosis = DiagnosisEngine.analyze(
+      attempts: widget.tracker.attempts.toList(),
+      questions: _sessionQuestions,
+    );
+    
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => PostExamDiagnosisScreen(
+          diagnosis: diagnosis,
+          questions: _sessionQuestions,
+          tracker: widget.tracker,
+          onStartRepair: () {
+            // Start repair session in Learner mode
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (_) => QuestionScreen(
+                  questions: _getRepairQuestions(diagnosis),
+                  tracker: widget.tracker,
+                  premiumState: widget.premiumState,
+                  revisionManager: widget.revisionManager,
+                  practiceMode: PracticeMode.learner,
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  List<QuestionData> _getRepairQuestions(ExamDiagnosis diagnosis) {
+    final repairQuestions = <QuestionData>[];
+    for (final rec in diagnosis.rescueRecommendations) {
+      repairQuestions.addAll(rec.recommendedQuestions);
+    }
+    // If no recommendations, use weak concept questions
+    if (repairQuestions.isEmpty) {
+      final weakConcepts = diagnosis.weakConcepts.map((c) => c.conceptId).toSet();
+      for (final q in _sessionQuestions) {
+        if (weakConcepts.contains(q.primaryConcept) || 
+            weakConcepts.contains(q.coreConcept)) {
+          if (!repairQuestions.any((r) => r.id == q.id)) {
+            repairQuestions.add(q);
+          }
+        }
+      }
+    }
+    return repairQuestions.isNotEmpty ? repairQuestions : _sessionQuestions;
   }
 
   void _prevQuestion() {
