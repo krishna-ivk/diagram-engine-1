@@ -77,20 +77,20 @@
     "primary_concept": {
       "type": "string",
       "description": "Main concept being tested",
-      "pattern": "^[a-z_]+$"
+      "pattern": "^[a-z0-9_]+$"
     },
     "prerequisites": {
       "type": "array",
       "items": {
         "type": "string",
-        "pattern": "^[a-z_]+$"
+        "pattern": "^[a-z0-9_]+$"
       },
       "minItems": 0,
       "description": "Required prerequisite concepts"
     },
     "class_level": {
       "type": "string",
-      "enum": ["Class 7", "Class 8", "Class 9", "Class 10", "Class 11", "Class 12"],
+      "enum": ["Class 7", "Class 8", "Class 9", "Class 10", "Class 11", "Class 12", "Class 9-10", "Class 10-11", "Class 11-12"],
       "description": "NCERT class level alignment"
     },
     "bridge_level": {
@@ -233,7 +233,7 @@
               },
               "type": {
                 "type": "string",
-                "enum": ["point", "line", "circle", "polygon", "angle", "label"]
+                "enum": ["point", "line", "circle", "polygon", "angle", "label", "triangle"]
               },
               "properties": {
                 "type": "object",

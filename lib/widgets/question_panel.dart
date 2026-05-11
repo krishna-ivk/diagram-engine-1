@@ -252,8 +252,7 @@ class _QuestionPanelState extends State<QuestionPanel> {
           ...List.generate(q.options.length, (i) {
             final isSelected = widget.selectedIndex == i;
             final isCorrect = widget.showAnswer && i == q.correctIndex;
-            final isWrong =
-                widget.showAnswer && isSelected && !isCorrect;
+            final isWrong = widget.showAnswer && isSelected && !isCorrect;
 
             return Padding(
               padding: const EdgeInsets.only(bottom: 8),
@@ -264,9 +263,8 @@ class _QuestionPanelState extends State<QuestionPanel> {
                 isCorrect: isCorrect,
                 isWrong: isWrong,
                 showAnswer: widget.showAnswer,
-                onTap: widget.showAnswer
-                    ? null
-                    : () => widget.onOptionSelected(i),
+                onTap:
+                    widget.showAnswer ? null : () => widget.onOptionSelected(i),
                 index: i,
               ),
             );
@@ -289,20 +287,22 @@ class _QuestionPanelState extends State<QuestionPanel> {
             const SizedBox(height: 8),
             Row(
               children: [
-                _buildConfidenceButton(Confidence.low, 'Low', Colors.red.shade300),
+                _buildConfidenceButton(
+                    Confidence.low, 'Low', Colors.red.shade300),
                 const SizedBox(width: 8),
-                _buildConfidenceButton(Confidence.medium, 'Medium', Colors.orange.shade300),
+                _buildConfidenceButton(
+                    Confidence.medium, 'Medium', Colors.orange.shade300),
                 const SizedBox(width: 8),
-                _buildConfidenceButton(Confidence.high, 'High', Colors.green.shade300),
+                _buildConfidenceButton(
+                    Confidence.high, 'High', Colors.green.shade300),
               ],
             ),
             const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
               child: FilledButton.icon(
-                onPressed: widget.confidence != null
-                    ? widget.onCheckAnswer
-                    : null,
+                onPressed:
+                    widget.confidence != null ? widget.onCheckAnswer : null,
                 icon: const Icon(Icons.check_circle_outline),
                 label: const Text('Check Answer'),
               ),
@@ -376,7 +376,8 @@ class _QuestionPanelState extends State<QuestionPanel> {
                     // Why wrong
                     if (widget.selectedIndex != null &&
                         q.whyWrongExplanations != null &&
-                        q.whyWrongExplanations!.containsKey(widget.selectedIndex)) ...[
+                        q.whyWrongExplanations!
+                            .containsKey(widget.selectedIndex)) ...[
                       Container(
                         width: double.infinity,
                         padding: const EdgeInsets.all(12),
@@ -463,12 +464,13 @@ class _QuestionPanelState extends State<QuestionPanel> {
                           Padding(
                             padding: const EdgeInsets.all(12),
                             child: Column(
-                              children: List.generate(q.solutionSteps.length,
-                                  (i) {
+                              children:
+                                  List.generate(q.solutionSteps.length, (i) {
                                 return Padding(
                                   padding: const EdgeInsets.only(bottom: 8),
                                   child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Container(
                                         width: 24,
@@ -618,8 +620,7 @@ class _ExplanationCardState extends State<_ExplanationCard>
     for (final line in lines) {
       if (line.trim().isEmpty) continue;
       final isStep = line.trimLeft().startsWith('Step ');
-      final isKey =
-          line.trimLeft().startsWith('Key') ||
+      final isKey = line.trimLeft().startsWith('Key') ||
           line.trimLeft().startsWith('Answer:') ||
           line.trimLeft().startsWith('Verification:');
       if (isStep) {
@@ -750,7 +751,7 @@ class _OptionTile extends StatefulWidget {
 }
 
 class _OptionTileState extends State<_OptionTile>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   late final AnimationController _controller;
   late final AnimationController _bounceController;
   late final Animation<double> _slideAnimation;
@@ -779,7 +780,8 @@ class _OptionTileState extends State<_OptionTile>
       TweenSequenceItem(tween: Tween(begin: 12.0, end: -8.0), weight: 1),
       TweenSequenceItem(tween: Tween(begin: -8.0, end: 4.0), weight: 1),
       TweenSequenceItem(tween: Tween(begin: 4.0, end: 0.0), weight: 1),
-    ]).animate(CurvedAnimation(parent: _bounceController, curve: Curves.easeOut));
+    ]).animate(
+        CurvedAnimation(parent: _bounceController, curve: Curves.easeOut));
 
     Future.delayed(Duration(milliseconds: 50 * widget.index), () {
       if (mounted) _controller.forward();
@@ -830,9 +832,10 @@ class _OptionTileState extends State<_OptionTile>
     return AnimatedBuilder(
       animation: Listenable.merge([_controller, _bounceController]),
       builder: (context, child) {
-        final bounceOffset = (widget.isCorrect || widget.isWrong) && widget.showAnswer
-            ? _bounceAnimation.value
-            : 0.0;
+        final bounceOffset =
+            (widget.isCorrect || widget.isWrong) && widget.showAnswer
+                ? _bounceAnimation.value
+                : 0.0;
         return Transform.translate(
           offset: Offset(0, _slideAnimation.value + bounceOffset),
           child: Opacity(
@@ -879,8 +882,9 @@ class _OptionTileState extends State<_OptionTile>
                     widget.text,
                     style: TextStyle(
                       fontSize: 15,
-                      fontWeight:
-                          widget.isSelected ? FontWeight.w600 : FontWeight.normal,
+                      fontWeight: widget.isSelected
+                          ? FontWeight.w600
+                          : FontWeight.normal,
                     ),
                   ),
                 ),

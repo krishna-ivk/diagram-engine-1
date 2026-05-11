@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
-import '../models/question_data.dart';
 import '../models/journey_state.dart';
 import '../models/foundation_journey.dart';
 import '../models/question_attempt.dart';
@@ -17,9 +16,8 @@ class JourneyProgressionEngine {
     }
 
     try {
-      final String jsonString = await rootBundle.loadString(
-        'content/journeys/${journeyId}.json'
-      );
+      final String jsonString =
+          await rootBundle.loadString('content/journeys/$journeyId.json');
       final Map<String, dynamic> json = jsonDecode(jsonString);
       final journey = FoundationJourney.fromJson(json);
       _journeyCache[journeyId] = journey;
@@ -31,11 +29,9 @@ class JourneyProgressionEngine {
 
   /// Get or create student state for a journey
   StudentJourneyState getStudentState(String studentId, String journeyId) {
-    final key = '${studentId}_${journeyId}';
-    return _studentStates.putIfAbsent(
-      key, 
-      () => StudentJourneyState(journeyId: journeyId, studentId: studentId)
-    );
+    final key = '${studentId}_$journeyId';
+    return _studentStates.putIfAbsent(key,
+        () => StudentJourneyState(journeyId: journeyId, studentId: studentId));
   }
 
   /// Calculate next step based on current state and latest attempt
@@ -45,17 +41,18 @@ class JourneyProgressionEngine {
     required FoundationJourney journey,
   }) {
     final currentLevel = journey.levels[state.currentLevelIndex];
-    
+
     // Apply progression rules
     final rule = _applyProgressionRule(currentLevel, latestAttempt, state);
-    
+
     switch (rule.action) {
       case ProgressionAction.unlockNext:
         if (state.currentLevelIndex < journey.levels.length - 1) {
           return JourneyStep(
             levelIndex: state.currentLevelIndex + 1,
             action: JourneyAction.proceedToNext,
-            message: 'Great! Moving to ${journey.levels[state.currentLevelIndex + 1].title}',
+            message:
+                'Great! Moving to ${journey.levels[state.currentLevelIndex + 1].title}',
           );
         }
         return JourneyStep(
@@ -63,20 +60,21 @@ class JourneyProgressionEngine {
           action: JourneyAction.journeyComplete,
           message: 'Congratulations! You completed the Foundation Journey!',
         );
-        
+
       case ProgressionAction.showMicroLesson:
         return JourneyStep(
           levelIndex: state.currentLevelIndex,
           action: JourneyAction.showMicroLesson,
           message: 'Let\'s review the key concepts before trying again',
         );
-        
+
       case ProgressionAction.goLevelDown:
         if (state.currentLevelIndex > 0) {
           return JourneyStep(
             levelIndex: state.currentLevelIndex - 1,
             action: JourneyAction.goToPrevious,
-            message: 'Let\'s strengthen your foundation with ${journey.levels[state.currentLevelIndex - 1].title}',
+            message:
+                'Let\'s strengthen your foundation with ${journey.levels[state.currentLevelIndex - 1].title}',
           );
         }
         return JourneyStep(
@@ -84,14 +82,14 @@ class JourneyProgressionEngine {
           action: JourneyAction.repeatCurrent,
           message: 'Let\'s try this level again with more practice',
         );
-        
+
       case ProgressionAction.repeatSimilar:
         return JourneyStep(
           levelIndex: state.currentLevelIndex,
           action: JourneyAction.repeatSimilar,
           message: 'Good attempt! Let\'s try a similar question',
         );
-        
+
       case ProgressionAction.jumpForward:
         // Optional jump forward if student is excelling
         if (state.currentLevelIndex < journey.levels.length - 2) {
@@ -101,13 +99,20 @@ class JourneyProgressionEngine {
             message: 'Excellent! You\'re ready for a bigger challenge!',
           );
         }
-        // Fall through to next level if jump not possible
+        if (state.currentLevelIndex < journey.levels.length - 1) {
+          return JourneyStep(
+            levelIndex: state.currentLevelIndex + 1,
+            action: JourneyAction.proceedToNext,
+            message:
+                'Great! Moving to ${journey.levels[state.currentLevelIndex + 1].title}',
+          );
+        }
         return JourneyStep(
-          levelIndex: state.currentLevelIndex + 1,
-          action: JourneyAction.proceedToNext,
-          message: 'Great! Moving to ${journey.levels[state.currentLevelIndex + 1].title}',
+          levelIndex: state.currentLevelIndex,
+          action: JourneyAction.journeyComplete,
+          message: 'Congratulations! You completed the Foundation Journey!',
         );
-        
+
       case ProgressionAction.stayCurrent:
         return JourneyStep(
           levelIndex: state.currentLevelIndex,
@@ -127,12 +132,17 @@ class JourneyProgressionEngine {
     final confidence = attempt.confidenceLevel;
     final timeSpent = attempt.timeSpentSeconds;
     final expectedTime = currentLevel.expectedTimeSeconds ?? 90;
-    
+
     // Track consecutive correct/incorrect
-    final recentAttempts = state.recentAttemptsForLevel(state.currentLevelIndex);
+    final recentAttempts = [
+      ...state.recentAttemptsForLevel(state.currentLevelIndex)
+    ];
+    if (!recentAttempts.contains(attempt)) {
+      recentAttempts.add(attempt);
+    }
     final consecutiveCorrect = _countConsecutiveCorrect(recentAttempts);
     final consecutiveWrong = _countConsecutiveWrong(recentAttempts);
-    
+
     // Rule 1: Correct twice at current level → unlock next level
     if (isCorrect && consecutiveCorrect >= 2) {
       return ProgressionRule(
@@ -140,7 +150,7 @@ class JourneyProgressionEngine {
         reason: 'Correct twice consecutively',
       );
     }
-    
+
     // Rule 2: Wrong once with low confidence → show micro-lesson
     if (!isCorrect && confidence == ConfidenceLevel.notSure) {
       return ProgressionRule(
@@ -148,7 +158,7 @@ class JourneyProgressionEngine {
         reason: 'Wrong answer with low confidence',
       );
     }
-    
+
     // Rule 3: Wrong twice → go one level down
     if (!isCorrect && consecutiveWrong >= 2) {
       return ProgressionRule(
@@ -156,7 +166,7 @@ class JourneyProgressionEngine {
         reason: 'Wrong twice consecutively',
       );
     }
-    
+
     // Rule 4: Correct but slow → repeat similar question
     if (isCorrect && timeSpent > expectedTime * 1.5) {
       return ProgressionRule(
@@ -164,17 +174,17 @@ class JourneyProgressionEngine {
         reason: 'Correct but slow',
       );
     }
-    
+
     // Rule 5: Correct fast + high confidence → jump forward
-    if (isCorrect && 
-        timeSpent < expectedTime * 0.7 && 
+    if (isCorrect &&
+        timeSpent < expectedTime * 0.7 &&
         confidence == ConfidenceLevel.verySure) {
       return ProgressionRule(
         action: ProgressionAction.jumpForward,
         reason: 'Correct fast with high confidence',
       );
     }
-    
+
     // Default: stay current
     return ProgressionRule(
       action: ProgressionAction.stayCurrent,
@@ -213,25 +223,25 @@ class JourneyProgressionEngine {
     JourneyStep nextStep,
   ) {
     state.addAttempt(attempt);
-    
+
     switch (nextStep.action) {
       case JourneyAction.proceedToNext:
       case JourneyAction.jumpAhead:
         state.currentLevelIndex = nextStep.levelIndex;
         state.levelStates[nextStep.levelIndex] = LevelState.inProgress;
         break;
-        
+
       case JourneyAction.goToPrevious:
         state.currentLevelIndex = nextStep.levelIndex;
         state.levelStates[nextStep.levelIndex] = LevelState.needsPractice;
         break;
-        
+
       case JourneyAction.journeyComplete:
         state.levelStates[state.currentLevelIndex] = LevelState.mastered;
         state.isCompleted = true;
         state.completionDate = DateTime.now();
         break;
-        
+
       case JourneyAction.repeatCurrent:
       case JourneyAction.repeatSimilar:
       case JourneyAction.showMicroLesson:
@@ -256,10 +266,11 @@ class JourneyProgressionEngine {
       final level = journey.levels[i];
       final levelState = state.levelStates[i] ?? LevelState.notStarted;
       final attempts = state.attemptsForLevel(i);
-      
+
       if (levelState == LevelState.mastered) {
         conceptsMastered.add(level.title);
-      } else if (attempts.isNotEmpty && _calculateLevelAccuracy(attempts) < 0.5) {
+      } else if (attempts.isNotEmpty &&
+          _calculateLevelAccuracy(attempts) < 0.5) {
         strugglingAreas.add(level.title);
       }
     }
@@ -281,15 +292,15 @@ class JourneyProgressionEngine {
   ConfidenceTrend _calculateConfidenceTrend(StudentJourneyState state) {
     final attempts = state.allAttempts;
     if (attempts.length < 3) return ConfidenceTrend.insufficientData;
-    
+
     final recent = attempts.skip(attempts.length - 3).toList();
     final older = attempts.skip(attempts.length - 6).take(3).toList();
-    
+
     if (older.isEmpty) return ConfidenceTrend.insufficientData;
-    
+
     final recentAvg = _averageConfidence(recent);
     final olderAvg = _averageConfidence(older);
-    
+
     if (recentAvg > olderAvg + 0.2) return ConfidenceTrend.improving;
     if (recentAvg < olderAvg - 0.2) return ConfidenceTrend.declining;
     return ConfidenceTrend.stable;
@@ -297,7 +308,7 @@ class JourneyProgressionEngine {
 
   double _averageConfidence(List<QuestionAttempt> attempts) {
     if (attempts.isEmpty) return 0.0;
-    
+
     double sum = 0.0;
     for (final attempt in attempts) {
       switch (attempt.confidenceLevel) {
@@ -347,13 +358,6 @@ enum JourneyAction {
   jumpAhead,
   journeyComplete,
   stayCurrent,
-}
-
-enum LevelState {
-  notStarted,
-  inProgress,
-  needsPractice,
-  mastered,
 }
 
 enum ConfidenceTrend {
@@ -408,7 +412,7 @@ class ProgressSummary {
 class JourneyLoadException implements Exception {
   final String message;
   JourneyLoadException(this.message);
-  
+
   @override
   String toString() => 'JourneyLoadException: $message';
 }

@@ -27,7 +27,7 @@ class DiagramCanvas extends StatefulWidget {
 }
 
 class _DiagramCanvasState extends State<DiagramCanvas>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
   final TransformationController _transformController =
       TransformationController();
   late final AnimationController _pulseController;
@@ -179,7 +179,8 @@ class _DiagramCanvasState extends State<DiagramCanvas>
               child: AspectRatio(
                 aspectRatio: widget.diagram.width / widget.diagram.height,
                 child: AnimatedBuilder(
-                  animation: Listenable.merge([_pulseController, _drawController]),
+                  animation:
+                      Listenable.merge([_pulseController, _drawController]),
                   builder: (context, _) {
                     final isDark =
                         Theme.of(context).brightness == Brightness.dark;
@@ -195,8 +196,7 @@ class _DiagramCanvasState extends State<DiagramCanvas>
                         drawProgress: _drawController.value,
                         animateDrawing: true,
                       ),
-                      size: Size(
-                          widget.diagram.width, widget.diagram.height),
+                      size: Size(widget.diagram.width, widget.diagram.height),
                     );
                   },
                 ),

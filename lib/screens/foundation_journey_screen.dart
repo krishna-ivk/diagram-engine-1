@@ -4,10 +4,8 @@ import '../models/premium_state.dart';
 import '../models/foundation_journey.dart';
 import '../models/journey_progression_engine.dart';
 import '../models/journey_state.dart';
-import '../models/question_data.dart';
-import '../models/question_attempt.dart';
 import '../models/student_profile.dart';
-import 'question_screen.dart';
+import 'foundation_journey_question_screen.dart';
 
 class FoundationJourneyScreen extends StatefulWidget {
   final String journeyId;
@@ -22,7 +20,8 @@ class FoundationJourneyScreen extends StatefulWidget {
   });
 
   @override
-  State<FoundationJourneyScreen> createState() => _FoundationJourneyScreenState();
+  State<FoundationJourneyScreen> createState() =>
+      _FoundationJourneyScreenState();
 }
 
 class _FoundationJourneyScreenState extends State<FoundationJourneyScreen> {
@@ -30,16 +29,13 @@ class _FoundationJourneyScreenState extends State<FoundationJourneyScreen> {
   late Future<FoundationJourney> _journeyFuture;
   late StudentJourneyState _studentState;
   late StudentProfile _studentProfile;
-  
-  bool _isLoading = false;
-  String? _errorMessage;
 
   @override
   void initState() {
     super.initState();
     _engine = JourneyProgressionEngine();
     _journeyFuture = _engine.loadJourney(widget.journeyId);
-    
+
     // Create mock student profile for now
     _studentProfile = StudentProfile(
       studentId: 'demo_student',
@@ -48,17 +44,15 @@ class _FoundationJourneyScreenState extends State<FoundationJourneyScreen> {
       targetExam: TargetExam.jeeMain,
       comfortLevel: ComfortLevel.beginner,
     );
-    
-    _studentState = _engine.getStudentState(
-      _studentProfile.studentId, 
-      widget.journeyId
-    );
+
+    _studentState =
+        _engine.getStudentState(_studentProfile.studentId, widget.journeyId);
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Foundation Journey'),
@@ -71,15 +65,15 @@ class _FoundationJourneyScreenState extends State<FoundationJourneyScreen> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           }
-          
+
           if (snapshot.hasError) {
             return _buildErrorState(snapshot.error.toString());
           }
-          
+
           if (!snapshot.hasData) {
             return _buildErrorState('Journey not found');
           }
-          
+
           final journey = snapshot.data!;
           return _buildJourneyContent(journey);
         },
@@ -135,14 +129,14 @@ class _FoundationJourneyScreenState extends State<FoundationJourneyScreen> {
           // Journey Header
           _JourneyHeader(journey: journey),
           const SizedBox(height: 24),
-          
+
           // Progress Overview
           _ProgressOverview(
             journey: journey,
             studentState: _studentState,
           ),
           const SizedBox(height: 24),
-          
+
           // Current Level
           _CurrentLevelSection(
             journey: journey,
@@ -150,7 +144,7 @@ class _FoundationJourneyScreenState extends State<FoundationJourneyScreen> {
             onStartLevel: _startLevel,
           ),
           const SizedBox(height: 24),
-          
+
           // Level Progression
           _LevelProgression(
             journey: journey,
@@ -158,7 +152,7 @@ class _FoundationJourneyScreenState extends State<FoundationJourneyScreen> {
             onLevelTap: _navigateToLevel,
           ),
           const SizedBox(height: 24),
-          
+
           // Journey Info
           _JourneyInfo(journey: journey),
         ],
@@ -167,17 +161,15 @@ class _FoundationJourneyScreenState extends State<FoundationJourneyScreen> {
   }
 
   void _startLevel(int levelIndex) async {
-    setState(() => _isLoading = true);
-    
     try {
       final journey = await _journeyFuture;
       final level = journey.levels[levelIndex];
-      
+
       // Show micro-lesson if available
       if (level.microLesson.title.isNotEmpty) {
         await _showMicroLesson(level.microLesson);
       }
-      
+
       // Navigate to questions for this level
       if (mounted) {
         Navigator.push(
@@ -196,10 +188,11 @@ class _FoundationJourneyScreenState extends State<FoundationJourneyScreen> {
         );
       }
     } catch (e) {
-      setState(() {
-        _errorMessage = e.toString();
-        _isLoading = false;
-      });
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Unable to start level: $e')),
+        );
+      }
     }
   }
 
@@ -231,15 +224,15 @@ class _FoundationJourneyScreenState extends State<FoundationJourneyScreen> {
                   ),
                   const SizedBox(height: 8),
                   ...microLesson.visualHintIds.map((hint) => Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Row(
-                      children: [
-                        Icon(Icons.lightbulb_outline, size: 16),
-                        const SizedBox(width: 8),
-                        Expanded(child: Text(hint)),
-                      ],
-                    ),
-                  )),
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Row(
+                          children: [
+                            Icon(Icons.lightbulb_outline, size: 16),
+                            const SizedBox(width: 8),
+                            Expanded(child: Text(hint)),
+                          ],
+                        ),
+                      )),
                 ],
               ],
             ),
@@ -264,7 +257,7 @@ class _JourneyHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -352,7 +345,7 @@ class _ProgressOverview extends StatelessWidget {
         .where((state) => state == LevelState.mastered)
         .length;
     final progress = completedLevels / journey.levels.length;
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -414,8 +407,9 @@ class _CurrentLevelSection extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final currentLevel = journey.levels[studentState.currentLevelIndex];
-    final levelState = studentState.getLevelState(studentState.currentLevelIndex);
-    
+    final levelState =
+        studentState.getLevelState(studentState.currentLevelIndex);
+
     return Container(
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
@@ -475,8 +469,8 @@ class _CurrentLevelSection extends StatelessWidget {
               onPressed: () => onStartLevel(studentState.currentLevelIndex),
               icon: const Icon(Icons.play_arrow),
               label: Text(
-                levelState == LevelState.notStarted 
-                    ? 'Start Level' 
+                levelState == LevelState.notStarted
+                    ? 'Start Level'
                     : 'Continue Level',
               ),
             ),
@@ -501,7 +495,7 @@ class _LevelProgression extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -516,7 +510,7 @@ class _LevelProgression extends StatelessWidget {
           final state = studentState.getLevelState(index);
           final isCurrent = index == studentState.currentLevelIndex;
           final canAccess = index <= studentState.currentLevelIndex;
-          
+
           return Padding(
             padding: const EdgeInsets.only(bottom: 12),
             child: _LevelCard(
@@ -554,13 +548,13 @@ class _LevelCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return GestureDetector(
       onTap: canAccess ? onTap : null,
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isCurrent 
+          color: isCurrent
               ? theme.colorScheme.primary.withOpacity(0.1)
               : canAccess
                   ? theme.colorScheme.surface
@@ -598,9 +592,10 @@ class _LevelCard extends StatelessWidget {
                   Text(
                     level.title,
                     style: theme.textTheme.titleMedium?.copyWith(
-                      fontWeight: isCurrent ? FontWeight.bold : FontWeight.normal,
-                      color: canAccess 
-                          ? null 
+                      fontWeight:
+                          isCurrent ? FontWeight.bold : FontWeight.normal,
+                      color: canAccess
+                          ? null
                           : theme.colorScheme.onSurface.withOpacity(0.5),
                     ),
                   ),
@@ -660,11 +655,11 @@ class _JourneyInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surfaceVariant.withOpacity(0.3),
+        color: theme.colorScheme.surfaceContainerHighest.withOpacity(0.3),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -697,7 +692,7 @@ class _InfoChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(
@@ -734,10 +729,10 @@ class _LevelStateChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     Color color;
     String label;
-    
+
     switch (state) {
       case LevelState.mastered:
         color = Colors.green;
@@ -756,7 +751,7 @@ class _LevelStateChip extends StatelessWidget {
         label = 'Not Started';
         break;
     }
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       decoration: BoxDecoration(

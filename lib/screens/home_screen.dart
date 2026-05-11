@@ -31,7 +31,7 @@ class _HomeScreenState extends State<HomeScreen> {
       _startFoundationJourney();
       return;
     }
-    
+
     // Combine all questions for now
     final allQuestions = [...mockQuestions, ...algebricaQuestions];
     Navigator.push(
@@ -130,384 +130,380 @@ class _HomeScreenState extends State<HomeScreen> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-              const SizedBox(height: 20),
-              // Theme toggle
-              Align(
-                alignment: Alignment.centerRight,
-                child: ValueListenableBuilder<ThemeMode>(
-                  valueListenable: themeNotifier,
-                  builder: (_, mode, child) {
-                    final isDark = mode == ThemeMode.dark;
-                    return IconButton(
-                      onPressed: () {
-                        themeNotifier.value =
-                            isDark ? ThemeMode.light : ThemeMode.dark;
-                      },
-                      icon: Icon(
-                        isDark ? Icons.light_mode : Icons.dark_mode,
-                        color: isDark
-                            ? Colors.amber.shade400
-                            : Colors.grey.shade700,
-                      ),
-                      tooltip: isDark
-                          ? 'Switch to Light Mode'
-                          : 'Switch to Dark Mode',
-                    );
-                  },
+                const SizedBox(height: 20),
+                // Theme toggle
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: ValueListenableBuilder<ThemeMode>(
+                    valueListenable: themeNotifier,
+                    builder: (_, mode, child) {
+                      final isDark = mode == ThemeMode.dark;
+                      return IconButton(
+                        onPressed: () {
+                          themeNotifier.value =
+                              isDark ? ThemeMode.light : ThemeMode.dark;
+                        },
+                        icon: Icon(
+                          isDark ? Icons.light_mode : Icons.dark_mode,
+                          color: isDark
+                              ? Colors.amber.shade400
+                              : Colors.grey.shade700,
+                        ),
+                        tooltip: isDark
+                            ? 'Switch to Light Mode'
+                            : 'Switch to Dark Mode',
+                      );
+                    },
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Icon(
-                Icons.schema_outlined,
-                size: 48,
-                color: theme.colorScheme.primary,
-              ),
-              const SizedBox(height: 16),
-              Text(
-                'Diagram Engine',
-                style: theme.textTheme.headlineLarge?.copyWith(
-                  fontWeight: FontWeight.bold,
+                const SizedBox(height: 8),
+                Icon(
+                  Icons.schema_outlined,
+                  size: 48,
+                  color: theme.colorScheme.primary,
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Start from Class 7 basics and reach JEE-level thinking step by step',
-                style: theme.textTheme.bodyLarge?.copyWith(
-                  color: Colors.grey.shade600,
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // Foundation Journey HERO (primary CTA for Class 7 students)
-              _FoundationJourneyHero(
-                onStartJourney: _startFoundationJourney,
-              ),
-              const SizedBox(height: 16),
-
-              // Diagram preview (secondary)
-              if (mockQuestions.isNotEmpty) ...[
-                _DiagramPreviewCard(question: mockQuestions.first),
                 const SizedBox(height: 16),
-              ],
+                Text(
+                  'Diagram Engine',
+                  style: theme.textTheme.headlineLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  'Start from Class 7 basics and reach JEE-level thinking step by step',
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: Colors.grey.shade600,
+                  ),
+                ),
+                const SizedBox(height: 24),
 
-              // Feature chips (compact)
-              Wrap(
-                spacing: 6,
-                runSpacing: 6,
-                children: [
-                  _FeatureChip(
-                      icon: Icons.touch_app, label: 'Tap → Insight'),
-                  _FeatureChip(
-                      icon: Icons.assistant, label: 'Guide Me'),
-                  _FeatureChip(
-                      icon: Icons.edit, label: 'Drawing Tools'),
-                  _FeatureChip(
-                      icon: Icons.trending_up, label: 'Performance'),
-                  _FeatureChip(
-                      icon: Icons.auto_awesome, label: 'Smart Hints'),
+                // Foundation Journey HERO (primary CTA for Class 7 students)
+                _FoundationJourneyHero(
+                  onStartJourney: _startFoundationJourney,
+                ),
+                const SizedBox(height: 16),
+
+                // Diagram preview (secondary)
+                if (mockQuestions.isNotEmpty) ...[
+                  _DiagramPreviewCard(question: mockQuestions.first),
+                  const SizedBox(height: 16),
                 ],
-              ),
 
-              const SizedBox(height: 16),
+                // Feature chips (compact)
+                Wrap(
+                  spacing: 6,
+                  runSpacing: 6,
+                  children: [
+                    _FeatureChip(icon: Icons.touch_app, label: 'Tap → Insight'),
+                    _FeatureChip(icon: Icons.assistant, label: 'Guide Me'),
+                    _FeatureChip(icon: Icons.edit, label: 'Drawing Tools'),
+                    _FeatureChip(icon: Icons.trending_up, label: 'Performance'),
+                    _FeatureChip(
+                        icon: Icons.auto_awesome, label: 'Smart Hints'),
+                  ],
+                ),
 
-              // Revision nudge
-              ListenableBuilder(
-                listenable: _revisionManager,
-                builder: (context, _) {
-                  final dueCount = _revisionManager.dueCount;
-                  final mastered = _revisionManager.masteredItems.length;
-                  if (dueCount == 0 && mastered == 0) {
-                    return const SizedBox.shrink();
-                  }
-                  return Column(
-                    children: [
-                      if (dueCount > 0)
-                        GestureDetector(
-                          onTap: _startRevision,
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 14, vertical: 12),
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Colors.purple.shade50,
-                                  Colors.deepPurple.shade50,
+                const SizedBox(height: 16),
+
+                // Revision nudge
+                ListenableBuilder(
+                  listenable: _revisionManager,
+                  builder: (context, _) {
+                    final dueCount = _revisionManager.dueCount;
+                    final mastered = _revisionManager.masteredItems.length;
+                    if (dueCount == 0 && mastered == 0) {
+                      return const SizedBox.shrink();
+                    }
+                    return Column(
+                      children: [
+                        if (dueCount > 0)
+                          GestureDetector(
+                            onTap: _startRevision,
+                            child: Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 14, vertical: 12),
+                              decoration: BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Colors.purple.shade50,
+                                    Colors.deepPurple.shade50,
+                                  ],
+                                ),
+                                borderRadius: BorderRadius.circular(14),
+                                border:
+                                    Border.all(color: Colors.purple.shade200),
+                              ),
+                              child: Row(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.all(8),
+                                    decoration: BoxDecoration(
+                                      color: Colors.purple.shade100,
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                    child: Icon(Icons.replay,
+                                        size: 20,
+                                        color: Colors.purple.shade700),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  Flexible(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '$dueCount question${dueCount > 1 ? 's' : ''} to revise today',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14,
+                                            color: Colors.purple.shade800,
+                                          ),
+                                        ),
+                                        Text(
+                                          '~${_revisionManager.estimatedMinutes} min · Tap to start',
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: Colors.purple.shade600,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  Icon(Icons.arrow_forward_ios,
+                                      size: 14, color: Colors.purple.shade400),
                                 ],
                               ),
-                              borderRadius: BorderRadius.circular(14),
-                              border: Border.all(
-                                  color: Colors.purple.shade200),
+                            ),
+                          ),
+                        if (mastered > 0) ...[
+                          const SizedBox(height: 8),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 8),
+                            decoration: BoxDecoration(
+                              color: Colors.green.shade50,
+                              borderRadius: BorderRadius.circular(10),
+                              border: Border.all(color: Colors.green.shade200),
                             ),
                             child: Row(
                               children: [
-                                Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: BoxDecoration(
-                                    color: Colors.purple.shade100,
-                                    borderRadius:
-                                        BorderRadius.circular(10),
-                                  ),
-                                  child: Icon(Icons.replay,
-                                      size: 20,
-                                      color: Colors.purple.shade700),
-                                ),
-                                const SizedBox(width: 12),
-                                Flexible(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        '$dueCount question${dueCount > 1 ? 's' : ''} to revise today',
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 14,
-                                          color:
-                                              Colors.purple.shade800,
-                                        ),
-                                      ),
-                                      Text(
-                                        '~${_revisionManager.estimatedMinutes} min · Tap to start',
-                                        style: TextStyle(
-                                          fontSize: 12,
-                                          color:
-                                              Colors.purple.shade600,
-                                        ),
-                                      ),
-                                    ],
+                                Icon(Icons.check_circle,
+                                    size: 16, color: Colors.green.shade600),
+                                const SizedBox(width: 8),
+                                Text(
+                                  '$mastered question${mastered > 1 ? 's' : ''} mastered',
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Colors.green.shade700,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                                Icon(Icons.arrow_forward_ios,
-                                    size: 14,
-                                    color: Colors.purple.shade400),
                               ],
                             ),
                           ),
-                        ),
-                      if (mastered > 0) ...[
+                        ],
                         const SizedBox(height: 8),
-                        Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 14, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: Colors.green.shade50,
-                            borderRadius: BorderRadius.circular(10),
-                            border: Border.all(
-                                color: Colors.green.shade200),
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(Icons.check_circle,
-                                  size: 16,
-                                  color: Colors.green.shade600),
-                              const SizedBox(width: 8),
-                              Text(
-                                '$mastered question${mastered > 1 ? 's' : ''} mastered',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Colors.green.shade700,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
                       ],
-                      const SizedBox(height: 8),
-                    ],
-                  );
-                },
-              ),
+                    );
+                  },
+                ),
 
-              const SizedBox(height: 24),
+                const SizedBox(height: 24),
 
-              // Premium tier toggle
-              ListenableBuilder(
-                listenable: _premiumState,
-                builder: (context, _) {
-                  return Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 14, vertical: 10),
-                    decoration: BoxDecoration(
-                      gradient: _premiumState.isPremium
-                          ? LinearGradient(colors: [
-                              Colors.amber.shade50,
-                              Colors.orange.shade50,
-                            ])
-                          : null,
-                      color: _premiumState.isPremium
-                          ? null
-                          : Colors.grey.shade50,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
+                // Premium tier toggle
+                ListenableBuilder(
+                  listenable: _premiumState,
+                  builder: (context, _) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 14, vertical: 10),
+                      decoration: BoxDecoration(
+                        gradient: _premiumState.isPremium
+                            ? LinearGradient(colors: [
+                                Colors.amber.shade50,
+                                Colors.orange.shade50,
+                              ])
+                            : null,
                         color: _premiumState.isPremium
-                            ? Colors.amber.shade300
-                            : Colors.grey.shade300,
+                            ? null
+                            : Colors.grey.shade50,
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: _premiumState.isPremium
+                              ? Colors.amber.shade300
+                              : Colors.grey.shade300,
+                        ),
                       ),
+                      child: Row(
+                        children: [
+                          if (_premiumState.isPremium)
+                            const PremiumBadge()
+                          else
+                            Icon(Icons.lock_outline,
+                                size: 18, color: Colors.grey.shade600),
+                          const SizedBox(width: 10),
+                          Flexible(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  _premiumState.isPremium
+                                      ? 'Premium Active'
+                                      : 'Free Tier',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 13,
+                                    color: _premiumState.isPremium
+                                        ? Colors.amber.shade900
+                                        : Colors.grey.shade800,
+                                  ),
+                                ),
+                                Text(
+                                  _premiumState.isPremium
+                                      ? 'All features unlocked'
+                                      : 'Upgrade for insights, drawing & more',
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: _premiumState.isPremium
+                                        ? Colors.amber.shade700
+                                        : Colors.grey.shade600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Switch(
+                            value: _premiumState.isPremium,
+                            onChanged: (_) {
+                              _premiumState.toggle();
+                              setState(() {});
+                            },
+                            activeTrackColor: Colors.amber.shade200,
+                            thumbColor:
+                                WidgetStateProperty.resolveWith((states) {
+                              if (states.contains(WidgetState.selected)) {
+                                return Colors.amber.shade700;
+                              }
+                              return null;
+                            }),
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+                const SizedBox(height: 12),
+
+                // Practice Mode Selector (Foundation Journey prioritized)
+                Column(
+                  children: [
+                    // Primary: Foundation Journey
+                    _ModeChip(
+                      label: 'Foundation Journey',
+                      icon: Icons.route,
+                      isSelected:
+                          _selectedMode == PracticeMode.foundationJourney,
+                      color: Colors.green,
+                      onTap: () => setState(
+                          () => _selectedMode = PracticeMode.foundationJourney),
+                      isFullWidth: true,
+                      isPrimary: true,
                     ),
-                    child: Row(
+                    const SizedBox(height: 8),
+                    // Secondary modes
+                    Row(
                       children: [
-                        if (_premiumState.isPremium)
-                          const PremiumBadge()
-                        else
-                          Icon(Icons.lock_outline,
-                              size: 18, color: Colors.grey.shade600),
-                        const SizedBox(width: 10),
-                        Flexible(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                _premiumState.isPremium
-                                    ? 'Premium Active'
-                                    : 'Free Tier',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.w600,
-                                  fontSize: 13,
-                                  color: _premiumState.isPremium
-                                      ? Colors.amber.shade900
-                                      : Colors.grey.shade800,
-                                ),
-                              ),
-                              Text(
-                                _premiumState.isPremium
-                                    ? 'All features unlocked'
-                                    : 'Upgrade for insights, drawing & more',
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: _premiumState.isPremium
-                                      ? Colors.amber.shade700
-                                      : Colors.grey.shade600,
-                                ),
-                              ),
-                            ],
+                        Expanded(
+                          child: _ModeChip(
+                            label: 'Learner',
+                            icon: Icons.school,
+                            isSelected: _selectedMode == PracticeMode.learner,
+                            color: Colors.blue,
+                            onTap: () => setState(
+                                () => _selectedMode = PracticeMode.learner),
                           ),
                         ),
-                        Switch(
-                          value: _premiumState.isPremium,
-                          onChanged: (_) {
-                            _premiumState.toggle();
-                            setState(() {});
-                          },
-                          activeTrackColor: Colors.amber.shade200,
-                          thumbColor: WidgetStateProperty.resolveWith((states) {
-                            if (states.contains(WidgetState.selected)) {
-                              return Colors.amber.shade700;
-                            }
-                            return null;
-                          }),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: _ModeChip(
+                            label: 'Mock Exam',
+                            icon: Icons.timer,
+                            isSelected: _selectedMode == PracticeMode.mockExam,
+                            color: Colors.red,
+                            onTap: () => setState(
+                                () => _selectedMode = PracticeMode.mockExam),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: _ModeChip(
+                            label: 'Revision',
+                            icon: Icons.replay,
+                            isSelected: _selectedMode == PracticeMode.revision,
+                            color: Colors.purple,
+                            onTap: () => setState(
+                                () => _selectedMode = PracticeMode.revision),
+                          ),
                         ),
                       ],
                     ),
-                  );
-                },
-              ),
-              const SizedBox(height: 12),
+                  ],
+                ),
+                const SizedBox(height: 16),
 
-              // Practice Mode Selector (Foundation Journey prioritized)
-              Column(
-                children: [
-                  // Primary: Foundation Journey
-                  _ModeChip(
-                    label: 'Foundation Journey',
-                    icon: Icons.route,
-                    isSelected: _selectedMode == PracticeMode.foundationJourney,
-                    color: Colors.green,
-                    onTap: () => setState(() => _selectedMode = PracticeMode.foundationJourney),
-                    isFullWidth: true,
-                    isPrimary: true,
-                  ),
-                  const SizedBox(height: 8),
-                  // Secondary modes
-                  Row(
-                    children: [
-                      Expanded(
-                        child: _ModeChip(
-                          label: 'Learner',
-                          icon: Icons.school,
-                          isSelected: _selectedMode == PracticeMode.learner,
-                          color: Colors.blue,
-                          onTap: () => setState(() => _selectedMode = PracticeMode.learner),
+                // Buttons
+                Row(
+                  children: [
+                    Flexible(
+                      flex: 3,
+                      fit: FlexFit.loose,
+                      child: SizedBox(
+                        height: 56,
+                        child: FilledButton.icon(
+                          onPressed: _selectedMode == PracticeMode.revision
+                              ? _startRevision
+                              : _startPractice,
+                          icon: const Icon(Icons.play_arrow),
+                          label: Text(
+                            'Solve with Interactive Diagrams (${mockQuestions.length + algebricaQuestions.length})',
+                            style: const TextStyle(fontSize: 15),
+                          ),
                         ),
                       ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: _ModeChip(
-                          label: 'Mock Exam',
-                          icon: Icons.timer,
-                          isSelected: _selectedMode == PracticeMode.mockExam,
-                          color: Colors.red,
-                          onTap: () => setState(() => _selectedMode = PracticeMode.mockExam),
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Expanded(
-                        child: _ModeChip(
-                          label: 'Revision',
-                          icon: Icons.replay,
-                          isSelected: _selectedMode == PracticeMode.revision,
-                          color: Colors.purple,
-                          onTap: () => setState(() => _selectedMode = PracticeMode.revision),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              // Buttons
-              Row(
-                children: [
-                  Flexible(
-                    flex: 3,
-                    fit: FlexFit.loose,
-                    child: SizedBox(
+                    ),
+                    const SizedBox(width: 8),
+                    SizedBox(
                       height: 56,
-                      child: FilledButton.icon(
-                        onPressed: _selectedMode == PracticeMode.revision
-                            ? _startRevision
-                            : _startPractice,
-                        icon: const Icon(Icons.play_arrow),
-                        label: Text(
-                          'Solve with Interactive Diagrams (${mockQuestions.length + algebricaQuestions.length})',
-                          style: const TextStyle(fontSize: 15),
+                      width: 56,
+                      child: OutlinedButton(
+                        onPressed: _showPerformanceSummary,
+                        style: OutlinedButton.styleFrom(
+                          padding: EdgeInsets.zero,
                         ),
+                        child: const Icon(Icons.bar_chart),
                       ),
                     ),
-                  ),
-                  const SizedBox(width: 8),
-                  SizedBox(
-                    height: 56,
-                    width: 56,
-                    child: OutlinedButton(
-                      onPressed: _showPerformanceSummary,
-                      style: OutlinedButton.styleFrom(
-                        padding: EdgeInsets.zero,
-                      ),
-                      child: const Icon(Icons.bar_chart),
+                  ],
+                ),
+                const SizedBox(height: 12),
+
+                // Topic Revision Button with Animations
+                SizedBox(
+                  height: 56,
+                  width: double.infinity,
+                  child: FilledButton.tonalIcon(
+                    onPressed: _startTopicRevision,
+                    icon: const Icon(Icons.animation),
+                    label: const Text(
+                      'Revise Topics with Animations',
+                      style: TextStyle(fontSize: 15),
                     ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 12),
-              
-              // Topic Revision Button with Animations
-              SizedBox(
-                height: 56,
-                width: double.infinity,
-                child: FilledButton.tonalIcon(
-                  onPressed: _startTopicRevision,
-                  icon: const Icon(Icons.animation),
-                  label: const Text(
-                    'Revise Topics with Animations',
-                    style: TextStyle(fontSize: 15),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
+                const SizedBox(height: 16),
               ],
             ),
           ),
@@ -544,8 +540,7 @@ class _DiagramPreviewCard extends StatelessWidget {
               borderRadius: BorderRadius.circular(12),
             ),
             alignment: Alignment.center,
-            child:
-                Icon(Icons.schema, size: 28, color: Colors.indigo.shade600),
+            child: Icon(Icons.schema, size: 28, color: Colors.indigo.shade600),
           ),
           const SizedBox(width: 12),
           Flexible(
@@ -579,8 +574,7 @@ class _DiagramPreviewCard extends StatelessWidget {
                     ),
                     if (question.estimatedSeconds != null) ...[
                       const SizedBox(width: 4),
-                      _miniChip(
-                          '~${question.estimatedSeconds}s', Colors.grey),
+                      _miniChip('~${question.estimatedSeconds}s', Colors.grey),
                     ],
                   ],
                 ),
@@ -798,14 +792,14 @@ class _FoundationJourneyHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
             Colors.green.shade50,
-            Colors.emerald.shade50,
+            Colors.teal.shade50,
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -933,7 +927,7 @@ class _FoundationJourneyHero extends StatelessWidget {
 class _HeroFeature extends StatelessWidget {
   final IconData icon;
   final String label;
-  final Color color;
+  final MaterialColor color;
 
   const _HeroFeature({
     required this.icon,
@@ -944,7 +938,7 @@ class _HeroFeature extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Row(
       children: [
         Icon(
@@ -986,9 +980,8 @@ class _ModeChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final containerWidth = isFullWidth ? double.infinity : null;
-    
+
     if (isPrimary) {
       // Primary Foundation Journey chip style
       return GestureDetector(
@@ -1003,13 +996,15 @@ class _ModeChip extends StatelessWidget {
               color: isSelected ? color : color.withOpacity(0.3),
               width: isSelected ? 2 : 1,
             ),
-            boxShadow: isSelected ? [
-              BoxShadow(
-                color: color.withOpacity(0.2),
-                blurRadius: 8,
-                offset: const Offset(0, 2),
-              ),
-            ] : null,
+            boxShadow: isSelected
+                ? [
+                    BoxShadow(
+                      color: color.withOpacity(0.2),
+                      blurRadius: 8,
+                      offset: const Offset(0, 2),
+                    ),
+                  ]
+                : null,
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -1036,7 +1031,7 @@ class _ModeChip extends StatelessWidget {
         ),
       );
     }
-    
+
     // Regular mode chip style
     return Material(
       color: isSelected ? color.withOpacity(0.15) : Colors.grey.shade200,
@@ -1049,7 +1044,8 @@ class _ModeChip extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(icon, size: 20, color: isSelected ? color : Colors.grey.shade600),
+              Icon(icon,
+                  size: 20, color: isSelected ? color : Colors.grey.shade600),
               const SizedBox(height: 4),
               Text(
                 label,

@@ -1,5 +1,5 @@
 {
-  "question_id": "jee_math_regular_polygon_2023_session_1_Q12",
+  "question_id": "jee_math_regular_polygon_001",
   "source_type": "jee_previous_paper",
   "source_metadata": {
     "source_year": 2023,
@@ -15,13 +15,13 @@
   "prerequisites": [
     "polygon_vertices"
   ],
-  "class_level": "Class 11-12",
+  "class_level": "Class 11",
   "bridge_level": "jee",
   "difficulty": "medium",
   "expected_time_seconds": 120,
   "question_text": "A regular octagon is formed by joining the midpoints of the sides of a square of side length 8 cm. Find the area of the octagon.",
   "question_type": "multiple_choice",
-  "correct_answer": "D",
+  "correct_answer": "C",
   "solution_steps": [
     {
       "step_number": 1,
@@ -29,8 +29,33 @@
       "calculation": ""
     }
   ],
-  "rescue_question_ids": [],
-  "diagram_required": false,
+  "rescue_question_ids": [
+    "rescue_foundation_square_center_angle_001",
+    "rescue_bridge_hexagon_center_angle_001"
+  ],
+  "diagram_required": true,
+  "diagram_id": "diag_regular_polygon_001",
+  "diagram_specification": {
+    "type": "geometry",
+    "elements": [
+      {
+        "id": "square",
+        "type": "polygon",
+        "properties": {
+          "sides": 4,
+          "side_length": 8
+        }
+      },
+      {
+        "id": "octagon",
+        "type": "polygon",
+        "properties": {
+          "sides": 8,
+          "regular": true
+        }
+      }
+    ]
+  },
   "review_status": "ai_generated",
   "review_history": [
     {
@@ -43,25 +68,29 @@
   "options": [
     {
       "label": "A",
-      "text": "32\u221a2 cm\u00b2"
+      "text": "32\u221a2 cm\u00b2",
+      "isCorrect": false
     },
     {
       "label": "B",
-      "text": "64 cm\u00b2"
+      "text": "64 cm\u00b2",
+      "isCorrect": false
     },
     {
       "label": "C",
-      "text": "32 cm\u00b2"
+      "text": "32 cm\u00b2",
+      "isCorrect": true
     },
     {
       "label": "D",
-      "text": "32(2-\u221a2) cm\u00b2"
+      "text": "32(2-\u221a2) cm\u00b2",
+      "isCorrect": false
     }
   ],
   "why_wrong_explanations": {
     "A": "This option is incorrect. 32\u221a2 cm\u00b2 is not the right answer based on the given conditions.",
     "B": "This option is incorrect. 64 cm\u00b2 is not the right answer based on the given conditions.",
-    "C": "This option is incorrect. 32 cm\u00b2 is not the right answer based on the given conditions."
+    "D": "This option is incorrect. 32(2-\u221a2) cm\u00b2 does not match the area subtraction shown by the given construction."
   },
   "learning_objectives": [
     "Understand Properties of regular polygons with equal sides and angles"

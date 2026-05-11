@@ -86,10 +86,8 @@ class _QuestionScreenState extends State<QuestionScreen>
   // Mode-based feature control
   bool get _allowsHints => widget.practiceMode == PracticeMode.learner;
   bool get _allowsRevealSteps => widget.practiceMode == PracticeMode.learner;
-  bool get _allowsConceptExplanation => widget.practiceMode == PracticeMode.learner;
-  bool get _showTimer => widget.practiceMode == PracticeMode.mockExam;
-  bool get _isRevisionMode => widget.practiceMode == PracticeMode.revision || widget.isRevisionMode;
-
+  bool get _allowsConceptExplanation =>
+      widget.practiceMode == PracticeMode.learner;
   // Smart Rescue Flow
   bool _isRescueMode = false;
   QuestionData? _originalQuestion;
@@ -101,7 +99,9 @@ class _QuestionScreenState extends State<QuestionScreen>
   String _getPrimaryConcept(QuestionData q) {
     // Use primaryConcept if available, fallback to coreConcept, then topic
     if (q.primaryConcept.isNotEmpty) return q.primaryConcept;
-    if (q.coreConcept != null && q.coreConcept!.isNotEmpty) return q.coreConcept!;
+    if (q.coreConcept != null && q.coreConcept!.isNotEmpty) {
+      return q.coreConcept!;
+    }
     return q.topic;
   }
 
@@ -114,13 +114,13 @@ class _QuestionScreenState extends State<QuestionScreen>
   @override
   void initState() {
     super.initState();
-    
+
     // Initialize local session questions (avoid mutating widget.questions)
     _sessionQuestions = List.of(widget.questions);
-    
+
     // Load curated content if available
     _loadCuratedContent();
-    
+
     _slideController = AnimationController(
       duration: const Duration(milliseconds: 400),
       vsync: this,
@@ -137,7 +137,7 @@ class _QuestionScreenState extends State<QuestionScreen>
     );
     _slideController.forward();
     _startTimer();
-    
+
     // Initialize RescueSystem with default concept graph
     _conceptGraph = defaultConceptGraph;
     _rescueSystem = RescueSystem(
@@ -145,26 +145,26 @@ class _QuestionScreenState extends State<QuestionScreen>
       conceptGraph: _conceptGraph,
     );
   }
-  
+
   /// Load curated content from JSON files
   Future<void> _loadCuratedContent() async {
     try {
       // Load geometry rescue ladder
       final rescueQuestions = await ContentLoader.loadGeometryRescueLadder();
-      
+
       // Add rescue questions to session (they come first in the ladder)
       _sessionQuestions.insertAll(0, rescueQuestions);
-      
+
       // Update RescueSystem with new questions
       _rescueSystem = RescueSystem(
         allQuestions: _sessionQuestions,
         conceptGraph: _conceptGraph,
       );
-      
+
       setState(() {});
-      print('Loaded ${rescueQuestions.length} rescue questions');
+      debugPrint('Loaded ${rescueQuestions.length} rescue questions');
     } catch (e) {
-      print('Error loading curated content: $e');
+      debugPrint('Error loading curated content: $e');
       // Continue with in-code questions if loading fails
     }
   }
@@ -191,7 +191,9 @@ class _QuestionScreenState extends State<QuestionScreen>
     _inactivityTimer?.cancel();
     _autoHighlighted = false;
     _inactivityTimer = Timer(const Duration(seconds: 10), () {
-      if (!_showAnswer && _highlightedIds.isEmpty && mounted &&
+      if (!_showAnswer &&
+          _highlightedIds.isEmpty &&
+          mounted &&
           PremiumFeatures.smartHighlighting(_tier)) {
         _autoHighlightRelevant();
       }
@@ -308,10 +310,11 @@ class _QuestionScreenState extends State<QuestionScreen>
   void _startRescueFlow() {
     final currentQ = _isRescueMode ? _originalQuestion! : _currentQuestion;
     final rescuePath = _rescueSystem.getRescuePath(currentQ);
-    
+
     if (rescuePath.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('No rescue questions available for this topic.')),
+        const SnackBar(
+            content: Text('No rescue questions available for this topic.')),
       );
       return;
     }
@@ -345,7 +348,8 @@ class _QuestionScreenState extends State<QuestionScreen>
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('You got the previous question wrong. Let\'s try a simpler one first:'),
+            Text(
+                'You got the previous question wrong. Let\'s try a simpler one first:'),
             const SizedBox(height: 12),
             Container(
               padding: const EdgeInsets.all(12),
@@ -425,7 +429,9 @@ class _QuestionScreenState extends State<QuestionScreen>
     } else {
       // Still wrong - retry same rescue or show try again
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Keep trying! Review the explanation and try again.')),
+        const SnackBar(
+            content:
+                Text('Keep trying! Review the explanation and try again.')),
       );
     }
   }
@@ -533,9 +539,8 @@ class _QuestionScreenState extends State<QuestionScreen>
       );
       return;
     }
-    final similarQuestions = _sessionQuestions
-        .where((q) => similar.contains(q.id))
-        .toList();
+    final similarQuestions =
+        _sessionQuestions.where((q) => similar.contains(q.id)).toList();
     if (similarQuestions.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Similar questions not found.')),
@@ -754,7 +759,9 @@ class _QuestionScreenState extends State<QuestionScreen>
             elapsedSeconds: _elapsedSeconds,
           ),
         ),
-        if (_currentQuestion.revealSteps.isNotEmpty && !_showAnswer && _allowsRevealSteps)
+        if (_currentQuestion.revealSteps.isNotEmpty &&
+            !_showAnswer &&
+            _allowsRevealSteps)
           PremiumGate(
             tier: _tier,
             featureEnabled: PremiumFeatures.guideMe(_tier),
@@ -773,8 +780,7 @@ class _QuestionScreenState extends State<QuestionScreen>
   }
 
   Widget _buildPostAnswerActions() {
-    final insight =
-        widget.tracker.getInsightForTopic(_currentQuestion.topic);
+    final insight = widget.tracker.getInsightForTopic(_currentQuestion.topic);
     final q = _currentQuestion;
     final wasCorrect = _selectedOption == q.correctIndex;
     final reviseCount = widget.tracker.getAreasNeedingPractice().length;
@@ -789,21 +795,19 @@ class _QuestionScreenState extends State<QuestionScreen>
             width: double.infinity,
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: wasCorrect
-                  ? Colors.green.shade50
-                  : Colors.orange.shade50,
+              color: wasCorrect ? Colors.green.shade50 : Colors.orange.shade50,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
-                color: wasCorrect
-                    ? Colors.green.shade200
-                    : Colors.orange.shade200,
+                color:
+                    wasCorrect ? Colors.green.shade200 : Colors.orange.shade200,
               ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Concept - only in Learner/Revision mode
-                if (q.coreConcept != null && widget.practiceMode != PracticeMode.mockExam) ...[
+                if (q.coreConcept != null &&
+                    widget.practiceMode != PracticeMode.mockExam) ...[
                   Row(
                     children: [
                       Icon(Icons.lightbulb_outline,
@@ -824,7 +828,9 @@ class _QuestionScreenState extends State<QuestionScreen>
                   const SizedBox(height: 6),
                 ],
                 // Common mistake - only in Learner mode
-                if (q.commonMistake != null && !wasCorrect && _allowsConceptExplanation) ...[
+                if (q.commonMistake != null &&
+                    !wasCorrect &&
+                    _allowsConceptExplanation) ...[
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -845,7 +851,8 @@ class _QuestionScreenState extends State<QuestionScreen>
                   const SizedBox(height: 6),
                 ],
                 // Importance - only in Learner/Revision mode
-                if ((q.frequentlyAsked || q.highWeightTopic) && widget.practiceMode != PracticeMode.mockExam)
+                if ((q.frequentlyAsked || q.highWeightTopic) &&
+                    widget.practiceMode != PracticeMode.mockExam)
                   Row(
                     children: [
                       Icon(Icons.star_outline,
@@ -875,8 +882,8 @@ class _QuestionScreenState extends State<QuestionScreen>
             child: ListenableBuilder(
               listenable: widget.revisionManager,
               builder: (context, _) {
-                final isMarked = widget.revisionManager
-                    .isMarkedForRevision(q.id);
+                final isMarked =
+                    widget.revisionManager.isMarkedForRevision(q.id);
                 return OutlinedButton.icon(
                   onPressed: () {
                     widget.revisionManager.toggleRevision(
@@ -886,18 +893,14 @@ class _QuestionScreenState extends State<QuestionScreen>
                     );
                   },
                   icon: Icon(
-                    isMarked
-                        ? Icons.bookmark
-                        : Icons.bookmark_border,
+                    isMarked ? Icons.bookmark : Icons.bookmark_border,
                     size: 16,
                     color: isMarked
                         ? Colors.purple.shade700
                         : Colors.purple.shade400,
                   ),
                   label: Text(
-                    isMarked
-                        ? 'Marked for Revision'
-                        : 'Add to Revision',
+                    isMarked ? 'Marked for Revision' : 'Add to Revision',
                   ),
                   style: OutlinedButton.styleFrom(
                     foregroundColor: Colors.purple.shade700,
@@ -906,9 +909,7 @@ class _QuestionScreenState extends State<QuestionScreen>
                           ? Colors.purple.shade400
                           : Colors.purple.shade200,
                     ),
-                    backgroundColor: isMarked
-                        ? Colors.purple.shade50
-                        : null,
+                    backgroundColor: isMarked ? Colors.purple.shade50 : null,
                     padding: const EdgeInsets.symmetric(vertical: 10),
                   ),
                 );
@@ -921,19 +922,16 @@ class _QuestionScreenState extends State<QuestionScreen>
           if (widget.isRevisionMode) ...[
             Container(
               width: double.infinity,
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                 color: Colors.deepPurple.shade50,
                 borderRadius: BorderRadius.circular(10),
-                border: Border.all(
-                    color: Colors.deepPurple.shade200),
+                border: Border.all(color: Colors.deepPurple.shade200),
               ),
               child: Row(
                 children: [
                   Icon(Icons.replay,
-                      size: 16,
-                      color: Colors.deepPurple.shade700),
+                      size: 16, color: Colors.deepPurple.shade700),
                   const SizedBox(width: 6),
                   Text(
                     wasCorrect
@@ -985,8 +983,7 @@ class _QuestionScreenState extends State<QuestionScreen>
           if (reviseCount > 0) ...[
             Container(
               width: double.infinity,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
               decoration: BoxDecoration(
                 color: Colors.purple.shade50,
                 borderRadius: BorderRadius.circular(10),
@@ -994,8 +991,7 @@ class _QuestionScreenState extends State<QuestionScreen>
               ),
               child: Row(
                 children: [
-                  Icon(Icons.schedule,
-                      size: 16, color: Colors.purple.shade700),
+                  Icon(Icons.schedule, size: 16, color: Colors.purple.shade700),
                   const SizedBox(width: 6),
                   Text(
                     'You have $reviseCount topic${reviseCount > 1 ? 's' : ''} to revise',
@@ -1099,8 +1095,7 @@ class _QuestionScreenState extends State<QuestionScreen>
                           showLabels: _showLabels,
                           onValuesChanged: (v) =>
                               setState(() => _showValues = v),
-                          onHintsChanged: (v) =>
-                              setState(() => _showHints = v),
+                          onHintsChanged: (v) => setState(() => _showHints = v),
                           onLabelsChanged: (v) =>
                               setState(() => _showLabels = v),
                         ),
@@ -1197,8 +1192,7 @@ class _QuestionScreenState extends State<QuestionScreen>
                     showValues: _showValues,
                     showHints: _showHints,
                     showLabels: _showLabels,
-                    onElementTap:
-                        _drawingEnabled ? null : _onElementTap,
+                    onElementTap: _drawingEnabled ? null : _onElementTap,
                   ),
                   DrawingOverlay(
                     enabled: _drawingEnabled,
@@ -1222,17 +1216,14 @@ class _QuestionScreenState extends State<QuestionScreen>
             ),
 
           // Highlighted elements info
-          if (_highlightedIds.isNotEmpty &&
-              _lastTappedElement?.insight == null)
+          if (_highlightedIds.isNotEmpty && _lastTappedElement?.insight == null)
             Container(
               width: double.infinity,
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               color: Colors.amber.shade50,
               child: Row(
                 children: [
-                  Icon(Icons.touch_app,
-                      size: 16, color: Colors.amber.shade700),
+                  Icon(Icons.touch_app, size: 16, color: Colors.amber.shade700),
                   const SizedBox(width: 6),
                   Expanded(
                     child: Text(

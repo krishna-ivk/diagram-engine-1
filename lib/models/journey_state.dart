@@ -28,11 +28,12 @@ class StudentJourneyState {
       studentId: json['studentId'] as String,
       currentLevelIndex: json['currentLevelIndex'] as int? ?? 0,
       levelStates: (json['levelStates'] as Map<String, dynamic>?)?.map(
-        (key, value) => MapEntry(
-          key: int.parse(key),
-          value: _parseLevelState(value as String),
-        ),
-      ) ?? {},
+            (key, value) => MapEntry(
+              int.parse(key),
+              _parseLevelState(value as String),
+            ),
+          ) ??
+          {},
       attempts: (json['attempts'] as List<dynamic>?)
           ?.map((e) => QuestionAttempt.fromJson(e as Map<String, dynamic>))
           .toList() ?? [],
@@ -51,10 +52,9 @@ class StudentJourneyState {
       'journeyId': journeyId,
       'studentId': studentId,
       'currentLevelIndex': currentLevelIndex,
-      'levelStates': levelStates.map((key, value) => MapEntry(
-        key: key.toString(),
-        value: value.name,
-      )),
+      'levelStates': levelStates.map(
+        (key, value) => MapEntry(key.toString(), value.name),
+      ),
       'attempts': attempts.map((attempt) => attempt.toJson()).toList(),
       'isCompleted': isCompleted,
       'completionDate': completionDate?.toIso8601String(),
@@ -79,9 +79,7 @@ class StudentJourneyState {
 
   void addAttempt(QuestionAttempt attempt) {
     attempts.add(attempt);
-    if (startDate == null) {
-      startDate = DateTime.now();
-    }
+    startDate ??= DateTime.now();
   }
 
   List<QuestionAttempt> attemptsForLevel(int levelIndex) {
@@ -142,15 +140,8 @@ class StudentJourneyState {
 }
 
 enum LevelState {
-  @JsonValue('notStarted')
   notStarted,
-  
-  @JsonValue('inProgress') 
   inProgress,
-  
-  @JsonValue('needsPractice')
   needsPractice,
-  
-  @JsonValue('mastered')
   mastered,
 }

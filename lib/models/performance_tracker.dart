@@ -1,4 +1,3 @@
-import 'question_data.dart';
 import 'concept_mastery.dart';
 
 class QuestionAttempt {
@@ -95,18 +94,12 @@ class PerformanceTracker {
   }
 
   List<TopicPerformance> getWeakAreas() {
-    return getTopicPerformance()
-        .values
-        .where((p) => p.isWeak)
-        .toList()
+    return getTopicPerformance().values.where((p) => p.isWeak).toList()
       ..sort((a, b) => a.accuracy.compareTo(b.accuracy));
   }
 
   List<TopicPerformance> getAreasNeedingPractice() {
-    return getTopicPerformance()
-        .values
-        .where((p) => p.needsPractice)
-        .toList()
+    return getTopicPerformance().values.where((p) => p.needsPractice).toList()
       ..sort((a, b) => a.accuracy.compareTo(b.accuracy));
   }
 
@@ -130,23 +123,27 @@ class PerformanceTracker {
   Map<String, ConceptMastery> getConceptMasteries() {
     final byConcept = <String, List<QuestionAttempt>>{};
     for (final a in _attempts) {
-      final conceptId = a.primaryConcept.isNotEmpty
-          ? a.primaryConcept
-          : a.coreConcept;
+      final conceptId =
+          a.primaryConcept.isNotEmpty ? a.primaryConcept : a.coreConcept;
       byConcept.putIfAbsent(conceptId, () => []).add(a);
     }
 
     return byConcept.map((conceptId, attempts) {
       final correct = attempts.where((a) => a.correct).length;
       final hints = attempts.map((a) => a.hintsUsed).reduce((a, b) => a + b);
-      final totalTime = attempts.map((a) => a.timeSeconds).reduce((a, b) => a + b);
-      final expected = attempts.map((a) => a.expectedTimeSeconds).reduce((a, b) => a + b);
+      final totalTime =
+          attempts.map((a) => a.timeSeconds).reduce((a, b) => a + b);
+      final expected =
+          attempts.map((a) => a.expectedTimeSeconds).reduce((a, b) => a + b);
       final revisions = attempts.where((a) => a.isRevision).toList();
       final revisionCorrect = revisions.where((a) => a.correct).length;
 
       // Get recent accuracies for last 5 attempts
-      final recent = attempts.length > 5 ? attempts.sublist(attempts.length - 5) : attempts;
-      final recentAccuracies = recent.map((a) => a.correct ? 1.0 : 0.0).toList();
+      final recent = attempts.length > 5
+          ? attempts.sublist(attempts.length - 5)
+          : attempts;
+      final recentAccuracies =
+          recent.map((a) => a.correct ? 1.0 : 0.0).toList();
 
       final mastery = ConceptMastery.calculate(
         conceptId: conceptId,
@@ -171,9 +168,8 @@ class PerformanceTracker {
     // Convert snake_case to Title Case
     return conceptId
         .split('_')
-        .map((word) => word.isNotEmpty
-            ? word[0].toUpperCase() + word.substring(1)
-            : '')
+        .map((word) =>
+            word.isNotEmpty ? word[0].toUpperCase() + word.substring(1) : '')
         .join(' ');
   }
 
@@ -189,8 +185,7 @@ class PerformanceTracker {
     return getConceptMasteries()
         .values
         .where((m) =>
-            m.state == MasteryState.weak ||
-            m.state == MasteryState.developing)
+            m.state == MasteryState.weak || m.state == MasteryState.developing)
         .toList()
       ..sort((a, b) => a.state.priority.compareTo(b.state.priority));
   }
@@ -250,7 +245,8 @@ class PerformanceTracker {
       if (lastDate == null) {
         final today = DateTime.now();
         final todayDate = DateTime(today.year, today.month, today.day);
-        if (attemptDate == todayDate || attemptDate == todayDate.subtract(const Duration(days: 1))) {
+        if (attemptDate == todayDate ||
+            attemptDate == todayDate.subtract(const Duration(days: 1))) {
           streak = 1;
           lastDate = attemptDate;
         } else {
@@ -275,14 +271,17 @@ class PerformanceTracker {
     final now = DateTime.now();
     final weekAgo = now.subtract(const Duration(days: 7));
 
-    final thisWeek = _attempts.where((a) => a.timestamp.isAfter(weekAgo)).toList();
+    final thisWeek =
+        _attempts.where((a) => a.timestamp.isAfter(weekAgo)).toList();
     final correctThisWeek = thisWeek.where((a) => a.correct).length;
 
     return {
       'attemptsThisWeek': thisWeek.length,
       'correctThisWeek': correctThisWeek,
-      'accuracyThisWeek': thisWeek.isNotEmpty ? correctThisWeek / thisWeek.length : 0.0,
-      'totalTimeThisWeek': thisWeek.map((a) => a.timeSeconds).fold(0, (a, b) => a + b),
+      'accuracyThisWeek':
+          thisWeek.isNotEmpty ? correctThisWeek / thisWeek.length : 0.0,
+      'totalTimeThisWeek':
+          thisWeek.map((a) => a.timeSeconds).fold(0, (a, b) => a + b),
     };
   }
 
@@ -295,8 +294,11 @@ class PerformanceTracker {
     // Weighted formula
     final masteryWeight = overallMastery * 0.5;
     final streakWeight = (streak.clamp(0, 7) / 7) * 100 * 0.2;
-    final consistencyWeight = (weekly['accuracyThisWeek'] as double) * 100 * 0.3;
+    final consistencyWeight =
+        (weekly['accuracyThisWeek'] as double) * 100 * 0.3;
 
-    return (masteryWeight + streakWeight + consistencyWeight).round().clamp(0, 100);
+    return (masteryWeight + streakWeight + consistencyWeight)
+        .round()
+        .clamp(0, 100);
   }
 }

@@ -1,23 +1,24 @@
 import 'dart:convert';
-import 'package:flutter/services.dart';
 import 'dart:async';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 import '../models/question_data.dart';
 import '../models/diagram_data.dart';
-import '../models/rescue_system.dart';
 
 /// Service for loading curated content from JSON files
 class ContentLoader {
   static const String _contentBasePath = 'content/sample_questions';
-  
+
   /// Load geometry rescue ladder from JSON file
   static Future<List<QuestionData>> loadGeometryRescueLadder() async {
     try {
       // Load the rescue ladder JSON file
-      final String ladderContent = await rootBundle.loadString('$_contentBasePath/geometry_regular_polygon_ladder.json');
+      final String ladderContent = await rootBundle
+          .loadString('$_contentBasePath/geometry_regular_polygon_ladder.json');
       final Map<String, dynamic> ladderData = json.decode(ladderContent);
-      
+
       final List<QuestionData> questions = [];
-      
+
       // Extract questions from the ladder
       if (ladderData.containsKey('questions')) {
         final List<dynamic> questionsList = ladderData['questions'];
@@ -27,18 +28,18 @@ class ContentLoader {
             final question = _convertToQuestionData(questionData);
             questions.add(question);
           } catch (e) {
-            print('Error loading question: $e');
+            debugPrint('Error loading question: $e');
           }
         }
       }
-      
+
       return questions;
     } catch (e) {
-      print('Error loading geometry rescue ladder: $e');
+      debugPrint('Error loading geometry rescue ladder: $e');
       return [];
     }
   }
-  
+
   /// Convert JSON data to QuestionData (simplified version)
   static QuestionData _convertToQuestionData(Map<String, dynamic> json) {
     // Parse correct answer as index
@@ -49,7 +50,7 @@ class ContentLoader {
     } else if (correctAns is String) {
       correctIdx = correctAns.codeUnitAt(0) - 65; // 'A' -> 0, 'B' -> 1, etc.
     }
-    
+
     // Parse why wrong explanations - need Map<int, String>
     final whyWrongRaw = json['why_wrong_explanations'];
     final whyWrongMap = <int, String>{};
@@ -61,17 +62,19 @@ class ContentLoader {
         whyWrongMap[k] = value.toString();
       }
     }
-    
+
     // Parse solution steps as List<String>
     final stepsRaw = json['solution_steps'];
     List<String> solSteps = [];
     if (stepsRaw is List) {
-      solSteps = stepsRaw.map((s) => s['description']?.toString() ?? s.toString()).toList();
+      solSteps = stepsRaw
+          .map((s) => s['description']?.toString() ?? s.toString())
+          .toList();
     }
-    
+
     // Parse options as List<String>
     final opts = _convertOptions(json['options']);
-    
+
     return QuestionData(
       id: json['question_id'] ?? json['id'] ?? '',
       text: json['question_text'] ?? json['text'] ?? '',
@@ -94,7 +97,7 @@ class ContentLoader {
       questionType: QuestionType.mcq,
       difficulty: _mapDifficulty(json['difficulty']),
       estimatedSeconds: json['expected_time_seconds'] ?? 120,
-      revealSteps: [],
+      revealSteps: _convertSolutionSteps(json['solution_steps']),
       solutionSteps: solSteps,
       whyWrongExplanations: whyWrongMap,
       frequentlyAsked: json['frequently_asked'] ?? false,
@@ -103,11 +106,11 @@ class ContentLoader {
       similarQuestionIds: List<String>.from(json['similar_questions'] ?? []),
     );
   }
-  
+
   /// Convert options from JSON - returns List<String>
   static List<String> _convertOptions(dynamic optionsData) {
     if (optionsData is List) {
-      return (optionsData as List).map((opt) {
+      return optionsData.map((opt) {
         if (opt is String) return opt;
         if (opt is Map) return opt['text']?.toString() ?? '';
         return opt.toString();
@@ -115,20 +118,23 @@ class ContentLoader {
     }
     return [];
   }
-  
+
   /// Convert solution steps from JSON - returns List<RevealStep>
   static List<RevealStep> _convertSolutionSteps(dynamic stepsData) {
     if (stepsData is List) {
-      return (stepsData as List).map((step) {
-        final Map<String, dynamic> stepData = step is Map ? Map<String, dynamic>.from(step) : <String, dynamic>{};
+      return stepsData.map((step) {
+        final Map<String, dynamic> stepData =
+            step is Map ? Map<String, dynamic>.from(step) : <String, dynamic>{};
         return RevealStep(
-          text: stepData['description']?.toString() ?? stepData['calculation']?.toString() ?? '',
+          text: stepData['description']?.toString() ??
+              stepData['calculation']?.toString() ??
+              '',
         );
       }).toList();
     }
     return [];
   }
-  
+
   /// Map difficulty from string to enum
   static Difficulty _mapDifficulty(String? difficultyStr) {
     switch (difficultyStr) {
@@ -145,38 +151,39 @@ class ContentLoader {
         return Difficulty.medium;
     }
   }
-  
+
   /// Load JEE question and merge with rescue ladder
   static Future<List<QuestionData>> loadJEEWithRescueLadder() async {
     // First load the main JEE question
     final jeeQuestion = await _loadSingleJEEQuestion();
-    
+
     // Then load the rescue ladder
     final rescueQuestions = await loadGeometryRescueLadder();
-    
+
     // Combine them
     final allQuestions = <QuestionData>[];
     if (jeeQuestion != null) {
       allQuestions.add(jeeQuestion);
     }
     allQuestions.addAll(rescueQuestions);
-    
+
     return allQuestions;
   }
-  
+
   /// Load a single JEE question
   static Future<QuestionData?> _loadSingleJEEQuestion() async {
     try {
-      final String questionContent = await rootBundle.loadString('$_contentBasePath/jee_math_regular_polygon_2023_session_1_Q12.json');
+      final String questionContent = await rootBundle.loadString(
+          '$_contentBasePath/jee_math_regular_polygon_2023_session_1_Q12.json');
       final Map<String, dynamic> questionData = json.decode(questionContent);
-      
+
       return _convertToQuestionData(questionData);
     } catch (e) {
-      print('Error loading JEE question: $e');
+      debugPrint('Error loading JEE question: $e');
       return null;
     }
   }
-  
+
   /// Create a mock rescue question for testing
   static QuestionData createMockRescueQuestion({
     required String id,

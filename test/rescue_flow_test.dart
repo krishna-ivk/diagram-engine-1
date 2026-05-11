@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import '../lib/models/concept_graph.dart';
-import '../lib/models/diagram_data.dart';
-import '../lib/models/question_data.dart';
-import '../lib/models/rescue_system.dart';
-import '../lib/services/content_loader.dart';
+import 'package:diagram_engine/models/concept_graph.dart';
+import 'package:diagram_engine/models/diagram_data.dart';
+import 'package:diagram_engine/models/question_data.dart';
+import 'package:diagram_engine/models/rescue_system.dart';
+import 'package:diagram_engine/services/content_loader.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -121,7 +121,8 @@ void main() {
         conceptGraph: const ConceptGraph(),
       );
 
-      final rescuePath = emptySystem.getRescuePath(emptySystem.allQuestions.first);
+      final rescuePath =
+          emptySystem.getRescuePath(emptySystem.allQuestions.first);
 
       expect(rescuePath, isEmpty);
     });

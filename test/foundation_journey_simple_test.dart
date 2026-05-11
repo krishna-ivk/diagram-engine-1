@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
-import '../lib/models/foundation_journey.dart';
-import '../lib/models/journey_progression_engine.dart';
-import '../lib/models/journey_state.dart';
-import '../lib/models/student_profile.dart';
-import '../lib/models/practice_mode.dart';
-import '../lib/models/question_attempt.dart';
+
+import 'package:diagram_engine/models/foundation_journey.dart';
+import 'package:diagram_engine/models/journey_state.dart';
+import 'package:diagram_engine/models/practice_mode.dart';
+import 'package:diagram_engine/models/question_attempt.dart';
+import 'package:diagram_engine/models/student_profile.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -119,7 +119,8 @@ void main() {
         comfortLevel: ComfortLevel.beginner,
       );
 
-      expect(profile.getRecommendedMode(), equals(PracticeMode.foundationJourney));
+      expect(
+          profile.getRecommendedMode(), equals(PracticeMode.foundationJourney));
       expect(profile.shouldShowFoundationJourney(), isTrue);
     });
 
@@ -167,11 +168,13 @@ void main() {
     });
 
     test('should have correct display name', () {
-      expect(PracticeMode.foundationJourney.displayName, equals('Foundation Journey'));
+      expect(PracticeMode.foundationJourney.displayName,
+          equals('Foundation Journey'));
     });
 
     test('should have correct description', () {
-      expect(PracticeMode.foundationJourney.description, contains('Class 7 basics'));
+      expect(PracticeMode.foundationJourney.description,
+          contains('Class 7 basics'));
     });
   });
 
@@ -207,9 +210,11 @@ void main() {
       final deserializedAttempt = QuestionAttempt.fromJson(json);
 
       expect(deserializedAttempt.questionId, equals(attempt.questionId));
-      expect(deserializedAttempt.confidenceLevel, equals(attempt.confidenceLevel));
+      expect(
+          deserializedAttempt.confidenceLevel, equals(attempt.confidenceLevel));
       expect(deserializedAttempt.isCorrect, equals(attempt.isCorrect));
-      expect(deserializedAttempt.timeSpentSeconds, equals(attempt.timeSpentSeconds));
+      expect(deserializedAttempt.timeSpentSeconds,
+          equals(attempt.timeSpentSeconds));
       expect(deserializedAttempt.levelIndex, equals(attempt.levelIndex));
     });
   });

@@ -36,7 +36,7 @@ class StudentProfile {
   final Map<String, double> conceptMastery;
   final ParentSettings parentSettings;
 
-  const StudentProfile({
+  StudentProfile({
     required this.studentId,
     required this.name,
     required this.currentClass,
@@ -51,7 +51,12 @@ class StudentProfile {
     List<String>? completedJourneys,
     Map<String, double>? conceptMastery,
     ParentSettings? parentSettings,
-  });
+  })  : createdAt = createdAt ?? DateTime(2026, 1, 1),
+        lastActiveAt = lastActiveAt ?? DateTime(2026, 1, 1),
+        journeyProgress = journeyProgress ?? const {},
+        completedJourneys = completedJourneys ?? const [],
+        conceptMastery = conceptMastery ?? const {},
+        parentSettings = parentSettings ?? const ParentSettings();
 
   factory StudentProfile.fromJson(Map<String, dynamic> json) {
     return StudentProfile(
@@ -60,22 +65,23 @@ class StudentProfile {
       currentClass: json['currentClass'] as int,
       targetExam: _parseTargetExam(json['targetExam'] as String),
       comfortLevel: _parseComfortLevel(json['comfortLevel'] as String),
-      preferredLanguage: _parsePreferredLanguage(json['preferredLanguage'] as String),
+      preferredLanguage:
+          _parsePreferredLanguage(json['preferredLanguage'] as String?),
       createdAt: json['createdAt'] != null ? DateTime.parse(json['createdAt'] as String) : null,
       lastActiveAt: json['lastActiveAt'] != null ? DateTime.parse(json['lastActiveAt'] as String) : null,
       totalSessions: json['totalSessions'] as int? ?? 0,
       totalTimeSpentMinutes: json['totalTimeSpentMinutes'] as int? ?? 0,
       journeyProgress: (json['journeyProgress'] as Map<String, dynamic>?)?.map(
         (key, value) => MapEntry(
-          key: key,
-          value: _parseJourneyProgress(value as Map<String, dynamic>),
+          key,
+          _parseJourneyProgress(value as Map<String, dynamic>),
         ),
       ) ?? {},
       completedJourneys: (json['completedJourneys'] as List<dynamic>?)?.map((e) => e.toString()).toList() ?? [],
       conceptMastery: (json['conceptMastery'] as Map<String, dynamic>?)?.map(
         (key, value) => MapEntry(
-          key: key,
-          value: (value as num).toDouble(),
+          key,
+          (value as num).toDouble(),
         ),
       ) ?? {},
       parentSettings: json['parentSettings'] != null 
@@ -92,13 +98,13 @@ class StudentProfile {
       'targetExam': targetExam.name,
       'comfortLevel': comfortLevel.name,
       'preferredLanguage': preferredLanguage.name,
-      'createdAt': createdAt?.toIso8601String(),
-      'lastActiveAt': lastActiveAt?.toIso8601String(),
+      'createdAt': createdAt.toIso8601String(),
+      'lastActiveAt': lastActiveAt.toIso8601String(),
       'totalSessions': totalSessions,
       'totalTimeSpentMinutes': totalTimeSpentMinutes,
       'journeyProgress': journeyProgress.map((key, value) => MapEntry(
-        key: key,
-        value: value,
+        key,
+        value.toJson(),
       )),
       'completedJourneys': completedJourneys,
       'conceptMastery': conceptMastery,
@@ -106,7 +112,7 @@ class StudentProfile {
     };
   }
 
-  TargetExam _parseTargetExam(String value) {
+  static TargetExam _parseTargetExam(String value) {
     switch (value) {
       case 'jee_main':
         return TargetExam.jeeMain;
@@ -123,7 +129,7 @@ class StudentProfile {
     }
   }
 
-  ComfortLevel _parseComfortLevel(String value) {
+  static ComfortLevel _parseComfortLevel(String value) {
     switch (value) {
       case 'beginner':
         return ComfortLevel.beginner;
@@ -136,7 +142,7 @@ class StudentProfile {
     }
   }
 
-  PreferredLanguage _parsePreferredLanguage(String value) {
+  static PreferredLanguage _parsePreferredLanguage(String? value) {
     switch (value) {
       case 'english':
         return PreferredLanguage.english;
@@ -149,25 +155,12 @@ class StudentProfile {
     }
   }
 
-  JourneyProgress _parseJourneyProgress(Map<String, dynamic> json) {
+  static JourneyProgress _parseJourneyProgress(Map<String, dynamic> json) {
     return JourneyProgress(
       journeyId: json['journeyId'] as String,
       startedAt: json['startedAt'] != null ? DateTime.parse(json['startedAt'] as String) : null,
       completedAt: json['completedAt'] != null ? DateTime.parse(json['completedAt'] as String) : null,
       lastAccessedAt: json['lastAccessedAt'] != null ? DateTime.parse(json['lastAccessedAt'] as String) : null,
-    );
-  }
-
-  ParentSettings _parseParentSettings(Map<String, dynamic> json) {
-    return ParentSettings(
-      weeklyProgressReports: json['weeklyProgressReports'] as bool? ?? false,
-      emailNotifications: json['emailNotifications'] as bool? ?? false,
-      parentEmail: json['parentEmail'] as String?,
-      dailyTimeLimitMinutes: json['dailyTimeLimitMinutes'] as int? ?? 120,
-      allowWeekendAccess: json['allowWeekendAccess'] as bool? ?? true,
-      allowedFeatures: (json['allowedFeatures'] as List<dynamic>?)
-          ?.map((e) => e.toString())
-          .toList() ?? ['foundation_journey', 'learner_mode', 'revision', 'mock_exam'],
     );
   }
 
@@ -190,5 +183,76 @@ class StudentProfile {
   /// Check if Foundation Journey should be shown prominently
   bool shouldShowFoundationJourney() {
     return currentClass <= 8 || comfortLevel == ComfortLevel.beginner;
+  }
+}
+
+class JourneyProgress {
+  final String journeyId;
+  final DateTime? startedAt;
+  final DateTime? completedAt;
+  final DateTime? lastAccessedAt;
+
+  const JourneyProgress({
+    required this.journeyId,
+    this.startedAt,
+    this.completedAt,
+    this.lastAccessedAt,
+  });
+
+  Map<String, dynamic> toJson() {
+    return {
+      'journeyId': journeyId,
+      'startedAt': startedAt?.toIso8601String(),
+      'completedAt': completedAt?.toIso8601String(),
+      'lastAccessedAt': lastAccessedAt?.toIso8601String(),
+    };
+  }
+}
+
+class ParentSettings {
+  final bool weeklyProgressReports;
+  final bool emailNotifications;
+  final String? parentEmail;
+  final int dailyTimeLimitMinutes;
+  final bool allowWeekendAccess;
+  final List<String> allowedFeatures;
+
+  const ParentSettings({
+    this.weeklyProgressReports = false,
+    this.emailNotifications = false,
+    this.parentEmail,
+    this.dailyTimeLimitMinutes = 120,
+    this.allowWeekendAccess = true,
+    this.allowedFeatures = const [
+      'foundation_journey',
+      'learner_mode',
+      'revision',
+      'mock_exam',
+    ],
+  });
+
+  factory ParentSettings.fromJson(Map<String, dynamic> json) {
+    return ParentSettings(
+      weeklyProgressReports: json['weeklyProgressReports'] as bool? ?? false,
+      emailNotifications: json['emailNotifications'] as bool? ?? false,
+      parentEmail: json['parentEmail'] as String?,
+      dailyTimeLimitMinutes: json['dailyTimeLimitMinutes'] as int? ?? 120,
+      allowWeekendAccess: json['allowWeekendAccess'] as bool? ?? true,
+      allowedFeatures: (json['allowedFeatures'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          const ['foundation_journey', 'learner_mode', 'revision', 'mock_exam'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'weeklyProgressReports': weeklyProgressReports,
+      'emailNotifications': emailNotifications,
+      'parentEmail': parentEmail,
+      'dailyTimeLimitMinutes': dailyTimeLimitMinutes,
+      'allowWeekendAccess': allowWeekendAccess,
+      'allowedFeatures': allowedFeatures,
+    };
   }
 }

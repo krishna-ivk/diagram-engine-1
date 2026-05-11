@@ -29,22 +29,31 @@ class FoundationJourney {
 
   factory FoundationJourney.fromJson(Map<String, dynamic> json) {
     return FoundationJourney(
-      journeyId: json['journeyId'] as String,
+      journeyId: _string(json, 'journeyId', 'journey_id'),
       title: json['title'] as String,
       subtitle: json['subtitle'] as String,
-      targetGrade: json['targetGrade'] as String,
-      targetExam: json['targetExam'] as String,
+      targetGrade: _string(json, 'targetGrade', 'target_grade'),
+      targetExam: _string(json, 'targetExam', 'target_exam'),
       chapter: json['chapter'] as String,
-      estimatedDurationMinutes: json['estimatedDurationMinutes'] as int,
-      difficultyProgression: (json['difficultyProgression'] as List<dynamic>)
+      estimatedDurationMinutes:
+          _int(json, 'estimatedDurationMinutes', 'estimated_duration_minutes'),
+      difficultyProgression:
+          (_value(json, 'difficultyProgression', 'difficulty_progression')
+                  as List<dynamic>)
           .map((e) => e.toString())
           .toList(),
       levels: (json['levels'] as List<dynamic>)
           .map((e) => JourneyLevel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      progressionRules: ProgressionRules.fromJson(json['progressionRules'] as Map<String, dynamic>),
-      successCriteria: SuccessCriteria.fromJson(json['successCriteria'] as Map<String, dynamic>),
-      parentProgressSummary: ParentProgressSummary.fromJson(json['parentProgressSummary'] as Map<String, dynamic>),
+      progressionRules: ProgressionRules.fromJson(
+        _map(json, 'progressionRules', 'progression_rules'),
+      ),
+      successCriteria: SuccessCriteria.fromJson(
+        _map(json, 'successCriteria', 'success_criteria'),
+      ),
+      parentProgressSummary: ParentProgressSummary.fromJson(
+        _map(json, 'parentProgressSummary', 'parent_progress_summary'),
+      ),
     );
   }
 
@@ -65,6 +74,22 @@ class FoundationJourney {
     };
   }
 }
+
+dynamic _value(Map<String, dynamic> json, String camelKey, String snakeKey) =>
+    json[camelKey] ?? json[snakeKey];
+
+String _string(Map<String, dynamic> json, String camelKey, String snakeKey) =>
+    _value(json, camelKey, snakeKey) as String;
+
+int _int(Map<String, dynamic> json, String camelKey, String snakeKey) =>
+    _value(json, camelKey, snakeKey) as int;
+
+Map<String, dynamic> _map(
+  Map<String, dynamic> json,
+  String camelKey,
+  String snakeKey,
+) =>
+    _value(json, camelKey, snakeKey) as Map<String, dynamic>;
 
 class JourneyLevel {
   final String level;
@@ -99,19 +124,24 @@ class JourneyLevel {
       role: json['role'] as String,
       title: json['title'] as String,
       description: json['description'] as String,
-      classLevel: json['classLevel'] as String,
-      microLesson: MicroLesson.fromJson(json['microLesson'] as Map<String, dynamic>),
-      questionIds: (json['questionIds'] as List<dynamic>)
+      classLevel: _string(json, 'classLevel', 'class_level'),
+      microLesson: MicroLesson.fromJson(
+        _map(json, 'microLesson', 'micro_lesson'),
+      ),
+      questionIds: (_value(json, 'questionIds', 'question_ids') as List<dynamic>)
           .map((e) => e.toString())
           .toList(),
       prerequisites: (json['prerequisites'] as List<dynamic>?)
           ?.map((e) => e.toString())
           .toList() ?? [],
-      unlockThreshold: UnlockThreshold.fromJson(json['unlockThreshold'] as Map<String, dynamic>),
+      unlockThreshold: UnlockThreshold.fromJson(
+        _map(json, 'unlockThreshold', 'unlock_threshold'),
+      ),
       manipulatives: (json['manipulatives'] as List<dynamic>?)
           ?.map((e) => e.toString())
           .toList() ?? [],
-      expectedTimeSeconds: json['expectedTimeSeconds'] as int?,
+      expectedTimeSeconds:
+          _value(json, 'expectedTimeSeconds', 'expected_time_seconds') as int?,
     );
   }
 
@@ -147,7 +177,8 @@ class MicroLesson {
     return MicroLesson(
       title: json['title'] as String,
       body: json['body'] as String,
-      visualHintIds: (json['visualHintIds'] as List<dynamic>?)
+      visualHintIds: (_value(json, 'visualHintIds', 'visual_hint_ids')
+              as List<dynamic>?)
           ?.map((e) => e.toString())
           .toList() ?? [],
     );
@@ -173,8 +204,9 @@ class UnlockThreshold {
 
   factory UnlockThreshold.fromJson(Map<String, dynamic> json) {
     return UnlockThreshold(
-      correctRequired: json['correctRequired'] as int,
-      confidenceThreshold: json['confidenceThreshold'] as String,
+      correctRequired: _int(json, 'correctRequired', 'correct_required'),
+      confidenceThreshold:
+          _string(json, 'confidenceThreshold', 'confidence_threshold'),
     );
   }
 
@@ -203,11 +235,16 @@ class ProgressionRules {
 
   factory ProgressionRules.fromJson(Map<String, dynamic> json) {
     return ProgressionRules(
-      correctTwice: json['correctTwice'] as String,
-      wrongOnceLowConfidence: json['wrongOnceLowConfidence'] as String,
-      wrongTwice: json['wrongTwice'] as String,
-      correctFastHighConfidence: json['correctFastHighConfidence'] as String,
-      correctSlow: json['correctSlow'] as String,
+      correctTwice: _string(json, 'correctTwice', 'correct_twice'),
+      wrongOnceLowConfidence:
+          _string(json, 'wrongOnceLowConfidence', 'wrong_once_low_confidence'),
+      wrongTwice: _string(json, 'wrongTwice', 'wrong_twice'),
+      correctFastHighConfidence: _string(
+        json,
+        'correctFastHighConfidence',
+        'correct_fast_high_confidence',
+      ),
+      correctSlow: _string(json, 'correctSlow', 'correct_slow'),
     );
   }
 
@@ -237,10 +274,11 @@ class SuccessCriteria {
 
   factory SuccessCriteria.fromJson(Map<String, dynamic> json) {
     return SuccessCriteria(
-      journeyCompletion: json['journeyCompletion'] as String,
-      masteryIndicator: json['masteryIndicator'] as String,
-      timeEstimate: json['timeEstimate'] as String,
-      retryAllowed: json['retryAllowed'] as bool,
+      journeyCompletion:
+          _string(json, 'journeyCompletion', 'journey_completion'),
+      masteryIndicator: _string(json, 'masteryIndicator', 'mastery_indicator'),
+      timeEstimate: _string(json, 'timeEstimate', 'time_estimate'),
+      retryAllowed: _value(json, 'retryAllowed', 'retry_allowed') as bool,
     );
   }
 
@@ -269,14 +307,18 @@ class ParentProgressSummary {
 
   factory ParentProgressSummary.fromJson(Map<String, dynamic> json) {
     return ParentProgressSummary(
-      conceptsMastered: (json['conceptsMastered'] as List<dynamic>?)
+      conceptsMastered:
+          (_value(json, 'conceptsMastered', 'concepts_mastered')
+                  as List<dynamic>?)
           ?.map((e) => e.toString())
           .toList() ?? [],
-      strugglingAreas: (json['strugglingAreas'] as List<dynamic>?)
+      strugglingAreas:
+          (_value(json, 'strugglingAreas', 'struggling_areas')
+                  as List<dynamic>?)
           ?.map((e) => e.toString())
           .toList() ?? [],
-      confidenceTrend: json['confidenceTrend'] as String,
-      recommendedNext: json['recommendedNext'] as String,
+      confidenceTrend: _string(json, 'confidenceTrend', 'confidence_trend'),
+      recommendedNext: _string(json, 'recommendedNext', 'recommended_next'),
     );
   }
 

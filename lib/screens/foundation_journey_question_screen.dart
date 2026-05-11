@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import '../models/performance_tracker.dart';
-import '../models/premium_state.dart';
+
+import '../models/diagram_data.dart';
 import '../models/foundation_journey.dart';
 import '../models/journey_progression_engine.dart';
 import '../models/journey_state.dart';
-import '../models/question_data.dart';
-import '../models/question_attempt.dart';
+import '../models/performance_tracker.dart' hide QuestionAttempt;
+import '../models/premium_state.dart';
 import '../models/practice_mode.dart';
-import '../models/confidence_level.dart';
-import 'question_screen.dart';
+import '../models/question_attempt.dart';
+import '../models/question_data.dart';
 
 class FoundationJourneyQuestionScreen extends StatefulWidget {
   final JourneyLevel level;
@@ -31,16 +31,19 @@ class FoundationJourneyQuestionScreen extends StatefulWidget {
   });
 
   @override
-  State<FoundationJourneyQuestionScreen> createState() => _FoundationJourneyQuestionScreenState();
+  State<FoundationJourneyQuestionScreen> createState() =>
+      _FoundationJourneyQuestionScreenState();
 }
 
-class _FoundationJourneyQuestionScreenState extends State<FoundationJourneyQuestionScreen> {
+class _FoundationJourneyQuestionScreenState
+    extends State<FoundationJourneyQuestionScreen> {
   int _currentQuestionIndex = 0;
-  QuestionData? _currentQuestion;
+  late QuestionData _currentQuestion;
   ConfidenceLevel _selectedConfidence = ConfidenceLevel.somewhatSure;
   bool _showConfidenceSelector = false;
   bool _isProcessingAnswer = false;
-  List<QuestionAttempt> _attempts = [];
+  int? _pendingSelectedIndex;
+  final List<QuestionAttempt> _attempts = [];
 
   @override
   void initState() {
@@ -49,76 +52,92 @@ class _FoundationJourneyQuestionScreenState extends State<FoundationJourneyQuest
   }
 
   void _loadCurrentQuestion() {
-    // For now, we'll use mock question data
-    // In a real implementation, this would load from the content pipeline
-    _currentQuestion = _getMockQuestionForLevel(widget.level);
-    _showConfidenceSelector = false;
+    _currentQuestion = _getQuestionForLevel(widget.level);
     _selectedConfidence = ConfidenceLevel.somewhatSure;
+    _showConfidenceSelector = false;
+    _pendingSelectedIndex = null;
   }
 
-  QuestionData _getMockQuestionForLevel(JourneyLevel level) {
-    // Create mock question based on level
+  QuestionData _getQuestionForLevel(JourneyLevel level) {
     switch (level.level) {
       case 'L0':
-        return QuestionData(
+        return _journeyQuestion(
           id: 'class7_square_parts_001',
-          questionText: 'A square is divided into 4 equal triangles by drawing lines from the center. What fraction of the square is each triangle?',
-          diagram: DiagramData(
-            title: 'Square Divided into Triangles',
-            elements: [],
-          ),
-          options: [
-            '1/2', '1/4', '1/3', '1/8'
-          ],
-          correctAnswer: 1, // 1/4
-          explanation: 'A square divided into 4 equal parts means each part is 1/4 of the whole.',
+          text:
+              'A square is divided into 4 equal triangles by drawing lines from the center. What fraction of the square is each triangle?',
+          title: 'Square Divided into Triangles',
+          options: const ['1/2', '1/4', '1/3', '1/8'],
+          correctIndex: 1,
+          explanation:
+              'A square divided into 4 equal parts means each part is 1/4 of the whole.',
           concept: 'square_fractions',
-          difficulty: 'easy',
+          difficulty: Difficulty.easy,
         );
       case 'L1':
-        return QuestionData(
+        return _journeyQuestion(
           id: 'rescue_foundation_square_center_angle_001',
-          questionText: 'A square is divided from its center into 4 equal triangles. What is the measure of each central angle?',
-          diagram: DiagramData(
-            title: 'Square Central Angles',
-            elements: [],
-          ),
-          options: [
-            '45°', '90°', '180°', '360°'
-          ],
-          correctAnswer: 1, // 90°
-          explanation: 'A full circle is 360°. Dividing by 4 equal parts: 360° ÷ 4 = 90°.',
+          text:
+              'A square is divided from its center into 4 equal triangles. What is the measure of each central angle?',
+          title: 'Square Central Angles',
+          options: const ['45°', '90°', '180°', '360°'],
+          correctIndex: 1,
+          explanation:
+              'A full circle is 360°. Dividing by 4 equal parts gives 90°.',
           concept: 'square_center_angle',
-          difficulty: 'easy',
+          difficulty: Difficulty.easy,
         );
       default:
-        return QuestionData(
-          id: 'mock_question',
-          questionText: 'What is the central angle of a regular hexagon?',
-          diagram: DiagramData(
-            title: 'Hexagon Central Angle',
-            elements: [],
-          ),
-          options: [
-            '45°', '60°', '90°', '120°'
-          ],
-          correctAnswer: 1, // 60°
-          explanation: 'A hexagon has 6 sides. Central angle = 360° ÷ 6 = 60°.',
+        return _journeyQuestion(
+          id: level.questionIds.isNotEmpty
+              ? level.questionIds.first
+              : 'foundation_journey_question',
+          text: 'What is the central angle of a regular hexagon?',
+          title: 'Hexagon Central Angle',
+          options: const ['45°', '60°', '90°', '120°'],
+          correctIndex: 1,
+          explanation:
+              'A hexagon has 6 sides. Central angle = 360° ÷ 6 = 60°.',
           concept: 'hexagon_center_angle',
-          difficulty: 'medium',
+          difficulty: Difficulty.medium,
         );
     }
+  }
+
+  QuestionData _journeyQuestion({
+    required String id,
+    required String text,
+    required String title,
+    required List<String> options,
+    required int correctIndex,
+    required String explanation,
+    required String concept,
+    required Difficulty difficulty,
+  }) {
+    return QuestionData(
+      id: id,
+      text: text,
+      diagram: DiagramData(
+        id: '${id}_diagram',
+        type: DiagramType.geometry,
+        title: title,
+        elements: const [],
+      ),
+      options: options,
+      correctIndex: correctIndex,
+      explanation: explanation,
+      subject: 'Mathematics',
+      chapter: widget.journey.chapter,
+      topic: 'Geometry',
+      primaryConcept: concept,
+      coreConcept: concept,
+      difficulty: difficulty,
+      estimatedSeconds: widget.level.expectedTimeSeconds ?? 60,
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
-    if (_currentQuestion == null) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
 
     return Scaffold(
       appBar: AppBar(
@@ -126,12 +145,11 @@ class _FoundationJourneyQuestionScreenState extends State<FoundationJourneyQuest
         backgroundColor: theme.colorScheme.surface,
         elevation: 0,
         actions: [
-          // Progress indicator
           Padding(
             padding: const EdgeInsets.only(right: 16),
             child: Center(
               child: Text(
-                'Question ${_currentQuestionIndex + 1}/${widget.level.questionIds.length}',
+                'Question ${_currentQuestionIndex + 1}/$_questionCount',
                 style: theme.textTheme.bodySmall?.copyWith(
                   fontWeight: FontWeight.w600,
                 ),
@@ -142,34 +160,28 @@ class _FoundationJourneyQuestionScreenState extends State<FoundationJourneyQuest
       ),
       body: Column(
         children: [
-          // Level progress bar
           _LevelProgressBar(
             currentQuestion: _currentQuestionIndex + 1,
-            totalQuestions: widget.level.questionIds.length,
+            totalQuestions: _questionCount,
             levelTitle: widget.level.title,
           ),
-          
-          // Confidence selector (shown before question)
           if (_showConfidenceSelector)
             _ConfidenceSelector(
               selectedConfidence: _selectedConfidence,
               onConfidenceChanged: (confidence) {
-                setState(() {
-                  _selectedConfidence = confidence;
-                });
+                setState(() => _selectedConfidence = confidence);
               },
               onConfirm: () {
-                setState(() {
-                  _showConfidenceSelector = false;
-                });
+                final selectedIndex = _pendingSelectedIndex;
+                if (selectedIndex == null) return;
+                setState(() => _showConfidenceSelector = false);
+                _processAnswer(selectedIndex);
               },
             )
           else
-            // Question content
             Expanded(
               child: _QuestionContent(
-                question: _currentQuestion!,
-                level: widget.level,
+                question: _currentQuestion,
                 onAnswerSelected: _handleAnswerSelected,
                 isProcessing: _isProcessingAnswer,
               ),
@@ -179,58 +191,53 @@ class _FoundationJourneyQuestionScreenState extends State<FoundationJourneyQuest
     );
   }
 
-  void _handleAnswerSelected(int selectedIndex) async {
+  int get _questionCount => widget.level.questionIds.isEmpty
+      ? 1
+      : widget.level.questionIds.length;
+
+  void _handleAnswerSelected(int selectedIndex) {
     if (_isProcessingAnswer) return;
-    
-    setState(() => _isProcessingAnswer = true);
-    
-    // Show confidence selector before processing answer
     setState(() {
+      _pendingSelectedIndex = selectedIndex;
       _showConfidenceSelector = true;
-      _isProcessingAnswer = false;
     });
   }
 
-  void _processAnswer(int selectedIndex) async {
+  Future<void> _processAnswer(int selectedIndex) async {
     setState(() => _isProcessingAnswer = true);
-    
-    final isCorrect = selectedIndex == _currentQuestion!.correctAnswer;
+
+    final isCorrect = selectedIndex == _currentQuestion.correctIndex;
     final attempt = QuestionAttempt(
-      questionId: _currentQuestion!.id,
-      selectedOptionIndex: selectedIndex,
+      questionId: _currentQuestion.id,
       isCorrect: isCorrect,
       confidenceLevel: _selectedConfidence,
-      timeSpentSeconds: 60, // Mock time
+      timeSpentSeconds: widget.level.expectedTimeSeconds ?? 60,
       timestamp: DateTime.now(),
       levelIndex: widget.levelIndex,
     );
-    
+
     _attempts.add(attempt);
-    
-    // Get next step from progression engine
+
     final nextStep = widget.engine.getNextStep(
       state: widget.studentState,
       latestAttempt: attempt,
       journey: widget.journey,
     );
-    
-    // Update student state
     widget.engine.updateStudentState(widget.studentState, attempt, nextStep);
-    
-    // Show result dialog
+
+    if (!mounted) return;
     await _showResultDialog(isCorrect, nextStep);
-    
-    // Navigate based on next step
     if (mounted) {
+      _isProcessingAnswer = false;
       _handleNextStep(nextStep);
     }
   }
 
-  Future<void> _showResultDialog(bool isCorrect, JourneyStep nextStep) async {
+  Future<void> _showResultDialog(bool isCorrect, JourneyStep nextStep) {
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           title: Row(
             children: [
@@ -248,11 +255,11 @@ class _FoundationJourneyQuestionScreenState extends State<FoundationJourneyQuest
             children: [
               if (!isCorrect) ...[
                 Text(
-                  'The correct answer is: ${_currentQuestion!.options[_currentQuestion!.correctAnswer]}',
+                  'Correct answer: ${_currentQuestion.options[_currentQuestion.correctIndex]}',
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 8),
-                Text(_currentQuestion!.explanation),
+                Text(_currentQuestion.explanation ?? ''),
               ],
               const SizedBox(height: 16),
               Text(nextStep.message),
@@ -280,49 +287,26 @@ class _FoundationJourneyQuestionScreenState extends State<FoundationJourneyQuest
     switch (nextStep.action) {
       case JourneyAction.proceedToNext:
       case JourneyAction.jumpAhead:
-        // Move to next question or level
-        if (_currentQuestionIndex < widget.level.questionIds.length - 1) {
+      case JourneyAction.stayCurrent:
+        if (_currentQuestionIndex < _questionCount - 1) {
           setState(() {
             _currentQuestionIndex++;
             _loadCurrentQuestion();
           });
         } else {
-          // Level complete, go back to journey screen
-          Navigator.of(context).popUntil((route) => route.isFirst);
+          Navigator.of(context).pop();
         }
         break;
-        
       case JourneyAction.showMicroLesson:
-        // Show micro-lesson and repeat current question
         _showMicroLessonDialog();
         break;
-        
       case JourneyAction.goToPrevious:
-        // Go to previous level
-        Navigator.of(context).pop();
-        break;
-        
       case JourneyAction.repeatCurrent:
       case JourneyAction.repeatSimilar:
-        // Repeat current question
-        setState(() {
-          _loadCurrentQuestion();
-        });
+        setState(_loadCurrentQuestion);
         break;
-        
       case JourneyAction.journeyComplete:
-        // Journey completed
         _showJourneyCompleteDialog();
-        break;
-        
-      case JourneyAction.stayCurrent:
-        // Continue with current level
-        if (_currentQuestionIndex < widget.level.questionIds.length - 1) {
-          setState(() {
-            _currentQuestionIndex++;
-            _loadCurrentQuestion();
-          });
-        }
         break;
     }
   }
@@ -331,43 +315,15 @@ class _FoundationJourneyQuestionScreenState extends State<FoundationJourneyQuest
     showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
           title: Text(widget.level.microLesson.title),
-          content: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(widget.level.microLesson.body),
-                const SizedBox(height: 16),
-                if (widget.level.microLesson.visualHintIds.isNotEmpty) ...[
-                  Text(
-                    'Key Points:',
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                  const SizedBox(height: 8),
-                  ...widget.level.microLesson.visualHintIds.map((hint) => Padding(
-                    padding: const EdgeInsets.only(bottom: 4),
-                    child: Row(
-                      children: [
-                        Icon(Icons.lightbulb_outline, size: 16),
-                        const SizedBox(width: 8),
-                        Expanded(child: Text(hint.replaceAll('_', ' ').toUpperCase())),
-                      ],
-                    ),
-                  )),
-                ],
-              ],
-            ),
-          ),
+          content: Text(widget.level.microLesson.body),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
-                setState(() {
-                  _loadCurrentQuestion();
-                });
+                setState(_loadCurrentQuestion);
               },
               child: const Text('Try Again'),
             ),
@@ -378,32 +334,25 @@ class _FoundationJourneyQuestionScreenState extends State<FoundationJourneyQuest
   }
 
   void _showJourneyCompleteDialog() {
+    final accuracy = _attempts.isEmpty
+        ? 0
+        : (_attempts.where((a) => a.isCorrect).length / _attempts.length * 100)
+            .round();
+
     showDialog<void>(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) {
+      builder: (context) {
         return AlertDialog(
-          title: Row(
+          title: const Row(
             children: [
               Icon(Icons.emoji_events, color: Colors.amber),
-              const SizedBox(width: 8),
-              const Text('Journey Complete!'),
+              SizedBox(width: 8),
+              Text('Journey Complete!'),
             ],
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text('Congratulations! You have completed the Foundation Journey.'),
-              const SizedBox(height: 16),
-              Text(
-                'Total attempts: ${_attempts.length}',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              Text(
-                'Accuracy: ${(_attempts.where((a) => a.isCorrect).length / _attempts.length * 100).round()}%',
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-            ],
+          content: Text(
+            'Total attempts: ${_attempts.length}\nAccuracy: $accuracy%',
           ),
           actions: [
             TextButton(
@@ -433,28 +382,18 @@ class _LevelProgressBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final progress = currentQuestion / totalQuestions;
-    
-    return Container(
+    final progress = totalQuestions == 0 ? 0.0 : currentQuestion / totalQuestions;
+
+    return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            levelTitle,
-            style: theme.textTheme.titleMedium,
-          ),
+          Text(levelTitle, style: theme.textTheme.titleMedium),
           const SizedBox(height: 8),
-          LinearProgressIndicator(
-            value: progress,
-            backgroundColor: theme.colorScheme.outline.withOpacity(0.2),
-            valueColor: AlwaysStoppedAnimation<Color>(theme.colorScheme.primary),
-          ),
+          LinearProgressIndicator(value: progress.clamp(0.0, 1.0)),
           const SizedBox(height: 4),
-          Text(
-            '$currentQuestion of $totalQuestions questions',
-            style: theme.textTheme.bodySmall,
-          ),
+          Text('$currentQuestion of $totalQuestions questions'),
         ],
       ),
     );
@@ -463,7 +402,7 @@ class _LevelProgressBar extends StatelessWidget {
 
 class _ConfidenceSelector extends StatelessWidget {
   final ConfidenceLevel selectedConfidence;
-  final Function(ConfidenceLevel) onConfidenceChanged;
+  final ValueChanged<ConfidenceLevel> onConfidenceChanged;
   final VoidCallback onConfirm;
 
   const _ConfidenceSelector({
@@ -475,28 +414,25 @@ class _ConfidenceSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
-    return Container(
+
+    return Padding(
       padding: const EdgeInsets.all(24),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text(
-            'How confident are you?',
-            style: theme.textTheme.titleLarge,
-          ),
+          Text('How confident are you?', style: theme.textTheme.titleLarge),
           const SizedBox(height: 16),
-          ...ConfidenceLevel.values.map((confidence) => RadioListTile<ConfidenceLevel>(
-            title: Text(confidence.displayName),
-            subtitle: Text(confidence.description),
-            value: confidence,
-            groupValue: selectedConfidence,
-            onChanged: (value) {
-              if (value != null) {
-                onConfidenceChanged(value);
-              }
-            },
-          )),
+          ...ConfidenceLevel.values.map(
+            (confidence) => RadioListTile<ConfidenceLevel>(
+              title: Text(confidence.displayName),
+              subtitle: Text(confidence.description),
+              value: confidence,
+              groupValue: selectedConfidence,
+              onChanged: (value) {
+                if (value != null) onConfidenceChanged(value);
+              },
+            ),
+          ),
           const SizedBox(height: 16),
           SizedBox(
             width: double.infinity,
@@ -513,13 +449,11 @@ class _ConfidenceSelector extends StatelessWidget {
 
 class _QuestionContent extends StatelessWidget {
   final QuestionData question;
-  final JourneyLevel level;
-  final Function(int) onAnswerSelected;
+  final ValueChanged<int> onAnswerSelected;
   final bool isProcessing;
 
   const _QuestionContent({
     required this.question,
-    required this.level,
     required this.onAnswerSelected,
     required this.isProcessing,
   });
@@ -527,25 +461,19 @@ class _QuestionContent extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Question text
-          Text(
-            question.questionText,
-            style: theme.textTheme.titleLarge,
-          ),
+          Text(question.text, style: theme.textTheme.titleLarge),
           const SizedBox(height: 24),
-          
-          // Diagram placeholder
           Container(
             width: double.infinity,
             height: 200,
             decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceVariant,
+              color: theme.colorScheme.surfaceContainerHighest,
               borderRadius: BorderRadius.circular(12),
               border: Border.all(
                 color: theme.colorScheme.outline.withOpacity(0.2),
@@ -561,7 +489,7 @@ class _QuestionContent extends StatelessWidget {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  question.diagram.title,
+                  question.diagram.title ?? 'Diagram',
                   style: theme.textTheme.bodyMedium?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
@@ -570,18 +498,15 @@ class _QuestionContent extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 24),
-          
-          // Answer options
           ...question.options.asMap().entries.map((entry) {
             final index = entry.key;
-            final option = entry.value;
-            
             return Padding(
               padding: const EdgeInsets.only(bottom: 12),
               child: SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(
-                  onPressed: isProcessing ? null : () => onAnswerSelected(index),
+                  onPressed:
+                      isProcessing ? null : () => onAnswerSelected(index),
                   style: OutlinedButton.styleFrom(
                     padding: const EdgeInsets.all(16),
                     alignment: Alignment.centerLeft,
@@ -590,9 +515,10 @@ class _QuestionContent extends StatelessWidget {
                     children: [
                       CircleAvatar(
                         radius: 16,
-                        backgroundColor: theme.colorScheme.primary.withOpacity(0.1),
+                        backgroundColor:
+                            theme.colorScheme.primary.withOpacity(0.1),
                         child: Text(
-                          String.fromCharCode(65 + index), // A, B, C, D
+                          String.fromCharCode(65 + index),
                           style: TextStyle(
                             color: theme.colorScheme.primary,
                             fontWeight: FontWeight.bold,
@@ -600,31 +526,29 @@ class _QuestionContent extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(width: 16),
-                      Expanded(
-                        child: Text(
-                          option,
-                          style: theme.textTheme.bodyLarge,
-                        ),
-                      ),
+                      Expanded(child: Text(entry.value)),
                     ],
                   ),
                 ),
               ),
             );
           }),
-          
-          const SizedBox(height: 24),
-          
-          // Hint button (if allowed)
           if (PracticeMode.foundationJourney.allowHints) ...[
+            const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
-                onPressed: isProcessing ? null : () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Hint: Think about how many equal parts the shape is divided into.')),
-                  );
-                },
+                onPressed: isProcessing
+                    ? null
+                    : () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                              'Hint: Think about how many equal parts the shape is divided into.',
+                            ),
+                          ),
+                        );
+                      },
                 icon: const Icon(Icons.lightbulb_outline),
                 label: const Text('Get Hint'),
               ),
@@ -640,22 +564,22 @@ extension ConfidenceLevelExtension on ConfidenceLevel {
   String get displayName {
     switch (this) {
       case ConfidenceLevel.notSure:
-        return 'Not Sure';
+        return 'Not sure';
       case ConfidenceLevel.somewhatSure:
-        return 'Somewhat Sure';
+        return 'Somewhat sure';
       case ConfidenceLevel.verySure:
-        return 'Very Sure';
+        return 'Very sure';
     }
   }
 
   String get description {
     switch (this) {
       case ConfidenceLevel.notSure:
-        return 'I\'m guessing or need help';
+        return 'I guessed or need help';
       case ConfidenceLevel.somewhatSure:
-        return 'I think I know, but not 100%';
+        return 'I think I understand';
       case ConfidenceLevel.verySure:
-        return 'I\'m confident in my answer';
+        return 'I can explain this';
     }
   }
 }

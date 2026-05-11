@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:diagram_engine/main.dart';
@@ -19,8 +18,23 @@ void main() {
 
   testWidgets('Navigate to question screen', (tester) async {
     await tester.pumpWidget(const DiagramEngineApp());
-    await tester.tap(find.textContaining('Solve with Interactive Diagrams'));
+    final practiceCta = find.textContaining('Solve with Interactive Diagrams');
+    await tester.scrollUntilVisible(practiceCta, 400);
+    await tester.tap(practiceCta);
     await tester.pumpAndSettle();
     expect(find.textContaining('Q1 of'), findsOneWidget);
+  });
+
+  testWidgets('Navigate to Foundation Journey and load content',
+      (tester) async {
+    await tester.pumpWidget(const DiagramEngineApp());
+    final journeyCta = find.text('Start Journey');
+    await tester.ensureVisible(journeyCta);
+    await tester.tap(journeyCta);
+    await tester.pumpAndSettle();
+
+    expect(find.text('Foundation Journey'), findsWidgets);
+    expect(find.text('From Square to JEE Octagon'), findsOneWidget);
+    expect(find.text('Familiar: Square Parts'), findsWidgets);
   });
 }

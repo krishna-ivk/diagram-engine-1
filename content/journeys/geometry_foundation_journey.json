@@ -113,7 +113,7 @@
         "body": "JEE questions combine multiple concepts. Break them down: identify shapes, recall formulas, apply step by step.",
         "visual_hint_ids": ["problem_breakdown", "formula_recall", "step_by_step"]
       },
-      "question_ids": ["jee_math_regular_polygon_2023_session_1_Q12"],
+      "question_ids": ["jee_math_regular_polygon_001"],
       "prerequisites": ["L4"],
       "unlock_threshold": {
         "correct_required": 1,

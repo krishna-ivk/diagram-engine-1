@@ -2,7 +2,7 @@
   "ladder_info": {
     "ladder_id": "geometry_regular_polygon_progression",
     "target_concept": "central_angle_regular_polygon",
-    "target_question_id": "jee_math_regular_polygon_2023_session_1_Q12",
+    "target_question_id": "jee_math_regular_polygon_001",
     "description": "Three-level rescue ladder for regular polygon central angle concepts",
     "total_questions": 3
   },

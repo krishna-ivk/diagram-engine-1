@@ -1,3 +1,5 @@
+import 'dart:math' as math;
+
 import 'package:flutter/material.dart';
 import '../models/question_data.dart';
 
@@ -23,7 +25,7 @@ class _DiagramManipulativesState extends State<DiagramManipulatives> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -122,7 +124,7 @@ class _SidesSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -135,7 +137,7 @@ class _SidesSlider extends StatelessWidget {
           children: ['3', '4', '5', '6', '8'].asMap().entries.map((entry) {
             final sides = int.parse(entry.value);
             final isSelected = value == sides;
-            
+
             return Expanded(
               child: GestureDetector(
                 onTap: () => onChanged(sides),
@@ -143,13 +145,13 @@ class _SidesSlider extends StatelessWidget {
                   margin: const EdgeInsets.only(right: 4),
                   padding: const EdgeInsets.symmetric(vertical: 12),
                   decoration: BoxDecoration(
-                    color: isSelected 
-                        ? theme.colorScheme.primary 
-                        : theme.colorScheme.surfaceVariant,
+                    color: isSelected
+                        ? theme.colorScheme.primary
+                        : theme.colorScheme.surfaceContainerHighest,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(
-                      color: isSelected 
-                          ? theme.colorScheme.primary 
+                      color: isSelected
+                          ? theme.colorScheme.primary
                           : theme.colorScheme.outline,
                     ),
                   ),
@@ -157,10 +159,11 @@ class _SidesSlider extends StatelessWidget {
                     entry.value,
                     textAlign: TextAlign.center,
                     style: TextStyle(
-                      color: isSelected 
-                          ? theme.colorScheme.onPrimary 
+                      color: isSelected
+                          ? theme.colorScheme.onPrimary
                           : theme.colorScheme.onSurfaceVariant,
-                      fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                      fontWeight:
+                          isSelected ? FontWeight.bold : FontWeight.normal,
                     ),
                   ),
                 ),
@@ -181,12 +184,18 @@ class _SidesSlider extends StatelessWidget {
 
   String _getShapeName(int sides) {
     switch (sides) {
-      case 3: return 'Triangle';
-      case 4: return 'Square/Rectangle';
-      case 5: return 'Pentagon';
-      case 6: return 'Hexagon';
-      case 8: return 'Octagon';
-      default: return 'Polygon';
+      case 3:
+        return 'Triangle';
+      case 4:
+        return 'Square/Rectangle';
+      case 5:
+        return 'Pentagon';
+      case 6:
+        return 'Hexagon';
+      case 8:
+        return 'Octagon';
+      default:
+        return 'Polygon';
     }
   }
 }
@@ -203,7 +212,7 @@ class _PolygonSidesSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -250,7 +259,7 @@ class _AngleCalculator extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final centralAngle = 360 / sides;
-    
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -300,7 +309,7 @@ class _HexagonSlider extends StatelessWidget {
     final theme = Theme.of(context);
     final centralAngle = 60.0; // Hexagon central angle
     final area = 0.5 * value * value * (3 * 0.866); // Using √3/2 ≈ 0.866
-    
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -321,7 +330,7 @@ class _HexagonSlider extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceVariant,
+            color: theme.colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(6),
           ),
           child: Column(
@@ -355,8 +364,9 @@ class _TriangleAreaCalculator extends StatelessWidget {
     final theme = Theme.of(context);
     final angle = 60.0; // Hexagon central triangle
     final radians = angle * 3.14159 / 180;
-    final area = 0.5 * side * side * (radians == 0 ? 1 : radians.sin()); // sin(60°)
-    
+    final area =
+        0.5 * side * side * (radians == 0 ? 1 : radians.sin()); // sin(60°)
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -412,8 +422,9 @@ class _OctagonSlider extends StatelessWidget {
     final theme = Theme.of(context);
     final centralAngle = 45.0; // Octagon central angle
     final radians = centralAngle * 3.14159 / 180;
-    final sideLength = 2 * value * (radians == 0 ? 0.5 : radians.sin()); // 2r sin(θ/2)
-    
+    final sideLength =
+        2 * value * (radians == 0 ? 0.5 : radians.sin()); // 2r sin(θ/2)
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -434,7 +445,7 @@ class _OctagonSlider extends StatelessWidget {
         Container(
           padding: const EdgeInsets.all(8),
           decoration: BoxDecoration(
-            color: theme.colorScheme.surfaceVariant,
+            color: theme.colorScheme.surfaceContainerHighest,
             borderRadius: BorderRadius.circular(6),
           ),
           child: Column(
@@ -470,9 +481,10 @@ class _CosineCalculator extends StatelessWidget {
     final theme = Theme.of(context);
     final centralAngle = 360.0 / sides;
     final radians = centralAngle * 3.14159 / 180;
-    final sideSquared = 2 * radius * radius * (1 - (radians == 0 ? 1 : radians.cos()));
+    final sideSquared =
+        2 * radius * radius * (1 - (radians == 0 ? 1 : radians.cos()));
     final sideLength = sideSquared.sqrt();
-    
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -524,7 +536,7 @@ class _AreaCalculator extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -577,7 +589,7 @@ class _ShapeSubtraction extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -677,5 +689,3 @@ extension on double {
   double cos() => math.cos(this);
   double sqrt() => math.sqrt(this);
 }
-
-import 'dart:math' as math;
