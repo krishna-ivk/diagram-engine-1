@@ -8,6 +8,7 @@ import '../models/question_data.dart';
 import '../models/revision_manager.dart';
 import '../widgets/premium_gate.dart';
 import 'question_screen.dart';
+import 'topic_revision_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -59,6 +60,17 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  void _startTopicRevision() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => TopicRevisionScreen(
+          questions: mockQuestions,
+        ),
+      ),
+    );
+  }
+
   void _showPerformanceSummary() {
     final topics = _tracker.getTopicPerformance();
     if (topics.isEmpty) {
@@ -88,9 +100,11 @@ class _HomeScreenState extends State<HomeScreen> {
       body: SafeArea(
         child: Padding(
           padding: const EdgeInsets.all(24),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
+          child: SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: [
               const SizedBox(height: 20),
               // Theme toggle
               Align(
@@ -208,7 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                       color: Colors.purple.shade700),
                                 ),
                                 const SizedBox(width: 12),
-                                Expanded(
+                                Flexible(
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
@@ -310,7 +324,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           Icon(Icons.lock_outline,
                               size: 18, color: Colors.grey.shade600),
                         const SizedBox(width: 10),
-                        Expanded(
+                        Flexible(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -347,7 +361,12 @@ class _HomeScreenState extends State<HomeScreen> {
                             setState(() {});
                           },
                           activeTrackColor: Colors.amber.shade200,
-                          activeThumbColor: Colors.amber.shade700,
+                          thumbColor: WidgetStateProperty.resolveWith((states) {
+                            if (states.contains(WidgetState.selected)) {
+                              return Colors.amber.shade700;
+                            }
+                            return null;
+                          }),
                         ),
                       ],
                     ),
@@ -359,8 +378,9 @@ class _HomeScreenState extends State<HomeScreen> {
               // Buttons
               Row(
                 children: [
-                  Expanded(
+                  Flexible(
                     flex: 3,
+                    fit: FlexFit.loose,
                     child: SizedBox(
                       height: 56,
                       child: FilledButton.icon(
@@ -387,8 +407,24 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ],
               ),
+              const SizedBox(height: 12),
+              
+              // Topic Revision Button with Animations
+              SizedBox(
+                height: 56,
+                width: double.infinity,
+                child: FilledButton.tonalIcon(
+                  onPressed: _startTopicRevision,
+                  icon: const Icon(Icons.animation),
+                  label: const Text(
+                    'Revise Topics with Animations',
+                    style: TextStyle(fontSize: 15),
+                  ),
+                ),
+              ),
               const SizedBox(height: 16),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -427,7 +463,7 @@ class _DiagramPreviewCard extends StatelessWidget {
                 Icon(Icons.schema, size: 28, color: Colors.indigo.shade600),
           ),
           const SizedBox(width: 12),
-          Expanded(
+          Flexible(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -477,7 +513,7 @@ class _DiagramPreviewCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.15),
+        color: color.withOpacity(0.15),
         borderRadius: BorderRadius.circular(6),
       ),
       child: Text(
@@ -629,7 +665,7 @@ class _TopicRow extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 8),
-          Expanded(
+          Flexible(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -657,7 +693,7 @@ class _TopicRow extends StatelessWidget {
               borderRadius: BorderRadius.circular(4),
               child: LinearProgressIndicator(
                 value: performance.accuracy,
-                backgroundColor: color.withValues(alpha: 0.15),
+                backgroundColor: color.withOpacity(0.15),
                 color: color,
                 minHeight: 6,
               ),

@@ -15,7 +15,7 @@ class DiagramEngineApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder<ThemeMode>(
       valueListenable: themeNotifier,
-      builder: (_, mode, _) {
+      builder: (context, mode, child) {
         return MaterialApp(
           title: 'Diagram Engine',
           debugShowCheckedModeBanner: false,

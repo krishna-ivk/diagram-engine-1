@@ -103,7 +103,7 @@ class _InsightPanelState extends State<InsightPanel>
           border: Border.all(color: Colors.indigo.shade200),
           boxShadow: [
             BoxShadow(
-              color: Colors.indigo.withValues(alpha: 0.08),
+              color: Colors.indigo.withOpacity(0.08),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),

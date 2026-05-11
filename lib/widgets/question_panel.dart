@@ -166,7 +166,7 @@ class _QuestionPanelState extends State<QuestionPanel> {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: _timerResultColor.withValues(alpha: 0.1),
+                color: _timerResultColor.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(8),
               ),
               child: Row(
@@ -261,6 +261,7 @@ class _QuestionPanelState extends State<QuestionPanel> {
                 onTap: widget.showAnswer
                     ? null
                     : () => widget.onOptionSelected(i),
+                index: i,
               ),
             );
           }),
@@ -323,7 +324,7 @@ class _QuestionPanelState extends State<QuestionPanel> {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
+        color: color.withOpacity(0.12),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Text(
@@ -484,7 +485,7 @@ class _ExplanationCardState extends State<_ExplanationCard>
   }
 }
 
-class _OptionTile extends StatelessWidget {
+class _OptionTile extends StatefulWidget {
   final String label;
   final String text;
   final bool isSelected;
@@ -492,6 +493,7 @@ class _OptionTile extends StatelessWidget {
   final bool isWrong;
   final bool showAnswer;
   final VoidCallback? onTap;
+  final int index;
 
   const _OptionTile({
     required this.label,
@@ -501,7 +503,66 @@ class _OptionTile extends StatelessWidget {
     required this.isWrong,
     required this.showAnswer,
     this.onTap,
+    this.index = 0,
   });
+
+  @override
+  State<_OptionTile> createState() => _OptionTileState();
+}
+
+class _OptionTileState extends State<_OptionTile>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final AnimationController _bounceController;
+  late final Animation<double> _slideAnimation;
+  late final Animation<double> _fadeAnimation;
+  late final Animation<double> _bounceAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    );
+    _bounceController = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    );
+    _slideAnimation = Tween<double>(begin: 30.0, end: 0.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOutCubic),
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _controller, curve: Curves.easeOut),
+    );
+    _bounceAnimation = TweenSequence<double>([
+      TweenSequenceItem(tween: Tween(begin: 0.0, end: 12.0), weight: 1),
+      TweenSequenceItem(tween: Tween(begin: 12.0, end: -8.0), weight: 1),
+      TweenSequenceItem(tween: Tween(begin: -8.0, end: 4.0), weight: 1),
+      TweenSequenceItem(tween: Tween(begin: 4.0, end: 0.0), weight: 1),
+    ]).animate(CurvedAnimation(parent: _bounceController, curve: Curves.easeOut));
+
+    Future.delayed(Duration(milliseconds: 50 * widget.index), () {
+      if (mounted) _controller.forward();
+    });
+  }
+
+  @override
+  void didUpdateWidget(_OptionTile oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if ((widget.isCorrect || widget.isWrong) &&
+        !oldWidget.showAnswer &&
+        widget.showAnswer) {
+      _bounceController.forward(from: 0.0);
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _bounceController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -509,15 +570,15 @@ class _OptionTile extends StatelessWidget {
     Color bgColor;
     Color labelBg;
 
-    if (isCorrect) {
+    if (widget.isCorrect) {
       borderColor = Colors.green.shade400;
       bgColor = Colors.green.shade50;
       labelBg = Colors.green;
-    } else if (isWrong) {
+    } else if (widget.isWrong) {
       borderColor = Colors.red.shade400;
       bgColor = Colors.red.shade50;
       labelBg = Colors.red;
-    } else if (isSelected) {
+    } else if (widget.isSelected) {
       borderColor = Colors.blue.shade400;
       bgColor = Colors.blue.shade50;
       labelBg = Colors.blue;
@@ -527,53 +588,69 @@ class _OptionTile extends StatelessWidget {
       labelBg = Colors.grey.shade600;
     }
 
-    return Material(
-      color: bgColor,
-      borderRadius: BorderRadius.circular(12),
-      child: InkWell(
-        borderRadius: BorderRadius.circular(12),
-        onTap: onTap,
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: borderColor, width: 1.5),
+    return AnimatedBuilder(
+      animation: Listenable.merge([_controller, _bounceController]),
+      builder: (context, child) {
+        final bounceOffset = (widget.isCorrect || widget.isWrong) && widget.showAnswer
+            ? _bounceAnimation.value
+            : 0.0;
+        return Transform.translate(
+          offset: Offset(0, _slideAnimation.value + bounceOffset),
+          child: Opacity(
+            opacity: _fadeAnimation.value,
+            child: child,
           ),
-          child: Row(
-            children: [
-              Container(
-                width: 28,
-                height: 28,
-                decoration: BoxDecoration(
-                  color: labelBg,
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                alignment: Alignment.center,
-                child: Text(
-                  label,
-                  style: const TextStyle(
-                    color: Colors.white,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 14,
+        );
+      },
+      child: Material(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: widget.onTap,
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(color: borderColor, width: 1.5),
+            ),
+            child: Row(
+              children: [
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  width: 28,
+                  height: 28,
+                  decoration: BoxDecoration(
+                    color: labelBg,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  alignment: Alignment.center,
+                  child: Text(
+                    widget.label,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  text,
-                  style: TextStyle(
-                    fontSize: 15,
-                    fontWeight:
-                        isSelected ? FontWeight.w600 : FontWeight.normal,
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Text(
+                    widget.text,
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight:
+                          widget.isSelected ? FontWeight.w600 : FontWeight.normal,
+                    ),
                   ),
                 ),
-              ),
-              if (isCorrect)
-                const Icon(Icons.check_circle, color: Colors.green, size: 22),
-              if (isWrong)
-                const Icon(Icons.cancel, color: Colors.red, size: 22),
-            ],
+                if (widget.isCorrect)
+                  const Icon(Icons.check_circle, color: Colors.green, size: 22),
+                if (widget.isWrong)
+                  const Icon(Icons.cancel, color: Colors.red, size: 22),
+              ],
+            ),
           ),
         ),
       ),

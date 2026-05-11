@@ -1,22 +1,35 @@
+import 'question_data.dart';
+import 'concept_mastery.dart';
+
 class QuestionAttempt {
   final String questionId;
   final String topic;
   final String coreConcept;
+  final String primaryConcept;
+  final String subject;
+  final String chapter;
   final bool correct;
   final int timeSeconds;
   final int tapCount;
   final int hintsUsed;
+  final int expectedTimeSeconds;
   final DateTime timestamp;
+  final bool isRevision;
 
   const QuestionAttempt({
     required this.questionId,
     required this.topic,
     required this.coreConcept,
+    required this.primaryConcept,
+    required this.subject,
+    required this.chapter,
     required this.correct,
     required this.timeSeconds,
     required this.tapCount,
     required this.hintsUsed,
+    required this.expectedTimeSeconds,
     required this.timestamp,
+    this.isRevision = false,
   });
 }
 
@@ -107,5 +120,179 @@ class PerformanceTracker {
       return 'You use many hints for $topic. Try solving without hints.';
     }
     return null;
+  }
+
+  // Concept-level mastery tracking
+  Map<String, ConceptMastery> getConceptMasteries() {
+    final byConcept = <String, List<QuestionAttempt>>{};
+    for (final a in _attempts) {
+      final conceptId = a.primaryConcept.isNotEmpty
+          ? a.primaryConcept
+          : a.coreConcept;
+      byConcept.putIfAbsent(conceptId, () => []).add(a);
+    }
+
+    return byConcept.map((conceptId, attempts) {
+      final correct = attempts.where((a) => a.correct).length;
+      final hints = attempts.map((a) => a.hintsUsed).reduce((a, b) => a + b);
+      final totalTime = attempts.map((a) => a.timeSeconds).reduce((a, b) => a + b);
+      final expected = attempts.map((a) => a.expectedTimeSeconds).reduce((a, b) => a + b);
+      final revisions = attempts.where((a) => a.isRevision).toList();
+      final revisionCorrect = revisions.where((a) => a.correct).length;
+
+      // Get recent accuracies for last 5 attempts
+      final recent = attempts.length > 5 ? attempts.sublist(attempts.length - 5) : attempts;
+      final recentAccuracies = recent.map((a) => a.correct ? 1.0 : 0.0).toList();
+
+      final mastery = ConceptMastery.calculate(
+        conceptId: conceptId,
+        conceptName: _getConceptDisplayName(conceptId),
+        subject: attempts.first.subject,
+        chapter: attempts.first.chapter,
+        totalAttempts: attempts.length,
+        correctAttempts: correct,
+        totalHintsUsed: hints,
+        expectedTimeSeconds: expected,
+        totalTimeSpentSeconds: totalTime,
+        revisionCount: revisions.length,
+        revisionCorrectCount: revisionCorrect,
+        recentAccuracies: recentAccuracies,
+      );
+
+      return MapEntry(conceptId, mastery);
+    });
+  }
+
+  String _getConceptDisplayName(String conceptId) {
+    // Convert snake_case to Title Case
+    return conceptId
+        .split('_')
+        .map((word) => word.isNotEmpty
+            ? word[0].toUpperCase() + word.substring(1)
+            : '')
+        .join(' ');
+  }
+
+  List<ConceptMastery> getWeakConcepts() {
+    return getConceptMasteries()
+        .values
+        .where((m) => m.state == MasteryState.weak)
+        .toList()
+      ..sort((a, b) => a.masteryScore.compareTo(b.masteryScore));
+  }
+
+  List<ConceptMastery> getConceptsNeedingPractice() {
+    return getConceptMasteries()
+        .values
+        .where((m) =>
+            m.state == MasteryState.weak ||
+            m.state == MasteryState.developing)
+        .toList()
+      ..sort((a, b) => a.state.priority.compareTo(b.state.priority));
+  }
+
+  List<ConceptMastery> getConceptsBySubject(String subject) {
+    return getConceptMasteries()
+        .values
+        .where((m) => m.subject == subject)
+        .toList()
+      ..sort((a, b) => a.state.priority.compareTo(b.state.priority));
+  }
+
+  Map<String, double> getSubjectMasteries() {
+    final concepts = getConceptMasteries();
+    final bySubject = <String, List<ConceptMastery>>{};
+
+    for (final mastery in concepts.values) {
+      bySubject.putIfAbsent(mastery.subject, () => []).add(mastery);
+    }
+
+    return bySubject.map((subject, masteries) {
+      final avg = masteries.map((m) => m.masteryScore).reduce((a, b) => a + b) /
+          masteries.length;
+      return MapEntry(subject, avg);
+    });
+  }
+
+  double getOverallMastery() {
+    final concepts = getConceptMasteryList();
+    if (concepts.isEmpty) return 0.0;
+    return concepts.map((m) => m.masteryScore).reduce((a, b) => a + b) /
+        concepts.length;
+  }
+
+  List<ConceptMastery> getConceptMasteryList() {
+    return getConceptMasteries().values.toList()
+      ..sort((a, b) => a.state.priority.compareTo(b.state.priority));
+  }
+
+  // Study streak tracking
+  int getStudyStreak() {
+    if (_attempts.isEmpty) return 0;
+
+    final sortedAttempts = List<QuestionAttempt>.from(_attempts)
+      ..sort((a, b) => b.timestamp.compareTo(a.timestamp));
+
+    int streak = 0;
+    DateTime? lastDate;
+
+    for (final attempt in sortedAttempts) {
+      final attemptDate = DateTime(
+        attempt.timestamp.year,
+        attempt.timestamp.month,
+        attempt.timestamp.day,
+      );
+
+      if (lastDate == null) {
+        final today = DateTime.now();
+        final todayDate = DateTime(today.year, today.month, today.day);
+        if (attemptDate == todayDate || attemptDate == todayDate.subtract(const Duration(days: 1))) {
+          streak = 1;
+          lastDate = attemptDate;
+        } else {
+          break;
+        }
+      } else {
+        final diff = lastDate.difference(attemptDate).inDays;
+        if (diff == 1) {
+          streak++;
+          lastDate = attemptDate;
+        } else {
+          break;
+        }
+      }
+    }
+
+    return streak;
+  }
+
+  // Time-based analytics
+  Map<String, dynamic> getWeeklyProgress() {
+    final now = DateTime.now();
+    final weekAgo = now.subtract(const Duration(days: 7));
+
+    final thisWeek = _attempts.where((a) => a.timestamp.isAfter(weekAgo)).toList();
+    final correctThisWeek = thisWeek.where((a) => a.correct).length;
+
+    return {
+      'attemptsThisWeek': thisWeek.length,
+      'correctThisWeek': correctThisWeek,
+      'accuracyThisWeek': thisWeek.isNotEmpty ? correctThisWeek / thisWeek.length : 0.0,
+      'totalTimeThisWeek': thisWeek.map((a) => a.timeSeconds).fold(0, (a, b) => a + b),
+    };
+  }
+
+  // Exam readiness score (0-100)
+  int getExamReadinessScore() {
+    final overallMastery = getOverallMastery();
+    final streak = getStudyStreak();
+    final weekly = getWeeklyProgress();
+
+    // Weighted formula
+    final masteryWeight = overallMastery * 0.5;
+    final streakWeight = (streak.clamp(0, 7) / 7) * 100 * 0.2;
+    final consistencyWeight = (weekly['accuracyThisWeek'] as double) * 100 * 0.3;
+
+    return (masteryWeight + streakWeight + consistencyWeight).round().clamp(0, 100);
   }
 }

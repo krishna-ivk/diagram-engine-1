@@ -14,6 +14,8 @@ class DiagramPainter extends CustomPainter {
   final Color backgroundColor;
   final double pulseValue;
   final bool isDarkMode;
+  final double drawProgress;
+  final bool animateDrawing;
 
   DiagramPainter({
     required this.elements,
@@ -24,6 +26,8 @@ class DiagramPainter extends CustomPainter {
     this.backgroundColor = Colors.white,
     this.pulseValue = 0.0,
     this.isDarkMode = false,
+    this.drawProgress = 1.0,
+    this.animateDrawing = false,
   });
 
   Color get _defaultColor => isDarkMode ? Colors.white70 : Colors.black87;
@@ -84,7 +88,7 @@ class DiagramPainter extends CustomPainter {
 
     if (highlighted && _pulseGlow > 0) {
       final glowPaint = Paint()
-        ..color = Colors.orange.withValues(alpha: 0.25 * _pulseGlow)
+        ..color = Colors.orange.withOpacity(0.25 * _pulseGlow)
         ..style = PaintingStyle.fill
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 8);
       canvas.drawCircle(pos, 12 * _pulseScale, glowPaint);
@@ -117,7 +121,7 @@ class DiagramPainter extends CustomPainter {
 
     if (highlighted && _pulseGlow > 0) {
       final glowPaint = Paint()
-        ..color = Colors.blue.shade300.withValues(alpha: 0.3 * _pulseGlow)
+        ..color = Colors.blue.shade300.withOpacity(0.3 * _pulseGlow)
         ..strokeWidth = 8.0
         ..style = PaintingStyle.stroke
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
@@ -130,10 +134,14 @@ class DiagramPainter extends CustomPainter {
       ..strokeWidth = highlighted ? 3.0 : 2.0
       ..style = PaintingStyle.stroke;
 
+    final endPoint = animateDrawing
+        ? Offset.lerp(from, to, drawProgress.clamp(0.0, 1.0))!
+        : to;
+
     if (isDashed) {
-      _drawDashedLine(canvas, from, to, paint);
+      _drawDashedLine(canvas, from, endPoint, paint);
     } else {
-      canvas.drawLine(from, to, paint);
+      canvas.drawLine(from, endPoint, paint);
     }
   }
 
@@ -164,7 +172,7 @@ class DiagramPainter extends CustomPainter {
 
     if (highlighted && _pulseGlow > 0) {
       final glowPaint = Paint()
-        ..color = Colors.blue.shade200.withValues(alpha: 0.25 * _pulseGlow)
+        ..color = Colors.blue.shade200.withOpacity(0.25 * _pulseGlow)
         ..strokeWidth = 8.0
         ..style = PaintingStyle.stroke
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
@@ -217,8 +225,8 @@ class DiagramPainter extends CustomPainter {
 
     final paint = Paint()
       ..color = highlighted
-          ? Colors.blue.shade100.withValues(alpha: 0.5)
-          : Colors.grey.shade200.withValues(alpha: 0.3)
+          ? Colors.blue.shade100.withOpacity(0.5)
+          : Colors.grey.shade200.withOpacity(0.3)
       ..style = PaintingStyle.fill;
     canvas.drawPath(path, paint);
 
@@ -294,11 +302,16 @@ class DiagramPainter extends CustomPainter {
       ..strokeWidth = highlighted ? 3.0 : 2.0
       ..style = PaintingStyle.stroke;
 
-    canvas.drawLine(from, to, paint);
+    final endPoint = animateDrawing
+        ? Offset.lerp(from, to, drawProgress.clamp(0.0, 1.0))!
+        : to;
 
-    // Arrowhead
-    final dx = to.dx - from.dx;
-    final dy = to.dy - from.dy;
+    canvas.drawLine(from, endPoint, paint);
+
+    if (drawProgress < 0.3) return;
+
+    final dx = endPoint.dx - from.dx;
+    final dy = endPoint.dy - from.dy;
     final len = math.sqrt(dx * dx + dy * dy);
     if (len == 0) return;
     final ux = dx / len;
@@ -306,14 +319,14 @@ class DiagramPainter extends CustomPainter {
     const arrowSize = 10.0;
 
     final arrowPath = Path()
-      ..moveTo(to.dx, to.dy)
+      ..moveTo(endPoint.dx, endPoint.dy)
       ..lineTo(
-        to.dx - arrowSize * ux + arrowSize * 0.4 * uy,
-        to.dy - arrowSize * uy - arrowSize * 0.4 * ux,
+        endPoint.dx - arrowSize * ux + arrowSize * 0.4 * uy,
+        endPoint.dy - arrowSize * uy - arrowSize * 0.4 * ux,
       )
       ..lineTo(
-        to.dx - arrowSize * ux - arrowSize * 0.4 * uy,
-        to.dy - arrowSize * uy + arrowSize * 0.4 * ux,
+        endPoint.dx - arrowSize * ux - arrowSize * 0.4 * uy,
+        endPoint.dy - arrowSize * uy + arrowSize * 0.4 * ux,
       )
       ..close();
 
@@ -337,8 +350,8 @@ class DiagramPainter extends CustomPainter {
 
     final paint = Paint()
       ..color = highlighted
-          ? Colors.amber.shade200.withValues(alpha: 0.5)
-          : Colors.blue.shade50.withValues(alpha: 0.3)
+          ? Colors.amber.shade200.withOpacity(0.5)
+          : Colors.blue.shade50.withOpacity(0.3)
       ..style = PaintingStyle.fill;
 
     canvas.drawPath(path, paint);
@@ -376,6 +389,8 @@ class DiagramPainter extends CustomPainter {
         oldDelegate.showLabels != showLabels ||
         oldDelegate.elements != elements ||
         oldDelegate.pulseValue != pulseValue ||
-        oldDelegate.isDarkMode != isDarkMode;
+        oldDelegate.isDarkMode != isDarkMode ||
+        oldDelegate.drawProgress != drawProgress ||
+        oldDelegate.animateDrawing != animateDrawing;
   }
 }

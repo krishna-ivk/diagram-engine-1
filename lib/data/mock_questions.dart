@@ -5,11 +5,13 @@ import '../models/diagram_element.dart';
 import '../models/question_data.dart';
 import 'jee_questions.dart';
 import 'jee_2007_questions.dart';
+import 'algebrica_questions.dart';
 
 final List<QuestionData> mockQuestions = [
   ..._coreQuestions,
   ...jeeQuestions,
   ...jee2007Questions,
+  ...algebricaQuestions,
 ];
 
 final List<QuestionData> _coreQuestions = [

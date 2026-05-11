@@ -31,12 +31,18 @@ class _DiagramCanvasState extends State<DiagramCanvas>
   final TransformationController _transformController =
       TransformationController();
   late final AnimationController _pulseController;
+  late final AnimationController _drawController;
+  bool _hasAnimatedDrawing = false;
 
   @override
   void initState() {
     super.initState();
     _pulseController = AnimationController(
       duration: const Duration(milliseconds: 1200),
+      vsync: this,
+    );
+    _drawController = AnimationController(
+      duration: const Duration(milliseconds: 800),
       vsync: this,
     );
   }
@@ -48,12 +54,17 @@ class _DiagramCanvasState extends State<DiagramCanvas>
         widget.highlightedIds != oldWidget.highlightedIds) {
       _pulseController.forward(from: 0.0);
     }
+    if (!_hasAnimatedDrawing && widget.diagram.elements.isNotEmpty) {
+      _hasAnimatedDrawing = true;
+      _drawController.forward();
+    }
   }
 
   @override
   void dispose() {
     _transformController.dispose();
     _pulseController.dispose();
+    _drawController.dispose();
     super.dispose();
   }
 
@@ -168,7 +179,7 @@ class _DiagramCanvasState extends State<DiagramCanvas>
               child: AspectRatio(
                 aspectRatio: widget.diagram.width / widget.diagram.height,
                 child: AnimatedBuilder(
-                  animation: _pulseController,
+                  animation: Listenable.merge([_pulseController, _drawController]),
                   builder: (context, _) {
                     final isDark =
                         Theme.of(context).brightness == Brightness.dark;
@@ -181,6 +192,8 @@ class _DiagramCanvasState extends State<DiagramCanvas>
                         showLabels: widget.showLabels,
                         pulseValue: _pulseController.value,
                         isDarkMode: isDark,
+                        drawProgress: _drawController.value,
+                        animateDrawing: true,
                       ),
                       size: Size(
                           widget.diagram.width, widget.diagram.height),

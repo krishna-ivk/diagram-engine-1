@@ -36,7 +36,8 @@ class QuestionScreen extends StatefulWidget {
   State<QuestionScreen> createState() => _QuestionScreenState();
 }
 
-class _QuestionScreenState extends State<QuestionScreen> {
+class _QuestionScreenState extends State<QuestionScreen>
+    with TickerProviderStateMixin {
   int _currentIndex = 0;
   int? _selectedOption;
   bool _showAnswer = false;
@@ -65,12 +66,45 @@ class _QuestionScreenState extends State<QuestionScreen> {
   int _hintsUsed = 0;
   int _tapCount = 0;
 
+  // Page transition animations
+  late AnimationController _slideController;
+  late Animation<Offset> _slideAnimation;
+  late Animation<double> _fadeAnimation;
+
   QuestionData get _currentQuestion => widget.questions[_currentIndex];
   PremiumTier get _tier => widget.premiumState.tier;
+
+  String _getPrimaryConcept(QuestionData q) {
+    // Use primaryConcept if available, fallback to coreConcept, then topic
+    if (q.primaryConcept.isNotEmpty) return q.primaryConcept;
+    if (q.coreConcept != null && q.coreConcept!.isNotEmpty) return q.coreConcept!;
+    return q.topic;
+  }
+
+  String _getChapter(QuestionData q) {
+    // Use chapter if available, fallback to topic
+    if (q.chapter.isNotEmpty) return q.chapter;
+    return q.topic;
+  }
 
   @override
   void initState() {
     super.initState();
+    _slideController = AnimationController(
+      duration: const Duration(milliseconds: 400),
+      vsync: this,
+    );
+    _slideAnimation = Tween<Offset>(
+      begin: const Offset(0.05, 0),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(
+      parent: _slideController,
+      curve: Curves.easeOutCubic,
+    ));
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _slideController, curve: Curves.easeOut),
+    );
+    _slideController.forward();
     _startTimer();
   }
 
@@ -78,6 +112,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
   void dispose() {
     _timer?.cancel();
     _inactivityTimer?.cancel();
+    _slideController.dispose();
     super.dispose();
   }
 
@@ -143,15 +178,24 @@ class _QuestionScreenState extends State<QuestionScreen> {
     _inactivityTimer?.cancel();
 
     final isCorrect = _selectedOption == _currentQuestion.correctIndex;
+    // Use schema fields with fallbacks for backward compatibility
+    final primaryConcept = _getPrimaryConcept(_currentQuestion);
+    final chapter = _getChapter(_currentQuestion);
+
     widget.tracker.recordAttempt(QuestionAttempt(
       questionId: _currentQuestion.id,
       topic: _currentQuestion.topic,
       coreConcept: _currentQuestion.coreConcept ?? _currentQuestion.topic,
+      primaryConcept: primaryConcept,
+      subject: _currentQuestion.subject,
+      chapter: chapter,
       correct: isCorrect,
       timeSeconds: _elapsedSeconds,
       tapCount: _tapCount,
       hintsUsed: _hintsUsed,
+      expectedTimeSeconds: _currentQuestion.estimatedSeconds ?? 60,
       timestamp: DateTime.now(),
+      isRevision: widget.isRevisionMode,
     ));
 
     // Auto-add wrong answers to revision queue
@@ -193,6 +237,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
   }
 
   void _navigateToQuestion(int index) {
+    _slideController.reset();
     setState(() {
       _currentIndex = index;
       _selectedOption = null;
@@ -207,6 +252,7 @@ class _QuestionScreenState extends State<QuestionScreen> {
       _hintsUsed = 0;
       _tapCount = 0;
     });
+    _slideController.forward();
     _startTimer();
     _resetInactivityTimer();
   }
@@ -310,11 +356,18 @@ class _QuestionScreenState extends State<QuestionScreen> {
           ),
         ],
       ),
-      body: isWide ? _buildWideLayout(theme) : _buildMobileLayout(theme),
+      body: SlideTransition(
+        position: _slideAnimation,
+        child: FadeTransition(
+          opacity: _fadeAnimation,
+          child: isWide ? _buildWideLayout(theme) : _buildMobileLayout(theme),
+        ),
+      ),
     );
   }
 
   Widget _buildMobileLayout(ThemeData theme) {
+    final progress = (_currentIndex + 1) / widget.questions.length;
     return Column(
       children: [
         Expanded(
@@ -322,8 +375,8 @@ class _QuestionScreenState extends State<QuestionScreen> {
           child: _buildDiagramSection(theme),
         ),
         Container(
-          height: 24,
-          alignment: Alignment.center,
+          height: 32,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
           decoration: BoxDecoration(
             color: Colors.grey.shade50,
             border: Border(
@@ -331,13 +384,58 @@ class _QuestionScreenState extends State<QuestionScreen> {
               bottom: BorderSide(color: Colors.grey.shade200),
             ),
           ),
-          child: Container(
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-              color: Colors.grey.shade400,
-              borderRadius: BorderRadius.circular(2),
-            ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Row(
+                children: [
+                  Text(
+                    '${_currentIndex + 1}',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8),
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(3),
+                        child: AnimatedBuilder(
+                          animation: _slideController,
+                          builder: (context, _) {
+                            return TweenAnimationBuilder<double>(
+                              tween: Tween(begin: 0, end: progress),
+                              duration: const Duration(milliseconds: 300),
+                              curve: Curves.easeOutCubic,
+                              builder: (context, value, child) {
+                                return LinearProgressIndicator(
+                                  value: value,
+                                  backgroundColor: Colors.grey.shade200,
+                                  valueColor: AlwaysStoppedAnimation(
+                                    Colors.blue.shade600,
+                                  ),
+                                  minHeight: 6,
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    '${widget.questions.length}',
+                    style: TextStyle(
+                      fontSize: 11,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey.shade600,
+                    ),
+                  ),
+                ],
+              ),
+            ],
           ),
         ),
         Expanded(
@@ -349,11 +447,56 @@ class _QuestionScreenState extends State<QuestionScreen> {
   }
 
   Widget _buildWideLayout(ThemeData theme) {
-    return Row(
+    final progress = (_currentIndex + 1) / widget.questions.length;
+    return Column(
       children: [
-        Expanded(child: _buildDiagramSection(theme)),
-        VerticalDivider(width: 1, color: Colors.grey.shade300),
-        Expanded(child: _buildQuestionSection()),
+        Expanded(
+          child: Row(
+            children: [
+              Expanded(child: _buildDiagramSection(theme)),
+              VerticalDivider(width: 1, color: Colors.grey.shade300),
+              Expanded(child: _buildQuestionSection()),
+            ],
+          ),
+        ),
+        Container(
+          height: 28,
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          decoration: BoxDecoration(
+            color: Colors.grey.shade50,
+            border: Border(
+              top: BorderSide(color: Colors.grey.shade200),
+            ),
+          ),
+          child: Row(
+            children: [
+              Text(
+                'Q${_currentIndex + 1}/${widget.questions.length}',
+                style: TextStyle(
+                  fontSize: 11,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey.shade600,
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: TweenAnimationBuilder<double>(
+                  tween: Tween(begin: 0, end: progress),
+                  duration: const Duration(milliseconds: 300),
+                  curve: Curves.easeOutCubic,
+                  builder: (context, value, child) {
+                    return LinearProgressIndicator(
+                      value: value,
+                      backgroundColor: Colors.grey.shade200,
+                      valueColor: AlwaysStoppedAnimation(Colors.blue.shade600),
+                      minHeight: 4,
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
       ],
     );
   }
