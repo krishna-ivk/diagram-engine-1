@@ -1,0 +1,150 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Diagram Specifications App Export Schema",
+  "description": "App-compatible diagram specifications for Diagram Engine Flutter app",
+  "type": "object",
+  "required": ["diagrams"],
+  "properties": {
+    "diagrams": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z0-9_]+$": {
+          "type": "object",
+          "required": ["id", "type", "elements"],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "type": {
+              "type": "string",
+              "enum": ["coordinate_system", "geometry", "trigonometric_circle", "graph", "area_visualization"]
+            },
+            "title": {
+              "type": "string"
+            },
+            "description": {
+              "type": "string"
+            },
+            "associatedQuestionId": {
+              "type": "string"
+            },
+            "associatedConceptId": {
+              "type": "string",
+              "pattern": "^math\\.[a-z_]+\\.[a-z_]+$"
+            },
+            "elements": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["id", "elementType", "properties"],
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "elementType": {
+                    "type": "string",
+                    "enum": ["point", "line", "circle", "polygon", "curve", "text_label", "arrow", "grid", "axis", "angle_arc", "shaded_area"]
+                  },
+                  "properties": {
+                    "type": "object",
+                    "description": "Element-specific properties (coordinates, dimensions, colors, etc.)"
+                  },
+                  "label": {
+                    "type": "string"
+                  },
+                  "isInteractive": {
+                    "type": "boolean"
+                  },
+                  "animationSequence": {
+                    "type": "integer",
+                    "description": "Order in animation sequence (0 = no animation)"
+                  }
+                }
+              }
+            },
+            "layout": {
+              "type": "object",
+              "properties": {
+                "width": {
+                  "type": "number"
+                },
+                "height": {
+                  "type": "number"
+                },
+                "backgroundColor": {
+                  "type": "string",
+                  "pattern": "^#[0-9A-Fa-f]{6}$"
+                },
+                "gridVisible": {
+                  "type": "boolean"
+                },
+                "coordinateSystem": {
+                  "type": "object",
+                  "properties": {
+                    "xMin": {
+                      "type": "number"
+                    },
+                    "xMax": {
+                      "type": "number"
+                    },
+                    "yMin": {
+                      "type": "number"
+                    },
+                    "yMax": {
+                      "type": "number"
+                    },
+                    "originVisible": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            },
+            "animation": {
+              "type": "object",
+              "properties": {
+                "hasAnimation": {
+                  "type": "boolean"
+                },
+                "totalFrames": {
+                  "type": "integer"
+                },
+                "frameDurationMs": {
+                  "type": "integer"
+                },
+                "animationType": {
+                  "type": "string",
+                  "enum": ["sequential", "simultaneous", "interactive"]
+                },
+                "description": {
+                  "type": "string"
+                }
+              }
+            },
+            "interaction": {
+              "type": "object",
+              "properties": {
+                "isInteractive": {
+                  "type": "boolean"
+                },
+                "interactionType": {
+                  "type": "string",
+                  "enum": ["drag_points", "zoom_pan", "click_elements", "input_values"]
+                },
+                "instructions": {
+                  "type": "string"
+                }
+              }
+            },
+            "learningObjectives": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

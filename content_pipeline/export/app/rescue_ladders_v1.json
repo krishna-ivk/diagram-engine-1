@@ -1,0 +1,111 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Rescue Ladders App Export Schema",
+  "description": "App-compatible rescue ladders for Diagram Engine Flutter app",
+  "type": "object",
+  "required": ["ladders"],
+  "properties": {
+    "ladders": {
+      "type": "object",
+      "patternProperties": {
+        "^[a-z0-9_]+$": {
+          "type": "object",
+          "required": ["id", "targetConcept", "rescueSteps"],
+          "properties": {
+            "id": {
+              "type": "string"
+            },
+            "targetConcept": {
+              "type": "string",
+              "pattern": "^math\\.[a-z_]+\\.[a-z_]+$"
+            },
+            "targetQuestionId": {
+              "type": "string"
+            },
+            "rescueSteps": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["stepNumber", "stepType", "title", "description"],
+                "properties": {
+                  "stepNumber": {
+                    "type": "integer",
+                    "minimum": 1
+                  },
+                  "stepType": {
+                    "type": "string",
+                    "enum": ["concept_review", "simpler_question", "visual_explanation", "hint", "partial_solution"]
+                  },
+                  "title": {
+                    "type": "string"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "questionId": {
+                    "type": "string",
+                    "description": "Reference to practice question if step_type is simpler_question"
+                  },
+                  "conceptId": {
+                    "type": "string",
+                    "pattern": "^math\\.[a-z_]+\\.[a-z_]+$",
+                    "description": "Reference to concept if step_type is concept_review"
+                  },
+                  "hintText": {
+                    "type": "string",
+                    "description": "Hint text if step_type is hint"
+                  },
+                  "diagramSpecification": {
+                    "type": "string",
+                    "description": "Diagram requirements for visual explanation"
+                  },
+                  "estimatedTime": {
+                    "type": "integer",
+                    "description": "Time needed for this step in minutes"
+                  },
+                  "successCriteria": {
+                    "type": "string",
+                    "description": "How to know student succeeded at this step"
+                  }
+                }
+              }
+            },
+            "entryCriteria": {
+              "type": "object",
+              "properties": {
+                "failedQuestionId": {
+                  "type": "string"
+                },
+                "mistakePatterns": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "consecutiveFailures": {
+                  "type": "integer"
+                }
+              }
+            },
+            "exitCriteria": {
+              "type": "object",
+              "properties": {
+                "mustCompleteAllSteps": {
+                  "type": "boolean"
+                },
+                "minimumSuccessRate": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 1
+                },
+                "finalAssessmentQuestion": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

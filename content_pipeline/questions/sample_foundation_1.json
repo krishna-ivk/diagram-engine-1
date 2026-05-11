@@ -51,6 +51,8 @@
   "secondary_concepts": [],
   "prerequisites": ["number_line", "negative_numbers"],
   "class_floor": 9,
+  "target_class": 9,
+  "rescue_start_level": 7,
   "target_exam": "school",
   "question_role": "foundation",
   "diagram_requirements": {
@@ -72,6 +74,14 @@
   ],
   "rescue_ladder": [],
   "estimated_time": 2,
+  "learning_objective_score": 0,
   "status": "academic_review",
-  "review_history": []
+  "review_history": [],
+  "lineage": {
+    "inspired_by": ["basic_coordinate_concepts"],
+    "ncert_alignment": ["Class 9 Mathematics Chapter 3"],
+    "transformation_type": "original_content",
+    "verbatim_source_used": false,
+    "human_review_required": true
+  }
 }

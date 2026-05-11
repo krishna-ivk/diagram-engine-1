@@ -1,0 +1,79 @@
+{
+  "subject": "Mathematics",
+  "canonical_id_scheme": "math.{chapter}.{concept}",
+  "chapters": {
+    "coordinate_geometry": {
+      "name": "Coordinate Geometry",
+      "concepts": {
+        "cartesian_system": "math.coordinate_geometry.cartesian_system",
+        "distance_formula": "math.coordinate_geometry.distance_formula", 
+        "section_formula": "math.coordinate_geometry.section_formula",
+        "area_of_triangle": "math.coordinate_geometry.area_of_triangle",
+        "slope_of_line": "math.coordinate_geometry.slope_of_line",
+        "line_equations": "math.coordinate_geometry.line_equations",
+        "parallel_perpendicular": "math.coordinate_geometry.parallel_perpendicular",
+        "circle_equation": "math.coordinate_geometry.circle_equation"
+      }
+    },
+    "trigonometry": {
+      "name": "Trigonometry", 
+      "concepts": {
+        "trigonometric_ratios": "math.trigonometry.trigonometric_ratios",
+        "trigonometric_identities": "math.trigonometry.trigonometric_identities",
+        "unit_circle": "math.trigonometry.unit_circle",
+        "angle_conversion": "math.trigonometry.angle_conversion",
+        "trigonometric_equations": "math.trigonometry.trigonometric_equations",
+        "inverse_trigonometry": "math.trigonometry.inverse_trigonometry"
+      }
+    },
+    "quadratic_equations": {
+      "name": "Quadratic Equations",
+      "concepts": {
+        "quadratic_standard_form": "math.quadratic_equations.quadratic_standard_form",
+        "quadratic_formula": "math.quadratic_equations.quadratic_formula",
+        "discriminant": "math.quadratic_equations.discriminant",
+        "nature_of_roots": "math.quadratic_equations.nature_of_roots",
+        "sum_product_roots": "math.quadratic_equations.sum_product_roots",
+        "quadratic_graph": "math.quadratic_equations.quadratic_graph"
+      }
+    },
+    "geometry_mensuration": {
+      "name": "Geometry and Mensuration",
+      "concepts": {
+        "regular_polygons": "math.geometry_mensuration.regular_polygons",
+        "area_polygon_triangles": "math.geometry_mensuration.area_polygon_triangles",
+        "central_angle": "math.geometry_mensuration.central_angle",
+        "triangle_area": "math.geometry_mensuration.triangle_area",
+        "circle_area_circumference": "math.geometry_mensuration.circle_area_circumference",
+        "volume_basics": "math.geometry_mensuration.volume_basics",
+        "surface_area": "math.geometry_mensuration.surface_area"
+      }
+    },
+    "calculus_basics": {
+      "name": "Calculus Basics",
+      "concepts": {
+        "limits_intuitive": "math.calculus_basics.limits_intuitive",
+        "derivative_geometric": "math.calculus_basics.derivative_geometric",
+        "derivative_rules": "math.calculus_basics.derivative_rules",
+        "integral_area": "math.calculus_basics.integral_area",
+        "tangent_normal": "math.calculus_basics.tangent_normal",
+        "maxima_minima": "math.calculus_basics.maxima_minima"
+      }
+    }
+  },
+  "legacy_mappings": {
+    "cartesian": "math.coordinate_geometry.cartesian_system",
+    "distance": "math.coordinate_geometry.distance_formula",
+    "section": "math.coordinate_geometry.section_formula",
+    "slope": "math.coordinate_geometry.slope_of_line",
+    "sin_cos_tan": "math.trigonometry.trigonometric_ratios",
+    "trig_identities": "math.trigonometry.trigonometric_identities",
+    "quadratic": "math.quadratic_equations.quadratic_standard_form",
+    "quadratic_formula": "math.quadratic_equations.quadratic_formula",
+    "polygon": "math.geometry_mensuration.regular_polygons",
+    "triangle": "math.geometry_mensuration.triangle_area",
+    "limit": "math.calculus_basics.limits_intuitive",
+    "derivative": "math.calculus_basics.derivative_geometric",
+    "integral": "math.calculus_basics.integral_area"
+  }
+}

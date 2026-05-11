@@ -1,0 +1,161 @@
+{
+  "checklist_name": "Academic Reviewer Checklist",
+  "version": "1.0",
+  "reviewer_role": "academic_reviewer",
+  "description": "Structured checklist for academic content validation",
+  "sections": [
+    {
+      "section_id": "concept_validation",
+      "title": "Concept Validation",
+      "questions": [
+        {
+          "id": "concept_tag_correct",
+          "question": "Is the primary concept tag correct for this question?",
+          "type": "boolean",
+          "required": true,
+          "weight": 15,
+          "guidance": "Check that the main mathematical concept being tested is accurately identified"
+        },
+        {
+          "id": "prerequisites_complete",
+          "question": "Are the prerequisites complete and appropriate?",
+          "type": "boolean",
+          "required": true,
+          "weight": 10,
+          "guidance": "Verify all required prior knowledge is listed and no unnecessary prerequisites are included"
+        },
+        {
+          "id": "difficulty_accurate",
+          "question": "Is the difficulty level accurate for the target audience?",
+          "type": "scale",
+          "scale": ["too_easy", "appropriate", "too_hard"],
+          "required": true,
+          "weight": 10,
+          "guidance": "Consider class level, JEE preparation stage, and cognitive load"
+        }
+      ]
+    },
+    {
+      "section_id": "content_accuracy",
+      "title": "Content Accuracy",
+      "questions": [
+        {
+          "id": "question_clear",
+          "question": "Is the question text clear and unambiguous?",
+          "type": "boolean",
+          "required": true,
+          "weight": 10,
+          "guidance": "Check for confusing wording, multiple interpretations, or missing information"
+        },
+        {
+          "id": "answer_correct",
+          "question": "Is the correct answer mathematically accurate?",
+          "type": "boolean",
+          "required": true,
+          "weight": 20,
+          "guidance": "Verify the answer through independent calculation or reference"
+        },
+        {
+          "id": "solution_correct",
+          "question": "Is the step-by-step solution mathematically correct?",
+          "type": "boolean",
+          "required": true,
+          "weight": 15,
+          "guidance": "Check each calculation step for accuracy and logical flow"
+        },
+        {
+          "id": "solution_complete",
+          "question": "Does the solution provide sufficient detail for learning?",
+          "type": "boolean",
+          "required": true,
+          "weight": 10,
+          "guidance": "Students should be able to follow the reasoning without additional help"
+        }
+      ]
+    },
+    {
+      "section_id": "pedagogical_quality",
+      "title": "Pedagogical Quality",
+      "questions": [
+        {
+          "id": "why_wrong_meaningful",
+          "question": "Are the why-wrong explanations meaningful and helpful?",
+          "type": "boolean",
+          "required": true,
+          "weight": 15,
+          "guidance": "Explanations should address common misconceptions and provide learning value"
+        },
+        {
+          "id": "mistake_patterns_identified",
+          "question": "Are the common mistake patterns accurate and relevant?",
+          "type": "boolean",
+          "required": true,
+          "weight": 10,
+          "guidance": "Patterns should reflect actual student errors and include frequency estimates"
+        },
+        {
+          "id": "rescue_ladder_valid",
+          "question": "If present, is the rescue ladder pedagogically sound?",
+          "type": "boolean",
+          "required": false,
+          "weight": 10,
+          "guidance": "Rescue questions should build appropriate scaffolding to the target concept"
+        },
+        {
+          "id": "diagram_necessary",
+          "question": "Is the diagram necessary and useful for learning?",
+          "type": "scale",
+          "scale": ["not_needed", "helpful", "essential"],
+          "required": true,
+          "weight": 10,
+          "guidance": "Diagrams should add value beyond text explanations"
+        }
+      ]
+    },
+    {
+      "section_id": "learning_objectives",
+      "title": "Learning Objectives",
+      "questions": [
+        {
+          "id": "objective_clear",
+          "question": "Is the learning objective clearly achievable through this question?",
+          "type": "boolean",
+          "required": true,
+          "weight": 10,
+          "guidance": "Students should be able to demonstrate the intended learning outcome"
+        },
+        {
+          "id": "objective_appropriate",
+          "question": "Is the learning objective appropriate for the difficulty level?",
+          "type": "boolean",
+          "required": true,
+          "weight": 10,
+          "guidance": "Objectives should match cognitive development and prior knowledge"
+        }
+      ]
+    }
+  ],
+  "scoring": {
+    "total_weight": 165,
+    "passing_threshold": 132,  # 80% of total weight
+    "conditional_requirements": {
+      "answer_correct": {
+        "required_value": true,
+        "failure_action": "auto_reject"
+      },
+      "solution_correct": {
+        "required_value": true,
+        "failure_action": "auto_reject"
+      },
+      "concept_tag_correct": {
+        "required_value": true,
+        "failure_action": "require_revision"
+      }
+    }
+  },
+  "review_outcomes": {
+    "approve": "Content meets all academic standards and is ready for copyright review",
+    "request_revision": "Content needs minor revisions before proceeding",
+    "reject": "Content has significant issues requiring major rework"
+  }
+}

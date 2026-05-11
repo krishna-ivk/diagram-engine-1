@@ -26,29 +26,53 @@ class RescueSystem {
   List<RescueQuestion> getRescuePath(QuestionData failedQuestion) {
     final rescueQuestions = <RescueQuestion>[];
 
-    // Get prerequisites for this concept
+    // Get concept ID for fallback
     final conceptId = failedQuestion.primaryConcept.isNotEmpty
         ? failedQuestion.primaryConcept
         : failedQuestion.coreConcept ?? failedQuestion.topic;
 
-    final prerequisites = conceptGraph.getPrerequisites(conceptId);
+    // STEP 1: Use question-level prerequisites first (from QuestionData.prerequisites)
+    if (failedQuestion.prerequisites.isNotEmpty) {
+      for (final prereq in failedQuestion.prerequisites) {
+        final prereqQuestions = allQuestions
+            .where((q) =>
+                q.primaryConcept == prereq ||
+                q.coreConcept == prereq ||
+                q.topic == prereq)
+            .where((q) => q.difficulty == Difficulty.easy)
+            .toList();
 
-    // Get easier questions on prerequisites
-    for (final prereq in prerequisites) {
-      final prereqQuestions = allQuestions
-          .where((q) =>
-              q.primaryConcept == prereq.id ||
-              q.coreConcept == prereq.id ||
-              q.topic == prereq.id)
-          .where((q) => q.difficulty == Difficulty.easy)
-          .toList();
+        if (prereqQuestions.isNotEmpty && !rescueQuestions.any((r) => r.question.id == prereqQuestions.first.id)) {
+          rescueQuestions.add(RescueQuestion(
+            question: prereqQuestions.first,
+            reason: 'Question prerequisite: $prereq',
+            difficulty: -2,
+          ));
+        }
+      }
+    }
 
-      if (prereqQuestions.isNotEmpty) {
-        rescueQuestions.add(RescueQuestion(
-          question: prereqQuestions.first,
-          reason: 'Prerequisite concept: ${prereq.name}',
-          difficulty: -2,
-        ));
+    // STEP 2: Fallback to concept graph prerequisites if needed
+    if (rescueQuestions.length < 2) {
+      final graphPrerequisites = conceptGraph.getPrerequisites(conceptId);
+      for (final prereq in graphPrerequisites) {
+        if (rescueQuestions.length >= 3) break;
+        
+        final prereqQuestions = allQuestions
+            .where((q) =>
+                q.primaryConcept == prereq.id ||
+                q.coreConcept == prereq.id ||
+                q.topic == prereq.id)
+            .where((q) => q.difficulty == Difficulty.easy)
+            .toList();
+
+        if (prereqQuestions.isNotEmpty && !rescueQuestions.any((r) => r.question.id == prereqQuestions.first.id)) {
+          rescueQuestions.add(RescueQuestion(
+            question: prereqQuestions.first,
+            reason: 'Prerequisite concept: ${prereq.name}',
+            difficulty: -2,
+          ));
+        }
       }
     }
 

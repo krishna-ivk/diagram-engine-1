@@ -1,0 +1,192 @@
+{
+  "checklist_name": "Copyright Reviewer Checklist",
+  "version": "1.0",
+  "reviewer_role": "copyright_specialist",
+  "description": "Structured checklist for copyright compliance validation",
+  "sections": [
+    {
+      "section_id": "source_attribution",
+      "title": "Source Attribution",
+      "questions": [
+        {
+          "id": "source_properly_cited",
+          "question": "Is the source material properly attributed?",
+          "type": "boolean",
+          "required": true,
+          "weight": 20,
+          "guidance": "Check that source ID, type, and reference information are complete and accurate"
+        },
+        {
+          "id": "adaptation_documented",
+          "question": "Are adaptations from source material clearly documented?",
+          "type": "boolean",
+          "required": true,
+          "weight": 15,
+          "guidance": "Any changes from original source should be noted in adaptation_notes"
+        },
+        {
+          "id": "lineage_complete",
+          "question": "Is the content lineage metadata complete?",
+          "type": "boolean",
+          "required": true,
+          "weight": 10,
+          "guidance": "Lineage should show inspiration sources and transformation type"
+        }
+      ]
+    },
+    {
+      "section_id": "originality_assessment",
+      "title": "Originality Assessment",
+      "questions": [
+        {
+          "id": "wording_original",
+          "question": "Is the question wording original (not copied verbatim)?",
+          "type": "scale",
+          "scale": ["verbatim_copy", "minor_changes", "substantial_changes", "original"],
+          "required": true,
+          "weight": 25,
+          "guidance": "Look for direct copying from textbooks, papers, or online sources"
+        },
+        {
+          "id": "solution_original",
+          "question": "Is the solution explanation original?",
+          "type": "scale",
+          "scale": ["verbatim_copy", "minor_changes", "substantial_changes", "original"],
+          "required": true,
+          "weight": 20,
+          "guidance": "Solution steps and explanations should be written in original language"
+        },
+        {
+          "id": "diagram_original",
+          "question": "If diagrams are used, are they original or properly licensed?",
+          "type": "scale",
+          "scale": ["copied", "adapted", "original"],
+          "required": false,
+          "weight": 15,
+          "guidance": "Diagrams should be created originally or have proper licensing"
+        }
+      ]
+    },
+    {
+      "section_id": "ncert_compliance",
+      "title": "NCERT Compliance (if applicable)",
+      "questions": [
+        {
+          "id": "ncert_alignment_only",
+          "question": "For NCERT-based content, is it limited to concept alignment only?",
+          "type": "boolean",
+          "required": false,
+          "weight": 20,
+          "guidance": "Should not copy NCERT textbook text, examples, or diagrams directly"
+        },
+        {
+          "id": "no_ncert_exercises",
+          "question": "Are NCERT exercise questions not reproduced directly?",
+          "type": "boolean",
+          "required": false,
+          "weight": 15,
+          "guidance": "Create original questions inspired by NCERT concepts, not copied exercises"
+        },
+        {
+          "id": "ncert_reference_proper",
+          "question": "Is NCERT reference properly attributed as 'aligned to concepts'?",
+          "type": "boolean",
+          "required": false,
+          "weight": 10,
+          "guidance": "Use language like 'aligned to NCERT Class X Chapter Y concepts'"
+        }
+      ]
+    },
+    {
+      "section_id": "jee_compliance",
+      "title": "JEE Paper Compliance (if applicable)",
+      "questions": [
+        {
+          "id": "pattern_based_only",
+          "question": "For JEE-based content, is it based on patterns not direct reproduction?",
+          "type": "boolean",
+          "required": false,
+          "weight": 20,
+          "guidance": "Should analyze question patterns and create original questions in similar style"
+        },
+        {
+          "id": "commercial_use_safe",
+          "question": "Is the content safe for commercial use?",
+          "type": "boolean",
+          "required": true,
+          "weight": 25,
+          "guidance": "Verify that commercial redistribution doesn't violate copyright"
+        },
+        {
+          "id": "similarity_acceptable",
+          "question": "Is similarity to original sources within acceptable limits?",
+          "type": "scale",
+          "scale": ["too_similar", "borderline", "acceptable"],
+          "required": true,
+          "weight": 15,
+          "guidance": "High similarity may indicate copyright risk"
+        }
+      ]
+    },
+    {
+      "section_id": "commercial_safety",
+      "title": "Commercial Use Safety",
+      "questions": [
+        {
+          "id": "commercial_rights_clear",
+          "question": "Are commercial rights clear for this content?",
+          "type": "boolean",
+          "required": true,
+          "weight": 30,
+          "guidance": "Content must be legally safe for commercial educational use"
+        },
+        {
+          "id": "attribution_sufficient",
+          "question": "If attribution is required, is it sufficient for commercial use?",
+          "type": "boolean",
+          "required": false,
+          "weight": 15,
+          "guidance": "Check if required attribution meets commercial use standards"
+        },
+        {
+          "id": "no_license_violations",
+          "question": "Does this content not violate any license restrictions?",
+          "type": "boolean",
+          "required": true,
+          "weight": 20,
+          "guidance": "Verify compliance with all applicable licenses and terms"
+        }
+      ]
+    }
+  ],
+  "scoring": {
+    "total_weight": 245,
+    "passing_threshold": 196,  # 80% of total weight
+    "conditional_requirements": {
+      "commercial_rights_clear": {
+        "required_value": true,
+        "failure_action": "auto_reject"
+      },
+      "wording_original": {
+        "required_values": ["substantial_changes", "original"],
+        "failure_action": "require_revision"
+      },
+      "solution_original": {
+        "required_values": ["substantial_changes", "original"],
+        "failure_action": "require_revision"
+      }
+    },
+    "risk_flags": {
+      "verbatim_copy": "High copyright risk - requires immediate attention",
+      "ncert_direct_copy": "NCERT copyright violation risk",
+      "similarity_too_high": "Potential copyright infringement",
+      "attribution_missing": "Missing required attribution"
+    }
+  },
+  "review_outcomes": {
+    "approve": "Content meets all copyright standards and is safe for commercial use",
+    "request_revision": "Content needs copyright compliance revisions",
+    "reject": "Content has significant copyright issues and cannot be used",
+    "escalate": "Content requires legal review due to complex copyright issues"
+  }
+}
