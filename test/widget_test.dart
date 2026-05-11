@@ -1,26 +1,26 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:diagram_engine/main.dart';
-import 'package:diagram_engine/data/algebrica_questions.dart';
-import 'package:diagram_engine/data/mock_questions.dart';
 
 void main() {
   testWidgets('App launches and shows home screen', (tester) async {
     await tester.pumpWidget(const DiagramEngineApp());
     expect(find.text('Diagram Engine'), findsOneWidget);
-    expect(
-      find.text(
-        'Solve with Interactive Diagrams (${mockQuestions.length + algebricaQuestions.length})',
-      ),
-      findsOneWidget,
-    );
+    expect(find.text('Start Foundation Journey'), findsWidgets);
+    expect(find.text('Visual Reasoning'), findsOneWidget);
+    expect(find.text('Smart Rescue'), findsOneWidget);
   });
 
   testWidgets('Navigate to question screen', (tester) async {
     await tester.pumpWidget(const DiagramEngineApp());
-    final practiceCta = find.textContaining('Solve with Interactive Diagrams');
-    await tester.scrollUntilVisible(practiceCta, 400);
-    await tester.tap(practiceCta);
+    final learnerMode = find.text('Learner');
+    await tester.scrollUntilVisible(learnerMode, 400);
+    await tester.tap(learnerMode);
+    await tester.pumpAndSettle();
+    final learnerCta =
+        find.textContaining('Practice with Interactive Diagrams');
+    await tester.scrollUntilVisible(learnerCta, 400);
+    await tester.tap(learnerCta);
     await tester.pumpAndSettle();
     expect(find.textContaining('Q1 of'), findsOneWidget);
   });

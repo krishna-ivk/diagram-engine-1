@@ -171,7 +171,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 8),
                 Text(
-                  'Start from Class 7 basics and reach JEE-level thinking step by step',
+                  'From Class 7 basics to JEE-level thinking, one visual step at a time',
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: Colors.grey.shade600,
                   ),
@@ -195,12 +195,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   spacing: 6,
                   runSpacing: 6,
                   children: [
-                    _FeatureChip(icon: Icons.touch_app, label: 'Tap → Insight'),
-                    _FeatureChip(icon: Icons.assistant, label: 'Guide Me'),
-                    _FeatureChip(icon: Icons.edit, label: 'Drawing Tools'),
-                    _FeatureChip(icon: Icons.trending_up, label: 'Performance'),
                     _FeatureChip(
-                        icon: Icons.auto_awesome, label: 'Smart Hints'),
+                        icon: Icons.visibility, label: 'Visual Reasoning'),
+                    _FeatureChip(
+                        icon: Icons.route, label: 'Foundation Journey'),
+                    _FeatureChip(icon: Icons.healing, label: 'Smart Rescue'),
+                    _FeatureChip(icon: Icons.trending_up, label: 'Diagnosis'),
+                    _FeatureChip(icon: Icons.replay, label: 'Revision Mastery'),
                   ],
                 ),
 
@@ -468,7 +469,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               : _startPractice,
                           icon: const Icon(Icons.play_arrow),
                           label: Text(
-                            'Solve with Interactive Diagrams (${mockQuestions.length + algebricaQuestions.length})',
+                            _selectedMode == PracticeMode.foundationJourney
+                                ? 'Start Foundation Journey'
+                                : 'Practice with Interactive Diagrams (${mockQuestions.length + algebricaQuestions.length})',
                             style: const TextStyle(fontSize: 15),
                           ),
                         ),
@@ -846,7 +849,7 @@ class _FoundationJourneyHero extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      'Build JEE-level thinking step by step',
+                      'Build the foundations before solving the exam',
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: Colors.green.shade600,
                       ),
@@ -913,7 +916,7 @@ class _FoundationJourneyHero extends StatelessWidget {
               const SizedBox(width: 16),
               _HeroFeature(
                 icon: Icons.emoji_events,
-                label: 'JEE Ready',
+                label: 'JEE Bridge',
                 color: Colors.green,
               ),
             ],
