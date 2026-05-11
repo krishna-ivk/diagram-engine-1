@@ -1,0 +1,60 @@
+{
+  "question_id": "foundation_distance_basic_1",
+  "question_text": "Find the distance between the points (0, 0) and (3, 4).",
+  "question_type": "numerical",
+  "answer": 5,
+  "solution": {
+    "method": "Distance formula",
+    "steps": [
+      {
+        "step_number": 1,
+        "description": "Use distance formula: √[(x₂-x₁)² + (y₂-y₁)²]",
+        "calculation": "√[(3-0)² + (4-0)²]"
+      },
+      {
+        "step_number": 2,
+        "description": "Calculate the differences",
+        "calculation": "√[3² + 4²]"
+      },
+      {
+        "step_number": 3,
+        "description": "Square the numbers",
+        "calculation": "√[9 + 16]"
+      },
+      {
+        "step_number": 4,
+        "description": "Add and take square root",
+        "calculation": "√25 = 5"
+      }
+    ],
+    "final_answer": "5"
+  },
+  "difficulty": "foundation",
+  "primary_concept": "distance_formula",
+  "secondary_concepts": ["cartesian_system"],
+  "prerequisites": ["cartesian_system", "pythagorean_theorem"],
+  "class_floor": 10,
+  "target_exam": "school",
+  "question_role": "foundation",
+  "diagram_requirements": {
+    "needs_diagram": true,
+    "diagram_type": "coordinate_system",
+    "diagram_specification": "Show points (0,0) and (3,4) with the distance line between them forming a 3-4-5 triangle"
+  },
+  "mistake_patterns": [
+    {
+      "pattern": "Forgetting to square the differences",
+      "why_wrong": "Distance formula uses squared differences, not just differences",
+      "frequency": "common"
+    },
+    {
+      "pattern": "Not taking the square root at the end",
+      "why_wrong": "Distance formula has √ at the beginning, must take square root of sum",
+      "frequency": "occasional"
+    }
+  ],
+  "rescue_ladder": [],
+  "estimated_time": 3,
+  "status": "academic_review",
+  "review_history": []
+}

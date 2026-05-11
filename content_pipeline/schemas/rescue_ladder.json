@@ -1,0 +1,133 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Rescue Ladder Schema",
+  "description": "Schema for rescue ladders that help struggling students",
+  "type": "object",
+  "required": ["ladder_id", "target_concept", "rescue_steps"],
+  "properties": {
+    "ladder_id": {
+      "type": "string",
+      "description": "Unique identifier for the rescue ladder",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "target_concept": {
+      "type": "string",
+      "description": "Concept this ladder helps with"
+    },
+    "target_question_id": {
+      "type": "string",
+      "description": "Question this ladder rescues from (if applicable)"
+    },
+    "rescue_steps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "step_number": {
+            "type": "integer",
+            "description": "Order in the rescue sequence"
+          },
+          "step_type": {
+            "type": "string",
+            "enum": ["concept_review", "simpler_question", "visual_explanation", "hint", "partial_solution"],
+            "description": "Type of rescue intervention"
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of this rescue step"
+          },
+          "description": {
+            "type": "string",
+            "description": "What this step helps with"
+          },
+          "question_id": {
+            "type": "string",
+            "description": "Reference to practice question (if step_type is simpler_question)"
+          },
+          "concept_id": {
+            "type": "string",
+            "description": "Reference to concept (if step_type is concept_review)"
+          },
+          "hint_text": {
+            "type": "string",
+            "description": "Hint text (if step_type is hint)"
+          },
+          "diagram_specification": {
+            "type": "string",
+            "description": "Diagram requirements for visual explanation"
+          },
+          "estimated_time": {
+            "type": "integer",
+            "description": "Time needed for this step in minutes"
+          },
+          "success_criteria": {
+            "type": "string",
+            "description": "How to know student succeeded at this step"
+          }
+        }
+      }
+    },
+    "entry_criteria": {
+      "type": "object",
+      "properties": {
+        "failed_question_id": {
+          "type": "string",
+          "description": "Question that triggered this rescue ladder"
+        },
+        "mistake_patterns": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Mistake patterns that trigger this ladder"
+        },
+        "consecutive_failures": {
+          "type": "integer",
+          "description": "Number of consecutive failures before triggering"
+        }
+      }
+    },
+    "exit_criteria": {
+      "type": "object",
+      "properties": {
+        "must_complete_all_steps": {
+          "type": "boolean",
+          "description": "Whether all steps must be completed"
+        },
+        "minimum_success_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Minimum success rate to exit ladder"
+        },
+        "final_assessment_question": {
+          "type": "string",
+          "description": "Question to assess if rescue was successful"
+        }
+      }
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "tested", "validated", "published"],
+      "description": "Development status of this rescue ladder"
+    },
+    "effectiveness_metrics": {
+      "type": "object",
+      "properties": {
+        "success_rate": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "average_time_to_completion": {
+          "type": "number"
+        },
+        "student_feedback_score": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 5
+        }
+      }
+    }
+  }
+}

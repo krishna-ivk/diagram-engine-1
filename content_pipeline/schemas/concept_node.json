@@ -1,0 +1,114 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Concept Node Schema",
+  "description": "Schema for individual learning concepts in the knowledge graph",
+  "type": "object",
+  "required": ["concept_id", "name", "subject", "class_floor", "prerequisites", "learning_outcomes"],
+  "properties": {
+    "concept_id": {
+      "type": "string",
+      "description": "Unique identifier for the concept",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable concept name"
+    },
+    "display_name": {
+      "type": "string",
+      "description": "Formatted name for display in UI"
+    },
+    "subject": {
+      "type": "string",
+      "enum": ["Mathematics", "Physics", "Chemistry"],
+      "description": "Subject area"
+    },
+    "chapter": {
+      "type": "string",
+      "description": "Chapter this concept belongs to"
+    },
+    "class_floor": {
+      "type": "integer",
+      "minimum": 6,
+      "maximum": 12,
+      "description": "Minimum class level where this concept is introduced"
+    },
+    "class_ceiling": {
+      "type": "integer",
+      "minimum": 6,
+      "maximum": 12,
+      "description": "Maximum class level where this concept is primarily taught"
+    },
+    "jee_relevance": {
+      "type": "string",
+      "enum": ["none", "low", "medium", "high", "critical"],
+      "description": "Relevance level for JEE preparation"
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "List of concept IDs that must be learned first"
+    },
+    "learning_outcomes": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "What students should be able to do after mastering this concept"
+    },
+    "common_misconceptions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Common mistakes or misunderstandings"
+    },
+    "diagram_requirements": {
+      "type": "object",
+      "properties": {
+        "needs_diagram": {
+          "type": "boolean",
+          "description": "Whether this concept requires visual explanation"
+        },
+        "diagram_types": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["geometry", "graph", "coordinate_system", "trigonometric_circle", "function_plot", "vector_diagram", "area_visualization"]
+          }
+        }
+      }
+    },
+    "ncert_alignment": {
+      "type": "object",
+      "properties": {
+        "textbook_reference": {
+          "type": "string",
+          "description": "NCERT textbook chapter/section reference"
+        },
+        "exercise_numbers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "Related NCERT exercise numbers"
+        }
+      }
+    },
+    "estimated_mastery_time": {
+      "type": "object",
+      "properties": {
+        "average_minutes": {
+          "type": "integer",
+          "description": "Average time to master concept in minutes"
+        },
+        "struggling_student_minutes": {
+          "type": "integer",
+          "description": "Time for struggling students"
+        }
+      }
+    }
+  }
+}

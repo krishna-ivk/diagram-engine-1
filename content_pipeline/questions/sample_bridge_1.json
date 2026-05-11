@@ -1,0 +1,85 @@
+{
+  "question_id": "bridge_section_formula_1",
+  "question_text": "Find the coordinates of the point which divides the line segment joining (1, 2) and (7, 8) in the ratio 2:1 internally.",
+  "question_type": "multiple_choice",
+  "options": [
+    {
+      "label": "A",
+      "text": "(3, 4)",
+      "is_correct": false
+    },
+    {
+      "label": "B",
+      "text": "(5, 6)",
+      "is_correct": true
+    },
+    {
+      "label": "C",
+      "text": "(4, 5)",
+      "is_correct": false
+    },
+    {
+      "label": "D",
+      "text": "(6, 7)",
+      "is_correct": false
+    }
+  ],
+  "answer": "B",
+  "solution": {
+    "method": "Section formula for internal division",
+    "steps": [
+      {
+        "step_number": 1,
+        "description": "Use section formula: x = (mx₂ + nx₁)/(m+n), y = (my₂ + ny₁)/(m+n)",
+        "calculation": "Here m:n = 2:1, (x₁,y₁) = (1,2), (x₂,y₂) = (7,8)"
+      },
+      {
+        "step_number": 2,
+        "description": "Calculate x-coordinate",
+        "calculation": "x = (2×7 + 1×1)/(2+1) = (14 + 1)/3 = 15/3 = 5"
+      },
+      {
+        "step_number": 3,
+        "description": "Calculate y-coordinate",
+        "calculation": "y = (2×8 + 1×2)/(2+1) = (16 + 2)/3 = 18/3 = 6"
+      },
+      {
+        "step_number": 4,
+        "description": "Final coordinates",
+        "calculation": "Point is (5, 6)"
+      }
+    ],
+    "final_answer": "(5, 6)"
+  },
+  "difficulty": "bridge",
+  "primary_concept": "section_formula",
+  "secondary_concepts": ["distance_formula", "ratio_proportion"],
+  "prerequisites": ["distance_formula", "ratio_proportion", "cartesian_system"],
+  "class_floor": 10,
+  "target_exam": "jee_main",
+  "question_role": "bridge",
+  "diagram_requirements": {
+    "needs_diagram": true,
+    "diagram_type": "coordinate_system",
+    "diagram_specification": "Show line segment from (1,2) to (7,8) with division point at (5,6) marked, ratio 2:1 indicated"
+  },
+  "mistake_patterns": [
+    {
+      "pattern": "Wrong ratio placement in formula",
+      "why_wrong": "In section formula, m corresponds to the second point's coordinates",
+      "frequency": "common"
+    },
+    {
+      "pattern": "Confusing internal and external division",
+      "why_wrong": "Internal division uses + in denominator, external uses -",
+      "frequency": "occasional"
+    }
+  ],
+  "rescue_ladder": [
+    "foundation_distance_basic_1",
+    "foundation_cartesian_basics_1"
+  ],
+  "estimated_time": 4,
+  "status": "academic_review",
+  "review_history": []
+}

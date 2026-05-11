@@ -1,0 +1,142 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Concept Graph App Export Schema",
+  "description": "App-compatible concept graph for Diagram Engine Flutter app",
+  "type": "object",
+  "required": ["concepts", "prerequisites", "masteryTracking"],
+  "properties": {
+    "concepts": {
+      "type": "object",
+      "patternProperties": {
+        "^math\\.[a-z_]+\\.[a-z_]+$": {
+          "type": "object",
+          "required": ["id", "name", "displayName", "subject", "chapter", "classFloor", "classCeiling", "jeeRelevance", "prerequisites"],
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^math\\.[a-z_]+\\.[a-z_]+$"
+            },
+            "name": {
+              "type": "string"
+            },
+            "displayName": {
+              "type": "string"
+            },
+            "subject": {
+              "type": "string",
+              "enum": ["Mathematics", "Physics", "Chemistry"]
+            },
+            "chapter": {
+              "type": "string"
+            },
+            "classFloor": {
+              "type": "integer",
+              "minimum": 6,
+              "maximum": 12
+            },
+            "classCeiling": {
+              "type": "integer",
+              "minimum": 6,
+              "maximum": 12
+            },
+            "jeeRelevance": {
+              "type": "string",
+              "enum": ["none", "low", "medium", "high", "critical"]
+            },
+            "prerequisites": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "pattern": "^math\\.[a-z_]+\\.[a-z_]+$"
+              }
+            },
+            "learningOutcomes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "commonMisconceptions": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "estimatedMasteryTime": {
+              "type": "object",
+              "properties": {
+                "averageMinutes": {
+                  "type": "integer"
+                },
+                "strugglingStudentMinutes": {
+                  "type": "integer"
+                }
+              }
+            },
+            "diagramRequired": {
+              "type": "boolean"
+            },
+            "diagramTypes": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "prerequisites": {
+      "type": "object",
+      "description": "Prerequisite relationships for quick lookup",
+      "patternProperties": {
+        "^math\\.[a-z_]+\\.[a-z_]+$": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^math\\.[a-z_]+\\.[a-z_]+$"
+          }
+        }
+      }
+    },
+    "masteryTracking": {
+      "type": "object",
+      "properties": {
+        "conceptLevels": {
+          "type": "object",
+          "patternProperties": {
+            "^math\\.[a-z_]+\\.[a-z_]+$": {
+              "type": "object",
+              "properties": {
+                "foundation": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "developing": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "proficient": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "advanced": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

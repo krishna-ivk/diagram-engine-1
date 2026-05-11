@@ -1,0 +1,266 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "QuestionData App Export Schema",
+  "description": "App-compatible export format for Diagram Engine Flutter app",
+  "type": "object",
+  "required": [
+    "id",
+    "questionText",
+    "questionType",
+    "options",
+    "correctAnswer",
+    "primaryConcept",
+    "difficulty",
+    "estimatedTime",
+    "solutionSteps",
+    "whyWrongExplanations",
+    "mistakePatterns",
+    "prerequisites",
+    "rescueLadderIds",
+    "diagramRequired",
+    "targetClass",
+    "classFloor",
+    "learningObjectiveScore",
+    "reviewStatus"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "description": "Unique question identifier matching pipeline question_id"
+    },
+    "questionText": {
+      "type": "string",
+      "description": "Full question text for display"
+    },
+    "questionType": {
+      "type": "string",
+      "enum": ["multiple_choice", "numerical", "integer_type"],
+      "description": "Question type for app rendering"
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["label", "text", "isCorrect"],
+        "properties": {
+          "label": {
+            "type": "string",
+            "pattern": "^[A-D]$"
+          },
+          "text": {
+            "type": "string"
+          },
+          "isCorrect": {
+            "type": "boolean"
+          },
+          "whyWrong": {
+            "type": "string",
+            "description": "Explanation for why this option is wrong (required for incorrect options)"
+          }
+        }
+      },
+      "description": "Multiple choice options with why-wrong explanations"
+    },
+    "correctAnswer": {
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "Correct option label for MCQ"
+        },
+        {
+          "type": "number",
+          "description": "Numerical answer"
+        },
+        {
+          "type": "integer",
+          "description": "Integer type answer"
+        }
+      ]
+    },
+    "primaryConcept": {
+      "type": "string",
+      "pattern": "^math\\.[a-z_]+\\.[a-z_]+$",
+      "description": "Canonical concept ID matching concept taxonomy"
+    },
+    "secondaryConcepts": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^math\\.[a-z_]+\\.[a-z_]+$"
+      },
+      "description": "Additional concept IDs"
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["foundation", "bridge", "jee_pattern", "mock_exam"],
+      "description": "Difficulty level for app progression"
+    },
+    "estimatedTime": {
+      "type": "integer",
+      "minimum": 1,
+      "maximum": 20,
+      "description": "Estimated solving time in minutes"
+    },
+    "solutionSteps": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["stepNumber", "description", "calculation"],
+        "properties": {
+          "stepNumber": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "description": {
+            "type": "string"
+          },
+          "calculation": {
+            "type": "string"
+          },
+          "diagramElementId": {
+            "type": "string",
+            "description": "Reference to diagram element if this step uses visualization"
+          }
+        }
+      },
+      "description": "Step-by-step solution with diagram references"
+    },
+    "whyWrongExplanations": {
+      "type": "object",
+      "patternProperties": {
+        "^[A-D]$": {
+          "type": "string",
+          "description": "Why this option is wrong (not required for correct option)"
+        }
+      },
+      "description": "Common mistake explanations for each option"
+    },
+    "mistakePatterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["pattern", "whyWrong", "frequency"],
+        "properties": {
+          "pattern": {
+            "type": "string"
+          },
+          "whyWrong": {
+            "type": "string"
+          },
+          "frequency": {
+            "type": "string",
+            "enum": ["rare", "occasional", "common", "very_common"]
+          },
+          "rescueConceptId": {
+            "type": "string",
+            "pattern": "^math\\.[a-z_]+\\.[a-z_]+$",
+            "description": "Concept to review for this mistake"
+          }
+        }
+      },
+      "description": "Common mistake patterns with rescue suggestions"
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^math\\.[a-z_]+\\.[a-z_]+$"
+      },
+      "description": "Required concept IDs (must exist in concept taxonomy)"
+    },
+    "rescueLadderIds": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Question IDs for rescue path (must exist in question set)"
+    },
+    "diagramRequired": {
+      "type": "boolean"
+    },
+    "diagramSpec": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["coordinate_system", "geometry", "trigonometric_circle", "graph"]
+        },
+        "elements": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "type"],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "properties": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      },
+      "description": "Diagram specification if required"
+    },
+    "targetClass": {
+      "type": "integer",
+      "minimum": 7,
+      "maximum": 12,
+      "description": "Target class level for this question"
+    },
+    "classFloor": {
+      "type": "integer",
+      "minimum": 7,
+      "maximum": 12,
+      "description": "Minimum class level where student should attempt this"
+    },
+    "rescueStartLevel": {
+      "type": "integer",
+      "minimum": 7,
+      "maximum": 12,
+      "description": "Class level where rescue ladder should start"
+    },
+    "learningObjectiveScore": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "Quality score (must be >= 85 for publishing)"
+    },
+    "reviewStatus": {
+      "type": "string",
+      "enum": ["academic_review", "copyright_review", "approved", "published"],
+      "description": "Current review status"
+    },
+    "lineage": {
+      "type": "object",
+      "properties": {
+        "inspiredBy": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "ncertAlignment": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "transformationType": {
+          "type": "string",
+          "enum": ["original_question_from_pattern", "adapted_from_source", "original_content"]
+        },
+        "verbatimSourceUsed": {
+          "type": "boolean"
+        },
+        "humanReviewRequired": {
+          "type": "boolean"
+        }
+      }
+    }
+  }
+}

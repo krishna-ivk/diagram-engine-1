@@ -1,0 +1,162 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Diagram Specification Schema",
+  "description": "Schema for diagram requirements and specifications",
+  "type": "object",
+  "required": ["diagram_id", "type", "elements"],
+  "properties": {
+    "diagram_id": {
+      "type": "string",
+      "description": "Unique identifier for the diagram",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "type": {
+      "type": "string",
+      "enum": ["geometry", "coordinate_system", "graph", "trigonometric_circle", "vector", "area_visualization", "function_plot", "3d_visualization"],
+      "description": "Type of diagram"
+    },
+    "title": {
+      "type": "string",
+      "description": "Diagram title for display"
+    },
+    "description": {
+      "type": "string",
+      "description": "What this diagram illustrates"
+    },
+    "associated_question_id": {
+      "type": "string",
+      "description": "Question this diagram supports"
+    },
+    "associated_concept_id": {
+      "type": "string",
+      "description": "Concept this diagram illustrates"
+    },
+    "elements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "element_type": {
+            "type": "string",
+            "enum": ["point", "line", "circle", "polygon", "curve", "text_label", "arrow", "grid", "axis", "angle_arc", "shaded_area"]
+          },
+          "properties": {
+            "type": "object",
+            "description": "Element-specific properties (coordinates, dimensions, colors, etc.)"
+          },
+          "label": {
+            "type": "string",
+            "description": "Text label for this element"
+          },
+          "is_interactive": {
+            "type": "boolean",
+            "description": "Whether user can interact with this element"
+          },
+          "animation_sequence": {
+            "type": "integer",
+            "description": "Order in animation sequence (0 = no animation)"
+          }
+        }
+      }
+    },
+    "layout": {
+      "type": "object",
+      "properties": {
+        "width": {
+          "type": "number",
+          "description": "Diagram width in pixels"
+        },
+        "height": {
+          "type": "number",
+          "description": "Diagram height in pixels"
+        },
+        "background_color": {
+          "type": "string",
+          "pattern": "^#[0-9A-Fa-f]{6}$"
+        },
+        "grid_visible": {
+          "type": "boolean"
+        },
+        "coordinate_system": {
+          "type": "object",
+          "properties": {
+            "x_min": {
+              "type": "number"
+            },
+            "x_max": {
+              "type": "number"
+            },
+            "y_min": {
+              "type": "number"
+            },
+            "y_max": {
+              "type": "number"
+            },
+            "origin_visible": {
+              "type": "boolean"
+            }
+          }
+        }
+      }
+    },
+    "animation": {
+      "type": "object",
+      "properties": {
+        "has_animation": {
+          "type": "boolean"
+        },
+        "total_frames": {
+          "type": "integer"
+        },
+        "frame_duration_ms": {
+          "type": "integer"
+        },
+        "animation_type": {
+          "type": "string",
+          "enum": ["sequential", "simultaneous", "interactive"]
+        },
+        "description": {
+          "type": "string",
+          "description": "What the animation demonstrates"
+        }
+      }
+    },
+    "interaction": {
+      "type": "object",
+      "properties": {
+        "is_interactive": {
+          "type": "boolean"
+        },
+        "interaction_type": {
+          "type": "string",
+          "enum": ["drag_points", "zoom_pan", "click_elements", "input_values"]
+        },
+        "instructions": {
+          "type": "string",
+          "description": "How user should interact with diagram"
+        }
+      }
+    },
+    "learning_objectives": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "What students should learn from this diagram"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["specification", "in_progress", "review", "approved", "implemented"],
+      "description": "Development status"
+    },
+    "complexity_level": {
+      "type": "string",
+      "enum": ["simple", "moderate", "complex"],
+      "description": "Visual complexity for development prioritization"
+    },
+    "estimated_development_time": {
+      "type": "integer",
+      "description": "Estimated development time in hours"
+    }
+  }
+}

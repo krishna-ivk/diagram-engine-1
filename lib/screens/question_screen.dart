@@ -575,8 +575,8 @@ class _QuestionScreenState extends State<QuestionScreen>
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Concept
-                if (q.coreConcept != null) ...[
+                // Concept - only in Learner/Revision mode
+                if (q.coreConcept != null && widget.practiceMode != PracticeMode.mockExam) ...[
                   Row(
                     children: [
                       Icon(Icons.lightbulb_outline,
@@ -596,8 +596,8 @@ class _QuestionScreenState extends State<QuestionScreen>
                   ),
                   const SizedBox(height: 6),
                 ],
-                // Common mistake
-                if (q.commonMistake != null && !wasCorrect) ...[
+                // Common mistake - only in Learner mode
+                if (q.commonMistake != null && !wasCorrect && _allowsConceptExplanation) ...[
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -617,8 +617,8 @@ class _QuestionScreenState extends State<QuestionScreen>
                   ),
                   const SizedBox(height: 6),
                 ],
-                // Importance
-                if (q.frequentlyAsked || q.highWeightTopic)
+                // Importance - only in Learner/Revision mode
+                if ((q.frequentlyAsked || q.highWeightTopic) && widget.practiceMode != PracticeMode.mockExam)
                   Row(
                     children: [
                       Icon(Icons.star_outline,
@@ -784,40 +784,42 @@ class _QuestionScreenState extends State<QuestionScreen>
             const SizedBox(height: 8),
           ],
 
-          // Practice similar + next (automatic feel)
-          if (q.similarQuestionIds.isNotEmpty &&
-              PremiumFeatures.similarQuestions(_tier))
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton.icon(
-                onPressed: _practiceSimilar,
-                icon: const Icon(Icons.replay, size: 16),
-                label: const Text('Practice 2 More Like This'),
-                style: FilledButton.styleFrom(
-                  backgroundColor: Colors.indigo,
-                  padding: const EdgeInsets.symmetric(vertical: 12),
-                ),
-              ),
-            )
-          else if (!PremiumFeatures.similarQuestions(_tier))
-            PremiumGate(
-              tier: _tier,
-              featureEnabled: false,
-              featureName: 'Practice Similar',
-              child: SizedBox(
+          // Practice similar + next (automatic feel) - only in Learner/Revision mode
+          if (widget.practiceMode != PracticeMode.mockExam) ...[
+            if (q.similarQuestionIds.isNotEmpty &&
+                PremiumFeatures.similarQuestions(_tier))
+              SizedBox(
                 width: double.infinity,
-                child: OutlinedButton.icon(
-                  onPressed: () {},
+                child: FilledButton.icon(
+                  onPressed: _practiceSimilar,
                   icon: const Icon(Icons.replay, size: 16),
                   label: const Text('Practice 2 More Like This'),
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.indigo,
-                    side: const BorderSide(color: Colors.indigo),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.indigo,
+                    padding: const EdgeInsets.symmetric(vertical: 12),
+                  ),
+                ),
+              )
+            else if (!PremiumFeatures.similarQuestions(_tier))
+              PremiumGate(
+                tier: _tier,
+                featureEnabled: false,
+                featureName: 'Practice Similar',
+                child: SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    onPressed: () {},
+                    icon: const Icon(Icons.replay, size: 16),
+                    label: const Text('Practice 2 More Like This'),
+                    style: OutlinedButton.styleFrom(
+                      foregroundColor: Colors.indigo,
+                      side: const BorderSide(color: Colors.indigo),
+                    ),
                   ),
                 ),
               ),
-            ),
-          const SizedBox(height: 6),
+            const SizedBox(height: 6),
+          ],
           if (_currentIndex < widget.questions.length - 1)
             SizedBox(
               width: double.infinity,

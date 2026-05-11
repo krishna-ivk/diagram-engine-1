@@ -1,0 +1,96 @@
+{
+  "question_id": "mock_exam_coordinate_complex_1",
+  "question_text": "The vertices of a triangle are A(1, 2), B(3, 4), and C(5, 0). Find the equation of the altitude from vertex A.",
+  "question_type": "multiple_choice",
+  "options": [
+    {
+      "label": "A",
+      "text": "x - y + 1 = 0",
+      "is_correct": false
+    },
+    {
+      "label": "B",
+      "text": "x + y - 3 = 0",
+      "is_correct": true
+    },
+    {
+      "label": "C",
+      "text": "2x - y = 0",
+      "is_correct": false
+    },
+    {
+      "label": "D",
+      "text": "x + 2y - 5 = 0",
+      "is_correct": false
+    }
+  ],
+  "answer": "B",
+  "solution": {
+    "method": "Find equation of line through A perpendicular to BC",
+    "steps": [
+      {
+        "step_number": 1,
+        "description": "Find slope of side BC",
+        "calculation": "Slope of BC = (0 - 4)/(5 - 3) = -4/2 = -2"
+      },
+      {
+        "step_number": 2,
+        "description": "Find slope of altitude (perpendicular to BC)",
+        "calculation": "Slope of altitude = negative reciprocal = 1/2"
+      },
+      {
+        "step_number": 3,
+        "description": "Use point-slope form with point A(1, 2)",
+        "calculation": "y - 2 = (1/2)(x - 1)"
+      },
+      {
+        "step_number": 4,
+        "description": "Multiply by 2 to eliminate fraction",
+        "calculation": "2(y - 2) = x - 1"
+      },
+      {
+        "step_number": 5,
+        "description": "Expand and rearrange",
+        "calculation": "2y - 4 = x - 1 ⇒ x + y - 3 = 0"
+      }
+    ],
+    "final_answer": "x + y - 3 = 0"
+  },
+  "difficulty": "mock_exam",
+  "primary_concept": "line_equations",
+  "secondary_concepts": ["slope_of_line", "coordinate_geometry"],
+  "prerequisites": ["slope_of_line", "cartesian_system", "perpendicular_lines"],
+  "class_floor": 11,
+  "target_exam": "jee_main",
+  "question_role": "mock_exam",
+  "diagram_requirements": {
+    "needs_diagram": true,
+    "diagram_type": "coordinate_system",
+    "diagram_specification": "Show triangle ABC with vertices marked, altitude from A drawn perpendicular to BC"
+  },
+  "mistake_patterns": [
+    {
+      "pattern": "Wrong slope calculation for BC",
+      "why_wrong": "Slope = (y₂-y₁)/(x₂-x₁), order matters but sign consistency is key",
+      "frequency": "occasional"
+    },
+    {
+      "pattern": "Not using negative reciprocal for perpendicular slope",
+      "why_wrong": "Perpendicular slopes multiply to -1, so m₂ = -1/m₁",
+      "frequency": "common"
+    },
+    {
+      "pattern": "Point-slope form errors",
+      "why_wrong": "y - y₁ = m(x - x₁), be careful with signs",
+      "frequency": "occasional"
+    }
+  ],
+  "rescue_ladder": [
+    "foundation_distance_basic_1",
+    "bridge_section_formula_1",
+    "jee_pattern_octagon_area_1"
+  ],
+  "estimated_time": 8,
+  "status": "academic_review",
+  "review_history": []
+}

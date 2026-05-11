@@ -1,0 +1,90 @@
+{
+  "question_id": "jee_pattern_octagon_area_1",
+  "question_text": "A regular octagon is formed by joining the midpoints of the sides of a square of side length 8 cm. Find the area of the octagon.",
+  "question_type": "multiple_choice",
+  "options": [
+    {
+      "label": "A",
+      "text": "32√2 cm²",
+      "is_correct": false
+    },
+    {
+      "label": "B",
+      "text": "64 cm²",
+      "is_correct": false
+    },
+    {
+      "label": "C",
+      "text": "32 cm²",
+      "is_correct": false
+    },
+    {
+      "label": "D",
+      "text": "32(2-√2) cm²",
+      "is_correct": true
+    }
+  ],
+  "answer": "D",
+  "solution": {
+    "method": "Area by subtracting corner triangles",
+    "steps": [
+      {
+        "step_number": 1,
+        "description": "Visualize the square and octagon",
+        "calculation": "Square side = 8 cm, area = 64 cm²"
+      },
+      {
+        "step_number": 2,
+        "description": "Find the corner triangles that are removed",
+        "calculation": "Each corner triangle is isosceles right triangle with legs = 4 cm"
+      },
+      {
+        "step_number": 3,
+        "description": "Calculate area of one corner triangle",
+        "calculation": "Area = (1/2) × 4 × 4 = 8 cm²"
+      },
+      {
+        "step_number": 4,
+        "description": "Total area of 4 corner triangles",
+        "calculation": "4 × 8 = 32 cm²"
+      },
+      {
+        "step_number": 5,
+        "description": "Octagon area = Square area - Corner triangles area",
+        "calculation": "64 - 32 = 32 cm²"
+      }
+    ],
+    "final_answer": "32 cm²"
+  },
+  "difficulty": "jee_pattern",
+  "primary_concept": "area_polygon_triangles",
+  "secondary_concepts": ["regular_polygons", "triangle_area"],
+  "prerequisites": ["regular_polygons", "triangle_area", "central_angle"],
+  "class_floor": 10,
+  "target_exam": "jee_main",
+  "question_role": "jee_pattern",
+  "diagram_requirements": {
+    "needs_diagram": true,
+    "diagram_type": "geometry",
+    "diagram_specification": "Show square with side 8, octagon formed by joining midpoints, highlight one corner triangle with dimensions"
+  },
+  "mistake_patterns": [
+    {
+      "pattern": "Not recognizing octagon as square minus corner triangles",
+      "why_wrong": "Regular octagon inscribed in square removes 4 corner triangles",
+      "frequency": "common"
+    },
+    {
+      "pattern": "Wrong dimensions of corner triangles",
+      "why_wrong": "Each corner triangle has legs of 4 cm (half of square side)",
+      "frequency": "occasional"
+    }
+  ],
+  "rescue_ladder": [
+    "foundation_distance_basic_1",
+    "bridge_section_formula_1"
+  ],
+  "estimated_time": 6,
+  "status": "academic_review",
+  "review_history": []
+}

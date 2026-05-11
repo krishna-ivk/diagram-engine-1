@@ -1,0 +1,220 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Question Item Schema",
+  "description": "Schema for individual practice questions in the content pipeline",
+  "type": "object",
+  "required": ["question_id", "question_text", "question_type", "difficulty", "primary_concept", "answer", "status"],
+  "properties": {
+    "question_id": {
+      "type": "string",
+      "description": "Unique identifier for the question",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "source_reference": {
+      "type": "object",
+      "properties": {
+        "source_id": {
+          "type": "string",
+          "description": "Reference to source material"
+        },
+        "source_type": {
+          "type": "string",
+          "enum": ["jee_previous_paper", "ncert_textbook", "original", "adapted"]
+        },
+        "original_question_number": {
+          "type": "string",
+          "description": "Original question number in source"
+        },
+        "adaptation_notes": {
+          "type": "string",
+          "description": "Notes about how question was adapted"
+        }
+      }
+    },
+    "question_text": {
+      "type": "string",
+      "description": "Full question text"
+    },
+    "question_type": {
+      "type": "string",
+      "enum": ["multiple_choice", "numerical", "integer_type", "comprehension", "assertion_reason"],
+      "description": "Type of question"
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string",
+            "pattern": "^[A-D]$"
+          },
+          "text": {
+            "type": "string"
+          },
+          "is_correct": {
+            "type": "boolean"
+          }
+        }
+      },
+      "description": "Multiple choice options (if applicable)"
+    },
+    "answer": {
+      "oneOf": [
+        {
+          "type": "string",
+          "description": "Correct option label for MCQ"
+        },
+        {
+          "type": "number",
+          "description": "Numerical answer"
+        },
+        {
+          "type": "integer",
+          "description": "Integer type answer"
+        }
+      ]
+    },
+    "solution": {
+      "type": "object",
+      "properties": {
+        "method": {
+          "type": "string",
+          "description": "Solution approach description"
+        },
+        "steps": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "step_number": {
+                "type": "integer"
+              },
+              "description": {
+                "type": "string"
+              },
+              "calculation": {
+                "type": "string"
+              }
+            }
+          }
+        },
+        "final_answer": {
+          "type": "string"
+        }
+      }
+    },
+    "difficulty": {
+      "type": "string",
+      "enum": ["foundation", "bridge", "jee_pattern", "mock_exam"],
+      "description": "Difficulty level and purpose"
+    },
+    "primary_concept": {
+      "type": "string",
+      "description": "Main concept being tested"
+    },
+    "secondary_concepts": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Additional concepts involved"
+    },
+    "prerequisites": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Concept prerequisites for this question"
+    },
+    "class_floor": {
+      "type": "integer",
+      "minimum": 7,
+      "maximum": 12,
+      "description": "Minimum class level for this question"
+    },
+    "target_exam": {
+      "type": "string",
+      "enum": ["school", "jee_main", "jee_advanced", "board"],
+      "description": "Target exam type"
+    },
+    "question_role": {
+      "type": "string",
+      "enum": ["foundation", "bridge", "jee_pattern", "mock_exam", "rescue"],
+      "description": "Role in learning progression"
+    },
+    "diagram_requirements": {
+      "type": "object",
+      "properties": {
+        "needs_diagram": {
+          "type": "boolean"
+        },
+        "diagram_type": {
+          "type": "string",
+          "enum": ["geometry", "coordinate_system", "graph", "trigonometric_circle", "vector", "area_visualization"]
+        },
+        "diagram_specification": {
+          "type": "string",
+          "description": "Specific diagram requirements"
+        }
+      }
+    },
+    "mistake_patterns": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "pattern": {
+            "type": "string",
+            "description": "Common mistake description"
+          },
+          "why_wrong": {
+            "type": "string",
+            "description": "Explanation of why this is wrong"
+          },
+          "frequency": {
+            "type": "string",
+            "enum": ["rare", "occasional", "common", "very_common"]
+          }
+        }
+      }
+    },
+    "rescue_ladder": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Question IDs for rescue path"
+    },
+    "estimated_time": {
+      "type": "integer",
+      "description": "Estimated solving time in minutes"
+    },
+    "status": {
+      "type": "string",
+      "enum": ["raw_imported", "parsed", "concept_tagged", "diagram_needed", "original_question_generated", "academic_review", "copyright_review", "approved", "published"],
+      "description": "Content pipeline status"
+    },
+    "review_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          },
+          "reviewer": {
+            "type": "string"
+          },
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "comments": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

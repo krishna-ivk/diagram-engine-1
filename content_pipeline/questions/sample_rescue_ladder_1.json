@@ -1,0 +1,55 @@
+{
+  "question_id": "rescue_octagon_basic_1",
+  "question_text": "A square has side length 6 cm. What is the area of one corner triangle if the octagon is formed by joining midpoints?",
+  "question_type": "numerical",
+  "answer": 4.5,
+  "solution": {
+    "method": "Area of right triangle",
+    "steps": [
+      {
+        "step_number": 1,
+        "description": "Find the legs of the corner triangle",
+        "calculation": "Each leg is half the square side: 6/2 = 3 cm"
+      },
+      {
+        "step_number": 2,
+        "description": "Use triangle area formula",
+        "calculation": "Area = (1/2) × base × height = (1/2) × 3 × 3"
+      },
+      {
+        "step_number": 3,
+        "description": "Calculate the area",
+        "calculation": "Area = 4.5 cm²"
+      }
+    ],
+    "final_answer": "4.5 cm²"
+  },
+  "difficulty": "foundation",
+  "primary_concept": "triangle_area",
+  "secondary_concepts": ["regular_polygons"],
+  "prerequisites": ["area_basics", "triangle_basics"],
+  "class_floor": 8,
+  "target_exam": "school",
+  "question_role": "rescue",
+  "diagram_requirements": {
+    "needs_diagram": true,
+    "diagram_type": "geometry",
+    "diagram_specification": "Show square with side 6, highlight one corner triangle with legs of 3 cm"
+  },
+  "mistake_patterns": [
+    {
+      "pattern": "Using full side length instead of half",
+      "why_wrong": "Corner triangle legs are half the square side, not full side",
+      "frequency": "common"
+    },
+    {
+      "pattern": "Forgetting the 1/2 in triangle area",
+      "why_wrong": "Triangle area = (1/2) × base × height, not base × height",
+      "frequency": "occasional"
+    }
+  ],
+  "rescue_ladder": [],
+  "estimated_time": 2,
+  "status": "academic_review",
+  "review_history": []
+}

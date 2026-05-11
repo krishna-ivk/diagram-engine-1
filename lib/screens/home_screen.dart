@@ -296,7 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 },
               ),
 
-              const Spacer(),
+              const SizedBox(height: 24),
 
               // Premium tier toggle
               ListenableBuilder(

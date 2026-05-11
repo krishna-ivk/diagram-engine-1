@@ -1,0 +1,77 @@
+{
+  "question_id": "foundation_cartesian_basics_1",
+  "question_text": "Which quadrant contains the point (-3, 4)?",
+  "question_type": "multiple_choice",
+  "options": [
+    {
+      "label": "A",
+      "text": "First quadrant",
+      "is_correct": false
+    },
+    {
+      "label": "B", 
+      "text": "Second quadrant",
+      "is_correct": true
+    },
+    {
+      "label": "C",
+      "text": "Third quadrant",
+      "is_correct": false
+    },
+    {
+      "label": "D",
+      "text": "Fourth quadrant",
+      "is_correct": false
+    }
+  ],
+  "answer": "B",
+  "solution": {
+    "method": "Quadrant identification using coordinate signs",
+    "steps": [
+      {
+        "step_number": 1,
+        "description": "Look at the signs of the coordinates",
+        "calculation": "Point (-3, 4) has x = -3 (negative) and y = 4 (positive)"
+      },
+      {
+        "step_number": 2,
+        "description": "Recall quadrant sign rules",
+        "calculation": "Second quadrant: x is negative, y is positive"
+      },
+      {
+        "step_number": 3,
+        "description": "Match the signs",
+        "calculation": "(-3, 4) matches second quadrant pattern"
+      }
+    ],
+    "final_answer": "Second quadrant"
+  },
+  "difficulty": "foundation",
+  "primary_concept": "cartesian_system",
+  "secondary_concepts": [],
+  "prerequisites": ["number_line", "negative_numbers"],
+  "class_floor": 9,
+  "target_exam": "school",
+  "question_role": "foundation",
+  "diagram_requirements": {
+    "needs_diagram": true,
+    "diagram_type": "coordinate_system",
+    "diagram_specification": "Show Cartesian plane with all four quadrants labeled and point (-3, 4) plotted"
+  },
+  "mistake_patterns": [
+    {
+      "pattern": "Confusing x and y coordinates",
+      "why_wrong": "x-coordinate comes first, then y-coordinate in (x, y) format",
+      "frequency": "common"
+    },
+    {
+      "pattern": "Wrong quadrant sign memorization",
+      "why_wrong": "Remember: QI (+,+), QII (-,+), QIII (-,-), QIV (+,-)",
+      "frequency": "very_common"
+    }
+  ],
+  "rescue_ladder": [],
+  "estimated_time": 2,
+  "status": "academic_review",
+  "review_history": []
+}

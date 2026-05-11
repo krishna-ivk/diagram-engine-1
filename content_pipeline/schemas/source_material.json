@@ -1,0 +1,77 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Source Material Schema",
+  "description": "Schema for raw source materials (JEE papers, NCERT references, etc.)",
+  "type": "object",
+  "required": ["source_id", "source_type", "copyright_status", "metadata"],
+  "properties": {
+    "source_id": {
+      "type": "string",
+      "description": "Unique identifier for the source material",
+      "pattern": "^[a-z0-9_]+$"
+    },
+    "source_type": {
+      "type": "string",
+      "enum": ["jee_previous_paper", "ncert_textbook", "ncert_syllabus", "original_content", "coaching_material"],
+      "description": "Type of source material"
+    },
+    "copyright_status": {
+      "type": "string",
+      "enum": ["public_domain", "needs_review", "restricted", "original"],
+      "description": "Copyright clearance status"
+    },
+    "metadata": {
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Title of the source material"
+        },
+        "year": {
+          "type": "integer",
+          "description": "Publication year (for JEE papers, textbooks)"
+        },
+        "exam_session": {
+          "type": "string",
+          "description": "Exam session for JEE papers (e.g., '2023_shift_1')"
+        },
+        "subject": {
+          "type": "string",
+          "enum": ["Mathematics", "Physics", "Chemistry"],
+          "description": "Subject area"
+        },
+        "class_level": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^Class [6-12]$"
+          },
+          "description": "NCERT class levels this material aligns with"
+        },
+        "chapter": {
+          "type": "string",
+          "description": "Chapter or topic name"
+        },
+        "url": {
+          "type": "string",
+          "format": "uri",
+          "description": "Source URL or reference link"
+        },
+        "access_date": {
+          "type": "string",
+          "format": "date",
+          "description": "Date when material was accessed"
+        }
+      }
+    },
+    "raw_content": {
+      "type": "string",
+      "description": "Raw text content or reference to file location"
+    },
+    "extraction_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When this material was extracted/added to pipeline"
+    }
+  }
+}

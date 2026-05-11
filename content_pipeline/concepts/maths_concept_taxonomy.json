@@ -1,0 +1,511 @@
+{
+  "subject": "Mathematics",
+  "chapters": [
+    {
+      "chapter_id": "coordinate_geometry",
+      "name": "Coordinate Geometry",
+      "priority": 1,
+      "jee_relevance": "high",
+      "concepts": [
+        {
+          "concept_id": "cartesian_system",
+          "name": "Cartesian Coordinate System",
+          "display_name": "Cartesian Coordinate System",
+          "class_floor": 9,
+          "class_ceiling": 10,
+          "jee_relevance": "critical",
+          "prerequisites": ["number_line", "ordered_pairs"],
+          "learning_outcomes": [
+            "Plot points in Cartesian plane",
+            "Identify quadrants",
+            "Find distance between points",
+            "Understand x and y coordinates"
+          ],
+          "common_misconceptions": [
+            "Confusing (x,y) order",
+            "Not understanding negative coordinates",
+            "Mixing up quadrants"
+          ],
+          "diagram_requirements": {
+            "needs_diagram": true,
+            "diagram_types": ["coordinate_system"]
+          },
+          "ncert_alignment": {
+            "textbook_reference": "Class 9 Mathematics Chapter 3",
+            "exercise_numbers": ["3.1", "3.2", "3.3"]
+          },
+          "estimated_mastery_time": {
+            "average_minutes": 45,
+            "struggling_student_minutes": 90
+          }
+        },
+        {
+          "concept_id": "distance_formula",
+          "name": "Distance Formula",
+          "display_name": "Distance Between Two Points",
+          "class_floor": 10,
+          "class_ceiling": 10,
+          "jee_relevance": "high",
+          "prerequisites": ["cartesian_system", "pythagorean_theorem"],
+          "learning_outcomes": [
+            "Apply distance formula",
+            "Find distance between any two points",
+            "Use distance formula in geometry problems"
+          ],
+          "common_misconceptions": [
+            "Forgetting to square differences",
+            "Not taking square root",
+            "Order of points doesn't matter"
+          ],
+          "diagram_requirements": {
+            "needs_diagram": true,
+            "diagram_types": ["coordinate_system", "geometry"]
+          },
+          "ncert_alignment": {
+            "textbook_reference": "Class 10 Mathematics Chapter 7",
+            "exercise_numbers": ["7.1", "7.2"]
+          },
+          "estimated_mastery_time": {
+            "average_minutes": 30,
+            "struggling_student_minutes": 60
+          }
+        },
+        {
+          "concept_id": "section_formula",
+          "name": "Section Formula",
+          "display_name": "Division of Line Segment",
+          "class_floor": 10,
+          "class_ceiling": 10,
+          "jee_relevance": "high",
+          "prerequisites": ["distance_formula", "ratio_proportion"],
+          "learning_outcomes": [
+            "Find point dividing line segment in given ratio",
+            "Apply section formula internally",
+            "Apply section formula externally"
+          ],
+          "common_misconceptions": [
+            "Confusing internal vs external division",
+            "Wrong ratio placement",
+            "Sign errors in external division"
+          ],
+          "diagram_requirements": {
+            "needs_diagram": true,
+            "diagram_types": ["coordinate_system", "geometry"]
+          },
+          "ncert_alignment": {
+            "textbook_reference": "Class 10 Mathematics Chapter 7",
+            "exercise_numbers": ["7.2", "7.3"]
+          },
+          "estimated_mastery_time": {
+            "average_minutes": 40,
+            "struggling_student_minutes": 75
+          }
+        },
+        {
+          "concept_id": "area_of_triangle",
+          "name": "Area of Triangle using Coordinates",
+          "display_name": "Area of Triangle (Coordinate Method)",
+          "class_floor": 10,
+          "class_ceiling": 10,
+          "jee_relevance": "medium",
+          "prerequisites": ["cartesian_system", "determinants_basics"],
+          "learning_outcomes": [
+            "Calculate area using coordinate formula",
+            "Check if three points are collinear",
+            "Find area of polygon using triangles"
+          ],
+          "common_misconceptions": [
+            "Forgetting absolute value",
+            "Wrong order of points",
+            "Not handling negative area"
+          ],
+          "diagram_requirements": {
+            "needs_diagram": true,
+            "diagram_types": ["coordinate_system", "area_visualization"]
+          },
+          "ncert_alignment": {
+            "textbook_reference": "Class 10 Mathematics Chapter 7",
+            "exercise_numbers": ["7.3"]
+          },
+          "estimated_mastery_time": {
+            "average_minutes": 35,
+            "struggling_student_minutes": 65
+          }
+        },
+        {
+          "concept_id": "slope_of_line",
+          "name": "Slope of Line",
+          "display_name": "Slope and Gradient",
+          "class_floor": 10,
+          "class_ceiling": 11,
+          "jee_relevance": "critical",
+          "prerequisites": ["cartesian_system", "ratio_concept"],
+          "learning_outcomes": [
+            "Calculate slope between two points",
+            "Understand positive, negative, zero slope",
+            "Find slope of parallel and perpendicular lines"
+          ],
+          "common_misconceptions": [
+            "Confusing rise over run",
+            "Not understanding vertical line slope",
+            "Sign errors in slope calculation"
+          ],
+          "diagram_requirements": {
+            "needs_diagram": true,
+            "diagram_types": ["coordinate_system", "graph"]
+          },
+          "ncert_alignment": {
+            "textbook_reference": "Class 10 Mathematics Chapter 7",
+            "exercise_numbers": ["7.1", "7.2"]
+          },
+          "estimated_mastery_time": {
+            "average_minutes": 40,
+            "struggling_student_minutes": 80
+          }
+        },
+        {
+          "concept_id": "line_equations",
+          "name": "Equations of Straight Lines",
+          "display_name": "Linear Equations",
+          "class_floor": 10,
+          "class_ceiling": 11,
+          "jee_relevance": "critical",
+          "prerequisites": ["slope_of_line", "cartesian_system"],
+          "learning_outcomes": [
+            "Write equation in slope-intercept form",
+            "Convert between different forms",
+            "Find equation from two points"
+          ],
+          "common_misconceptions": [
+            "Confusing different forms",
+            "Wrong intercept interpretation",
+            "Not understanding slope in equation"
+          ],
+          "diagram_requirements": {
+            "needs_diagram": true,
+            "diagram_types": ["coordinate_system", "graph"]
+          },
+          "ncert_alignment": {
+            "textbook_reference": "Class 10 Mathematics Chapter 7",
+            "exercise_numbers": ["7.2", "7.3"]
+          },
+          "estimated_mastery_time": {
+            "average_minutes": 50,
+            "struggling_student_minutes": 100
+          }
+        }
+      ]
+    },
+    {
+      "chapter_id": "trigonometry",
+      "name": "Trigonometry",
+      "priority": 2,
+      "jee_relevance": "high",
+      "concepts": [
+        {
+          "concept_id": "trigonometric_ratios",
+          "name": "Trigonometric Ratios",
+          "display_name": "Sin, Cos, Tan",
+          "class_floor": 10,
+          "class_ceiling": 10,
+          "jee_relevance": "critical",
+          "prerequisites": ["right_triangle", "similar_triangles", "ratio_concept"],
+          "learning_outcomes": [
+            "Define sin, cos, tan in right triangle",
+            "Find values for special angles",
+            "Apply ratios to solve problems"
+          ],
+          "common_misconceptions": [
+            "Confusing opposite/adjacent sides",
+            "Wrong angle identification",
+            "SOH CAH TOA confusion"
+          ],
+          "diagram_requirements": {
+            "needs_diagram": true,
+            "diagram_types": ["trigonometric_circle", "geometry"]
+          },
+          "ncert_alignment": {
+            "textbook_reference": "Class 10 Mathematics Chapter 8",
+            "exercise_numbers": ["8.1", "8.2"]
+          },
+          "estimated_mastery_time": {
+            "average_minutes": 60,
+            "struggling_student_minutes": 120
+          }
+        },
+        {
+          "concept_id": "trigonometric_identities",
+          "name": "Trigonometric Identities",
+          "display_name": "Trig Identities",
+          "class_floor": 10,
+          "class_ceiling": 11,
+          "jee_relevance": "high",
+          "prerequisites": ["trigonometric_ratios", "algebraic_manipulation"],
+          "learning_outcomes": [
+            "Prove basic trigonometric identities",
+            "Apply identities to simplify expressions",
+            "Use identities in problem solving"
+          ],
+          "common_misconceptions": [
+            "Not knowing which identity to use",
+            "Algebraic manipulation errors",
+            "Domain restrictions"
+          ],
+          "diagram_requirements": {
+            "needs_diagram": false,
+            "diagram_types": []
+          },
+          "ncert_alignment": {
+            "textbook_reference": "Class 10 Mathematics Chapter 8",
+            "exercise_numbers": ["8.3", "8.4"]
+          },
+          "estimated_mastery_time": {
+            "average_minutes": 45,
+            "struggling_student_minutes": 90
+          }
+        },
+        {
+          "concept_id": "unit_circle",
+          "name": "Unit Circle",
+          "display_name": "Unit Circle and Radians",
+          "class_floor": 11,
+          "class_ceiling": 11,
+          "jee_relevance": "critical",
+          "prerequisites": ["trigonometric_ratios", "circle_basics", "angle_measurement"],
+          "learning_outcomes": [
+            "Understand unit circle definition",
+            "Convert degrees to radians",
+            "Find trig values using unit circle"
+          ],
+          "common_misconceptions": [
+            "Confusing degrees and radians",
+            "Wrong coordinate identification",
+            "Not understanding periodicity"
+          ],
+          "diagram_requirements": {
+            "needs_diagram": true,
+            "diagram_types": ["trigonometric_circle"]
+          },
+          "ncert_alignment": {
+            "textbook_reference": "Class 11 Mathematics Chapter 3",
+            "exercise_numbers": ["3.1", "3.2"]
+          },
+          "estimated_mastery_time": {
+            "average_minutes": 50,
+            "struggling_student_minutes": 100
+          }
+        }
+      ]
+    },
+    {
+      "chapter_id": "quadratic_equations",
+      "name": "Quadratic Equations",
+      "priority": 3,
+      "jee_relevance": "high",
+      "concepts": [
+        {
+          "concept_id": "quadratic_standard_form",
+          "name": "Standard Form of Quadratic",
+          "display_name": "ax² + bx + c = 0",
+          "class_floor": 10,
+          "class_ceiling": 10,
+          "jee_relevance": "medium",
+          "prerequisites": ["polynomials", "equation_solving"],
+          "learning_outcomes": [
+            "Identify quadratic equations",
+            "Convert to standard form",
+            "Identify coefficients a, b, c"
+          ],
+          "common_misconceptions": [
+            "Not recognizing quadratic form",
+            "Wrong coefficient identification",
+            "Missing terms as zero"
+          ],
+          "diagram_requirements": {
+            "needs_diagram": false,
+            "diagram_types": []
+          },
+          "ncert_alignment": {
+            "textbook_reference": "Class 10 Mathematics Chapter 4",
+            "exercise_numbers": ["4.1"]
+          },
+          "estimated_mastery_time": {
+            "average_minutes": 25,
+            "struggling_student_minutes": 45
+          }
+        },
+        {
+          "concept_id": "quadratic_formula",
+          "name": "Quadratic Formula",
+          "display_name": "Quadratic Formula Solution",
+          "class_floor": 10,
+          "class_ceiling": 10,
+          "jee_relevance": "high",
+          "prerequisites": ["quadratic_standard_form", "square_roots", "discriminant"],
+          "learning_outcomes": [
+            "Apply quadratic formula",
+            "Handle complex roots",
+            "Understand discriminant significance"
+          ],
+          "common_misconceptions": [
+            "Wrong sign in formula",
+            "Discriminant calculation errors",
+            "Complex number handling"
+          ],
+          "diagram_requirements": {
+            "needs_diagram": false,
+            "diagram_types": []
+          },
+          "ncert_alignment": {
+            "textbook_reference": "Class 10 Mathematics Chapter 4",
+            "exercise_numbers": ["4.2", "4.3"]
+          },
+          "estimated_mastery_time": {
+            "average_minutes": 40,
+            "struggling_student_minutes": 80
+          }
+        }
+      ]
+    },
+    {
+      "chapter_id": "geometry_mensuration",
+      "name": "Geometry and Mensuration",
+      "priority": 4,
+      "jee_relevance": "high",
+      "concepts": [
+        {
+          "concept_id": "regular_polygons",
+          "name": "Regular Polygons",
+          "display_name": "Regular Polygons Properties",
+          "class_floor": 8,
+          "class_ceiling": 9,
+          "jee_relevance": "medium",
+          "prerequisites": ["polygon_basics", "angle_sum", "symmetry"],
+          "learning_outcomes": [
+            "Identify regular polygons",
+            "Calculate interior angles",
+            "Find central angles"
+          ],
+          "common_misconceptions": [
+            "Confusing regular vs irregular",
+            "Wrong angle formulas",
+            "Central angle misunderstanding"
+          ],
+          "diagram_requirements": {
+            "needs_diagram": true,
+            "diagram_types": ["geometry"]
+          },
+          "ncert_alignment": {
+            "textbook_reference": "Class 8 Mathematics Chapter 3",
+            "exercise_numbers": ["3.3"]
+          },
+          "estimated_mastery_time": {
+            "average_minutes": 35,
+            "struggling_student_minutes": 65
+          }
+        },
+        {
+          "concept_id": "area_polygon_triangles",
+          "name": "Area using Triangles",
+          "display_name": "Polygon Area by Triangulation",
+          "class_floor": 9,
+          "class_ceiling": 10,
+          "jee_relevance": "high",
+          "prerequisites": ["regular_polygons", "triangle_area", "central_angle"],
+          "learning_outcomes": [
+            "Divide polygon into triangles",
+            "Calculate area using triangulation",
+            "Apply to regular polygons"
+          ],
+          "common_misconceptions": [
+            "Wrong triangle division",
+            "Missing triangles",
+            "Incorrect height calculation"
+          ],
+          "diagram_requirements": {
+            "needs_diagram": true,
+            "diagram_types": ["geometry", "area_visualization"]
+          },
+          "ncert_alignment": {
+            "textbook_reference": "Class 9 Mathematics Chapter 9",
+            "exercise_numbers": ["9.2", "9.3"]
+          },
+          "estimated_mastery_time": {
+            "average_minutes": 45,
+            "struggling_student_minutes": 85
+          }
+        }
+      ]
+    },
+    {
+      "chapter_id": "calculus_basics",
+      "name": "Calculus Basics",
+      "priority": 5,
+      "jee_relevance": "medium",
+      "concepts": [
+        {
+          "concept_id": "limits_intuitive",
+          "name": "Limits (Intuitive)",
+          "display_name": "Understanding Limits",
+          "class_floor": 11,
+          "class_ceiling": 11,
+          "jee_relevance": "medium",
+          "prerequisites": ["functions", "approach_concept"],
+          "learning_outcomes": [
+            "Understand limit concept",
+            "Evaluate simple limits",
+            "Recognize indeterminate forms"
+          ],
+          "common_misconceptions": [
+            "Confusing value with limit",
+            "Not understanding approach",
+            "Direct substitution errors"
+          ],
+          "diagram_requirements": {
+            "needs_diagram": true,
+            "diagram_types": ["graph", "function_plot"]
+          },
+          "ncert_alignment": {
+            "textbook_reference": "Class 11 Mathematics Chapter 13",
+            "exercise_numbers": ["13.1"]
+          },
+          "estimated_mastery_time": {
+            "average_minutes": 50,
+            "struggling_student_minutes": 100
+          }
+        },
+        {
+          "concept_id": "derivative_geometric",
+          "name": "Derivative (Geometric)",
+          "display_name": "Derivative as Slope",
+          "class_floor": 11,
+          "class_ceiling": 11,
+          "jee_relevance": "medium",
+          "prerequisites": ["limits_intuitive", "slope_of_line", "tangent_concept"],
+          "learning_outcomes": [
+            "Understand derivative as slope",
+            "Find derivative using limit definition",
+            "Interpret derivative geometrically"
+          ],
+          "common_misconceptions": [
+            "Confusing slope with derivative",
+            "Not understanding tangent",
+            "Limit definition errors"
+          ],
+          "diagram_requirements": {
+            "needs_diagram": true,
+            "diagram_types": ["graph", "function_plot"]
+          },
+          "ncert_alignment": {
+            "textbook_reference": "Class 11 Mathematics Chapter 13",
+            "exercise_numbers": ["13.2"]
+          },
+          "estimated_mastery_time": {
+            "average_minutes": 55,
+            "struggling_student_minutes": 110
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 import 'question_data.dart';
 import 'concept_graph.dart';
+import 'practice_mode.dart';
 
 class RescueQuestion {
   final QuestionData question;
@@ -163,8 +164,3 @@ class RescueSystem {
     return null;
   }
 }
-
-enum Difficulty { easy, medium, hard }
-
-// For compatibility with questions
-typedef QuestionDifficulty = Difficulty;

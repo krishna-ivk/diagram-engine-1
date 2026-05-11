@@ -1,0 +1,55 @@
+{
+  "question_id": "rescue_slope_basic_1",
+  "question_text": "Find the slope of the line passing through points (2, 3) and (4, 7).",
+  "question_type": "numerical",
+  "answer": 2,
+  "solution": {
+    "method": "Slope formula",
+    "steps": [
+      {
+        "step_number": 1,
+        "description": "Use slope formula: m = (y₂-y₁)/(x₂-x₁)",
+        "calculation": "m = (7-3)/(4-2)"
+      },
+      {
+        "step_number": 2,
+        "description": "Calculate the differences",
+        "calculation": "m = 4/2"
+      },
+      {
+        "step_number": 3,
+        "description": "Simplify",
+        "calculation": "m = 2"
+      }
+    ],
+    "final_answer": "2"
+  },
+  "difficulty": "foundation",
+  "primary_concept": "slope_of_line",
+  "secondary_concepts": ["cartesian_system"],
+  "prerequisites": ["cartesian_system", "ratio_concept"],
+  "class_floor": 10,
+  "target_exam": "school",
+  "question_role": "rescue",
+  "diagram_requirements": {
+    "needs_diagram": true,
+    "diagram_type": "coordinate_system",
+    "diagram_specification": "Show points (2,3) and (4,7) with line between them, rise and run labeled"
+  },
+  "mistake_patterns": [
+    {
+      "pattern": "Wrong order of points in formula",
+      "why_wrong": "Consistency matters: (y₂-y₁)/(x₂-x₁) or (y₁-y₂)/(x₁-x₂)",
+      "frequency": "common"
+    },
+    {
+      "pattern": "Confusing rise and run",
+      "why_wrong": "Slope = rise/run = change in y / change in x",
+      "frequency": "occasional"
+    }
+  ],
+  "rescue_ladder": [],
+  "estimated_time": 2,
+  "status": "academic_review",
+  "review_history": []
+}

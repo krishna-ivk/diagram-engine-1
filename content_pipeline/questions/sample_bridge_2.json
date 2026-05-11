@@ -1,0 +1,57 @@
+{
+  "question_id": "bridge_trigonometry_basic_1",
+  "question_text": "In a right triangle ABC with right angle at B, if AB = 3 and BC = 4, find sin(A).",
+  "question_type": "numerical",
+  "answer": 0.6,
+  "solution": {
+    "method": "Trigonometric ratio definition",
+    "steps": [
+      {
+        "step_number": 1,
+        "description": "Identify the sides relative to angle A",
+        "calculation": "Opposite side to angle A is BC = 4, Hypotenuse is AC"
+      },
+      {
+        "step_number": 2,
+        "description": "Find hypotenuse using Pythagorean theorem",
+        "calculation": "AC² = AB² + BC² = 3² + 4² = 9 + 16 = 25, so AC = 5"
+      },
+      {
+        "step_number": 3,
+        "description": "Apply sin formula: sin(A) = opposite/hypotenuse",
+        "calculation": "sin(A) = BC/AC = 4/5 = 0.8"
+      }
+    ],
+    "final_answer": "0.8"
+  },
+  "difficulty": "bridge",
+  "primary_concept": "trigonometric_ratios",
+  "secondary_concepts": ["right_triangle", "pythagorean_theorem"],
+  "prerequisites": ["right_triangle", "similar_triangles", "ratio_concept"],
+  "class_floor": 10,
+  "target_exam": "jee_main",
+  "question_role": "bridge",
+  "diagram_requirements": {
+    "needs_diagram": true,
+    "diagram_type": "trigonometric_circle",
+    "diagram_specification": "Show right triangle ABC with right angle at B, sides AB=3, BC=4, AC=5, angle A highlighted"
+  },
+  "mistake_patterns": [
+    {
+      "pattern": "Confusing opposite and adjacent sides",
+      "why_wrong": "For angle A, opposite side is BC (not touching A), adjacent is AB (touching A)",
+      "frequency": "very_common"
+    },
+    {
+      "pattern": "Using wrong trigonometric ratio",
+      "why_wrong": "sin = opposite/hypotenuse, cos = adjacent/hypotenuse, tan = opposite/adjacent",
+      "frequency": "common"
+    }
+  ],
+  "rescue_ladder": [
+    "foundation_cartesian_basics_1"
+  ],
+  "estimated_time": 4,
+  "status": "academic_review",
+  "review_history": []
+}

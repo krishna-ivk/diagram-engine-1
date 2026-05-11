@@ -1,0 +1,186 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Review Status Schema",
+  "description": "Schema for tracking review workflow and copyright clearance",
+  "type": "object",
+  "required": ["item_id", "item_type", "current_status", "review_history"],
+  "properties": {
+    "item_id": {
+      "type": "string",
+      "description": "ID of the item being reviewed (question, concept, etc.)"
+    },
+    "item_type": {
+      "type": "string",
+      "enum": ["question", "concept", "rescue_ladder", "diagram"],
+      "description": "Type of item being reviewed"
+    },
+    "current_status": {
+      "type": "string",
+      "enum": ["raw_imported", "parsed", "concept_tagged", "diagram_needed", "original_question_generated", "academic_review", "copyright_review", "approved", "published", "rejected"],
+      "description": "Current status in the pipeline"
+    },
+    "review_history": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "timestamp": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "reviewer_id": {
+            "type": "string",
+            "description": "ID of the reviewer"
+          },
+          "reviewer_role": {
+            "type": "string",
+            "enum": ["content_engineer", "academic_reviewer", "copyright_specialist", "final_approver"],
+            "description": "Role of the reviewer"
+          },
+          "previous_status": {
+            "type": "string"
+          },
+          "new_status": {
+            "type": "string"
+          },
+          "decision": {
+            "type": "string",
+            "enum": ["approved", "needs_revision", "rejected", "escalated"]
+          },
+          "comments": {
+            "type": "string",
+            "description": "Review comments and feedback"
+          },
+          "revision_requested": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "aspect": {
+                  "type": "string",
+                  "description": "What needs revision (e.g., 'question_text', 'solution', 'diagram')"
+                },
+                "description": {
+                  "type": "string",
+                  "description": "What needs to be changed"
+                },
+                "priority": {
+                  "type": "string",
+                  "enum": ["low", "medium", "high", "critical"]
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "copyright_clearance": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["pending", "cleared", "restricted", "needs_attribution", "prohibited"]
+        },
+        "review_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "reviewer": {
+          "type": "string"
+        },
+        "license_type": {
+          "type": "string",
+          "enum": ["public_domain", "creative_commons", "educational_fair_use", "restricted", "original"]
+        },
+        "attribution_required": {
+          "type": "boolean"
+        },
+        "attribution_text": {
+          "type": "string"
+        },
+        "usage_restrictions": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "academic_validation": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["pending", "validated", "needs_correction", "rejected"]
+        },
+        "review_date": {
+          "type": "string",
+          "format": "date"
+        },
+        "reviewer": {
+          "type": "string"
+        },
+        "accuracy_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "pedagogical_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "difficulty_appropriateness": {
+          "type": "string",
+          "enum": ["too_easy", "appropriate", "too_hard"]
+        },
+        "concept_alignment": {
+          "type": "string",
+          "enum": ["misaligned", "partially_aligned", "well_aligned"]
+        }
+      }
+    },
+    "quality_metrics": {
+      "type": "object",
+      "properties": {
+        "clarity_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "completeness_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 5
+        },
+        "originality_score": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 5
+        }
+      }
+    },
+    "next_actions": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string"
+          },
+          "responsible_role": {
+            "type": "string"
+          },
+          "due_date": {
+            "type": "string",
+            "format": "date"
+          },
+          "priority": {
+            "type": "string",
+            "enum": ["low", "medium", "high", "urgent"]
+          }
+        }
+      }
+    }
+  }
+}
