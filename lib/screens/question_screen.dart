@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import '../models/diagram_element.dart';
 import '../models/performance_tracker.dart';
+import '../models/practice_mode.dart';
 import '../models/premium_state.dart';
 import '../models/question_data.dart';
 import '../models/revision_manager.dart';
@@ -22,6 +23,7 @@ class QuestionScreen extends StatefulWidget {
   final PremiumState premiumState;
   final RevisionManager revisionManager;
   final bool isRevisionMode;
+  final PracticeMode practiceMode;
 
   const QuestionScreen({
     super.key,
@@ -30,6 +32,7 @@ class QuestionScreen extends StatefulWidget {
     required this.premiumState,
     required this.revisionManager,
     this.isRevisionMode = false,
+    this.practiceMode = PracticeMode.learner,
   });
 
   @override
@@ -73,6 +76,13 @@ class _QuestionScreenState extends State<QuestionScreen>
 
   QuestionData get _currentQuestion => widget.questions[_currentIndex];
   PremiumTier get _tier => widget.premiumState.tier;
+
+  // Mode-based feature control
+  bool get _allowsHints => widget.practiceMode == PracticeMode.learner;
+  bool get _allowsRevealSteps => widget.practiceMode == PracticeMode.learner;
+  bool get _allowsConceptExplanation => widget.practiceMode == PracticeMode.learner;
+  bool get _showTimer => widget.practiceMode == PracticeMode.mockExam;
+  bool get _isRevisionMode => widget.practiceMode == PracticeMode.revision || widget.isRevisionMode;
 
   String _getPrimaryConcept(QuestionData q) {
     // Use primaryConcept if available, fallback to coreConcept, then topic
@@ -331,15 +341,18 @@ class _QuestionScreenState extends State<QuestionScreen>
               'Q${_currentIndex + 1} of ${widget.questions.length}',
               style: const TextStyle(fontWeight: FontWeight.w600),
             ),
-            if (widget.isRevisionMode)
-              Text(
-                'Revision Mode',
-                style: TextStyle(
-                  fontSize: 11,
-                  color: Colors.purple.shade400,
-                  fontWeight: FontWeight.w500,
-                ),
+            Text(
+              widget.practiceMode.displayName,
+              style: TextStyle(
+                fontSize: 11,
+                color: widget.practiceMode == PracticeMode.mockExam
+                    ? Colors.red.shade400
+                    : widget.practiceMode == PracticeMode.revision
+                        ? Colors.purple.shade400
+                        : Colors.blue.shade400,
+                fontWeight: FontWeight.w500,
               ),
+            ),
           ],
         ),
         centerTitle: true,
@@ -514,7 +527,7 @@ class _QuestionScreenState extends State<QuestionScreen>
             elapsedSeconds: _elapsedSeconds,
           ),
         ),
-        if (_currentQuestion.revealSteps.isNotEmpty && !_showAnswer)
+        if (_currentQuestion.revealSteps.isNotEmpty && !_showAnswer && _allowsRevealSteps)
           PremiumGate(
             tier: _tier,
             featureEnabled: PremiumFeatures.guideMe(_tier),
