@@ -15,6 +15,8 @@ class QuestionAttempt {
   final int expectedTimeSeconds;
   final DateTime timestamp;
   final bool isRevision;
+  final int confidenceLevel; // 1=low, 2=medium, 3=high
+  final int? mistakeType; // enum index from MistakeType
 
   const QuestionAttempt({
     required this.questionId,
@@ -30,6 +32,8 @@ class QuestionAttempt {
     required this.expectedTimeSeconds,
     required this.timestamp,
     this.isRevision = false,
+    this.confidenceLevel = 2, // default medium
+    this.mistakeType,
   });
 }
 

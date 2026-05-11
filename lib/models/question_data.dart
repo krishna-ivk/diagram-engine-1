@@ -6,6 +6,19 @@ enum ExamType { jeeMain, jeeAdvanced, neet, cbse, olympiad, custom }
 
 enum QuestionType { mcq, integer, multipleCorrect, assertionReason, comprehension }
 
+enum MistakeType {
+  formulaRecall,
+  ratioDirection,
+  calculation,
+  diagramInterpretation,
+  conceptMisunderstanding,
+  timePressure,
+  substitution,
+  signError,
+  unitConversion,
+  other,
+}
+
 class RevealStep {
   final String text;
   final List<String>? highlightIds;
@@ -49,6 +62,9 @@ class QuestionData {
   final List<String> solutionSteps;
   final String? commonMistake;
   final List<String> mistakePatterns;
+  final Map<int, String>? whyWrongExplanations;
+  final String? correctReason;
+  final List<MistakeType>? commonMistakeTypes;
 
   // Exam relevance
   final bool frequentlyAsked;
@@ -65,7 +81,11 @@ class QuestionData {
   // Cross-references
   final List<String> similarQuestionIds;
 
-  // Backward compatibility getter
+  // Backward compatibility - coreConcept maps to primaryConcept
+  // This allows old question data to work with new schema
+  final String? coreConcept;
+
+  // Backward compatibility getters
   String get effectivePrimaryConcept =>
       primaryConcept.isNotEmpty ? primaryConcept : (coreConcept ?? topic);
 
@@ -85,6 +105,9 @@ class QuestionData {
     this.secondaryConcepts = const [],
     this.prerequisites = const [],
 
+    // Backward compatibility
+    this.coreConcept,
+
     // Exam metadata
     this.exam = ExamType.jeeMain,
     this.classLevel = 'Class 9-12',
@@ -97,6 +120,9 @@ class QuestionData {
     this.solutionSteps = const [],
     this.commonMistake,
     this.mistakePatterns = const [],
+    this.whyWrongExplanations,
+    this.correctReason,
+    this.commonMistakeTypes,
 
     // Exam relevance
     this.frequentlyAsked = false,

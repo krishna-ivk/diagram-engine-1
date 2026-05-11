@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import '../models/question_data.dart';
 
+enum Confidence { low, medium, high }
+
 class QuestionPanel extends StatefulWidget {
   final QuestionData question;
   final int? selectedIndex;
@@ -9,6 +11,8 @@ class QuestionPanel extends StatefulWidget {
   final ValueChanged<int> onOptionSelected;
   final VoidCallback onCheckAnswer;
   final int? elapsedSeconds;
+  final Confidence? confidence;
+  final ValueChanged<Confidence>? onConfidenceChanged;
 
   const QuestionPanel({
     super.key,
@@ -18,6 +22,8 @@ class QuestionPanel extends StatefulWidget {
     required this.onOptionSelected,
     required this.onCheckAnswer,
     this.elapsedSeconds,
+    this.confidence,
+    this.onConfidenceChanged,
   });
 
   @override
@@ -269,15 +275,39 @@ class _QuestionPanelState extends State<QuestionPanel> {
           const SizedBox(height: 8),
 
           // Check answer button
-          if (!widget.showAnswer && widget.selectedIndex != null)
+          if (!widget.showAnswer && widget.selectedIndex != null) ...[
+            // Confidence selector
+            const SizedBox(height: 8),
+            Text(
+              'How confident are you?',
+              style: TextStyle(
+                fontSize: 13,
+                color: Colors.grey.shade700,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                _buildConfidenceButton(Confidence.low, 'Low', Colors.red.shade300),
+                const SizedBox(width: 8),
+                _buildConfidenceButton(Confidence.medium, 'Medium', Colors.orange.shade300),
+                const SizedBox(width: 8),
+                _buildConfidenceButton(Confidence.high, 'High', Colors.green.shade300),
+              ],
+            ),
+            const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,
               child: FilledButton.icon(
-                onPressed: widget.onCheckAnswer,
+                onPressed: widget.confidence != null
+                    ? widget.onCheckAnswer
+                    : null,
                 icon: const Icon(Icons.check_circle_outline),
                 label: const Text('Check Answer'),
               ),
             ),
+          ],
 
           // Explanation (hidden by default, revealed on click)
           if (widget.showAnswer && q.explanation != null) ...[
@@ -333,6 +363,37 @@ class _QuestionPanelState extends State<QuestionPanel> {
           color: color,
           fontSize: 12,
           fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildConfidenceButton(Confidence level, String label, Color color) {
+    final isSelected = widget.confidence == level;
+    return Expanded(
+      child: GestureDetector(
+        onTap: widget.onConfidenceChanged != null
+            ? () => widget.onConfidenceChanged!(level)
+            : null,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12),
+          decoration: BoxDecoration(
+            color: isSelected ? color : Colors.white,
+            borderRadius: BorderRadius.circular(10),
+            border: Border.all(
+              color: isSelected ? color : Colors.grey.shade300,
+              width: isSelected ? 2 : 1,
+            ),
+          ),
+          alignment: Alignment.center,
+          child: Text(
+            label,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+              color: isSelected ? Colors.white : Colors.grey.shade700,
+            ),
+          ),
         ),
       ),
     );

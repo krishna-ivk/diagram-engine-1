@@ -1,6 +1,6 @@
 import 'diagram_element.dart';
 
-enum DiagramType { geometry, physics, chemistry, graph }
+enum DiagramType { geometry, physics, chemistry, graph, function, numberLine, matrix, combinatorial }
 
 class DiagramData {
   final String id;
