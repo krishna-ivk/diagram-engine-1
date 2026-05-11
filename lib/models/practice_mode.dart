@@ -2,6 +2,7 @@ enum PracticeMode {
   learner,
   mockExam,
   revision,
+  foundationJourney,
 }
 
 extension PracticeModeExtension on PracticeMode {
@@ -13,6 +14,8 @@ extension PracticeModeExtension on PracticeMode {
         return 'Mock Exam';
       case PracticeMode.revision:
         return 'Revision';
+      case PracticeMode.foundationJourney:
+        return 'Foundation Journey';
     }
   }
 
@@ -24,15 +27,17 @@ extension PracticeModeExtension on PracticeMode {
         return 'Test your readiness with timed, exam-like conditions';
       case PracticeMode.revision:
         return 'Strengthen weak concepts with spaced repetition';
+      case PracticeMode.foundationJourney:
+        return 'Build from Class 7 basics to JEE-level thinking step by step';
     }
   }
 
   bool get allowHints {
-    return this == PracticeMode.learner;
+    return this == PracticeMode.learner || this == PracticeMode.foundationJourney;
   }
 
   bool get allowRevealSteps {
-    return this == PracticeMode.learner;
+    return this == PracticeMode.learner || this == PracticeMode.foundationJourney;
   }
 
   bool get showTimer {
@@ -40,11 +45,23 @@ extension PracticeModeExtension on PracticeMode {
   }
 
   bool get allowConceptExplanation {
-    return this == PracticeMode.learner;
+    return this == PracticeMode.learner || this == PracticeMode.foundationJourney;
   }
 
   bool get adaptiveDifficulty {
-    return this == PracticeMode.learner;
+    return this == PracticeMode.learner || this == PracticeMode.foundationJourney;
+  }
+
+  bool get isProgressionBased {
+    return this == PracticeMode.foundationJourney;
+  }
+
+  bool get showMicroLessons {
+    return this == PracticeMode.foundationJourney;
+  }
+
+  bool get trackConfidence {
+    return this == PracticeMode.foundationJourney;
   }
 }
 

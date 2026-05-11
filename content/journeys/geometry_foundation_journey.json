@@ -1,0 +1,144 @@
+{
+  "journey_id": "geometry_foundation_journey",
+  "title": "From Square to JEE Octagon",
+  "subtitle": "Build JEE-level thinking step by step",
+  "target_grade": "Class 7",
+  "target_exam": "JEE Main",
+  "chapter": "Geometry",
+  "estimated_duration_minutes": 45,
+  "difficulty_progression": ["L0", "L1", "L2", "L3", "L4", "L5"],
+  "levels": [
+    {
+      "level": "L0",
+      "role": "familiar",
+      "title": "Familiar: Square Parts",
+      "description": "Start with what you already know about squares",
+      "class_level": "Class 7",
+      "micro_lesson": {
+        "title": "Square Basics",
+        "body": "A square has 4 equal sides and 4 right angles. When you draw lines from the center to each corner, you get 4 identical triangles.",
+        "visual_hint_ids": ["center", "triangles", "right_angles"]
+      },
+      "question_ids": ["class7_square_parts_001"],
+      "unlock_threshold": {
+        "correct_required": 1,
+        "confidence_threshold": "somewhat_sure"
+      },
+      "manipulatives": ["sides_slider", "diagonal_toggle"]
+    },
+    {
+      "level": "L1",
+      "role": "foundation",
+      "title": "Foundation: Central Angles",
+      "description": "Discover how angles work around a point",
+      "class_level": "Class 7-8",
+      "micro_lesson": {
+        "title": "Angles Around a Point",
+        "body": "A full turn around any point is 360°. In a regular polygon, all central angles are equal. Each one is 360° divided by the number of sides.",
+        "visual_hint_ids": ["center_angle", "360_division", "regular_polygon"]
+      },
+      "question_ids": ["rescue_foundation_square_center_angle_001"],
+      "prerequisites": ["L0"],
+      "unlock_threshold": {
+        "correct_required": 2,
+        "confidence_threshold": "very_sure"
+      },
+      "manipulatives": ["polygon_sides_slider", "angle_calculator"]
+    },
+    {
+      "level": "L2", 
+      "role": "bridge",
+      "title": "Bridge: Hexagon Challenge",
+      "description": "Apply your knowledge to hexagons",
+      "class_level": "Class 8-9",
+      "micro_lesson": {
+        "title": "Hexagon Central Triangles",
+        "body": "A regular hexagon has 6 sides. Each central angle is 360° ÷ 6 = 60°. The central triangles are equilateral!",
+        "visual_hint_ids": ["hexagon", "central_triangles", "60_degrees"]
+      },
+      "question_ids": ["rescue_bridge_hexagon_center_angle_001"],
+      "prerequisites": ["L1"],
+      "unlock_threshold": {
+        "correct_required": 2,
+        "confidence_threshold": "somewhat_sure"
+      },
+      "manipulatives": ["hexagon_slider", "triangle_area_calculator"]
+    },
+    {
+      "level": "L3",
+      "role": "pre_jee", 
+      "title": "Pre-JEE: Octagon Trigonometry",
+      "description": "Level up with cosine law",
+      "class_level": "Class 9-10",
+      "micro_lesson": {
+        "title": "Cosine Law for Polygons",
+        "body": "For complex polygons, use cosine law: side² = r² + r² - 2r²cos(central angle). This helps find side lengths from the radius.",
+        "visual_hint_ids": ["cosine_law", "octagon_geometry", "radius_lines"]
+      },
+      "question_ids": ["rescue_intermediate_octagon_center_angle_001"],
+      "prerequisites": ["L2"],
+      "unlock_threshold": {
+        "correct_required": 1,
+        "confidence_threshold": "somewhat_sure"
+      },
+      "manipulatives": ["octagon_slider", "cosine_calculator"]
+    },
+    {
+      "level": "L4",
+      "role": "jee_simplified",
+      "title": "JEE Simplified: Area Problems",
+      "description": "JEE-style questions made approachable",
+      "class_level": "Class 10-11",
+      "micro_lesson": {
+        "title": "Area Subtraction Method",
+        "body": "Complex shapes can be solved by subtracting areas. Octagon area = Square area - 4 corner triangle areas.",
+        "visual_hint_ids": ["area_subtraction", "corner_triangles", "octagon_in_square"]
+      },
+      "question_ids": ["pre_jee_octagon_area_001"],
+      "prerequisites": ["L3"],
+      "unlock_threshold": {
+        "correct_required": 1,
+        "confidence_threshold": "very_sure"
+      },
+      "manipulatives": ["area_calculator", "shape_subtraction"]
+    },
+    {
+      "level": "L5",
+      "role": "jee_original",
+      "title": "JEE Original: The Real Challenge",
+      "description": "You're ready for the actual JEE question",
+      "class_level": "Class 11-12",
+      "micro_lesson": {
+        "title": "JEE Problem Strategy",
+        "body": "JEE questions combine multiple concepts. Break them down: identify shapes, recall formulas, apply step by step.",
+        "visual_hint_ids": ["problem_breakdown", "formula_recall", "step_by_step"]
+      },
+      "question_ids": ["jee_math_regular_polygon_2023_session_1_Q12"],
+      "prerequisites": ["L4"],
+      "unlock_threshold": {
+        "correct_required": 1,
+        "confidence_threshold": "very_sure"
+      },
+      "manipulatives": ["full_toolset"]
+    }
+  ],
+  "progression_rules": {
+    "correct_twice": "unlock_next_level",
+    "wrong_once_low_confidence": "show_micro_lesson",
+    "wrong_twice": "go_one_level_down",
+    "correct_fast_high_confidence": "jump_forward_optional",
+    "correct_slow": "repeat_similar_question"
+  },
+  "success_criteria": {
+    "journey_completion": "Complete L5 with confidence",
+    "mastery_indicator": "Can solve original JEE question without hints",
+    "time_estimate": "45-60 minutes total",
+    "retry_allowed": true
+  },
+  "parent_progress_summary": {
+    "concepts_mastered": [],
+    "struggling_areas": [],
+    "confidence_trend": "improving",
+    "recommended_next": "algebra_foundation_journey"
+  }
+}

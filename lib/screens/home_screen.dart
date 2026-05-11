@@ -9,6 +9,7 @@ import '../models/premium_state.dart';
 import '../models/question_data.dart';
 import '../models/revision_manager.dart';
 import '../widgets/premium_gate.dart';
+import 'foundation_journey_screen.dart';
 import 'question_screen.dart';
 import 'topic_revision_screen.dart';
 
@@ -26,6 +27,11 @@ class _HomeScreenState extends State<HomeScreen> {
   PracticeMode _selectedMode = PracticeMode.learner;
 
   void _startPractice() {
+    if (_selectedMode == PracticeMode.foundationJourney) {
+      _startFoundationJourney();
+      return;
+    }
+    
     // Combine all questions for now
     final allQuestions = [...mockQuestions, ...algebricaQuestions];
     Navigator.push(
@@ -37,6 +43,18 @@ class _HomeScreenState extends State<HomeScreen> {
           premiumState: _premiumState,
           revisionManager: _revisionManager,
           practiceMode: _selectedMode,
+        ),
+      ),
+    );
+  }
+
+  void _startFoundationJourney() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => FoundationJourneyScreen(
+          tracker: _tracker,
+          premiumState: _premiumState,
         ),
       ),
     );
@@ -152,14 +170,20 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 8),
               Text(
-                'Interactive thinking tools for JEE preparation',
+                'Start from Class 7 basics and reach JEE-level thinking step by step',
                 style: theme.textTheme.bodyLarge?.copyWith(
                   color: Colors.grey.shade600,
                 ),
               ),
               const SizedBox(height: 24),
 
-              // Diagram preview HERO (first thing user sees)
+              // Foundation Journey HERO (primary CTA for Class 7 students)
+              _FoundationJourneyHero(
+                onStartJourney: _startFoundationJourney,
+              ),
+              const SizedBox(height: 16),
+
+              // Diagram preview (secondary)
               if (mockQuestions.isNotEmpty) ...[
                 _DiagramPreviewCard(question: mockQuestions.first),
                 const SizedBox(height: 16),
@@ -381,37 +405,53 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 12),
 
-              // Practice Mode Selector
-              Row(
+              // Practice Mode Selector (Foundation Journey prioritized)
+              Column(
                 children: [
-                  Expanded(
-                    child: _ModeChip(
-                      label: 'Learner',
-                      icon: Icons.school,
-                      isSelected: _selectedMode == PracticeMode.learner,
-                      color: Colors.blue,
-                      onTap: () => setState(() => _selectedMode = PracticeMode.learner),
-                    ),
+                  // Primary: Foundation Journey
+                  _ModeChip(
+                    label: 'Foundation Journey',
+                    icon: Icons.route,
+                    isSelected: _selectedMode == PracticeMode.foundationJourney,
+                    color: Colors.green,
+                    onTap: () => setState(() => _selectedMode = PracticeMode.foundationJourney),
+                    isFullWidth: true,
+                    isPrimary: true,
                   ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _ModeChip(
-                      label: 'Mock Exam',
-                      icon: Icons.timer,
-                      isSelected: _selectedMode == PracticeMode.mockExam,
-                      color: Colors.red,
-                      onTap: () => setState(() => _selectedMode = PracticeMode.mockExam),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  Expanded(
-                    child: _ModeChip(
-                      label: 'Revision',
-                      icon: Icons.replay,
-                      isSelected: _selectedMode == PracticeMode.revision,
-                      color: Colors.purple,
-                      onTap: () => setState(() => _selectedMode = PracticeMode.revision),
-                    ),
+                  const SizedBox(height: 8),
+                  // Secondary modes
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _ModeChip(
+                          label: 'Learner',
+                          icon: Icons.school,
+                          isSelected: _selectedMode == PracticeMode.learner,
+                          color: Colors.blue,
+                          onTap: () => setState(() => _selectedMode = PracticeMode.learner),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _ModeChip(
+                          label: 'Mock Exam',
+                          icon: Icons.timer,
+                          isSelected: _selectedMode == PracticeMode.mockExam,
+                          color: Colors.red,
+                          onTap: () => setState(() => _selectedMode = PracticeMode.mockExam),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      Expanded(
+                        child: _ModeChip(
+                          label: 'Revision',
+                          icon: Icons.replay,
+                          isSelected: _selectedMode == PracticeMode.revision,
+                          color: Colors.purple,
+                          onTap: () => setState(() => _selectedMode = PracticeMode.revision),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -749,12 +789,189 @@ class _TopicRow extends StatelessWidget {
   }
 }
 
+class _FoundationJourneyHero extends StatelessWidget {
+  final VoidCallback onStartJourney;
+
+  const _FoundationJourneyHero({required this.onStartJourney});
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
+    return Container(
+      padding: const EdgeInsets.all(24),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Colors.green.shade50,
+            Colors.emerald.shade50,
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: Colors.green.shade200,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.green.shade100.withOpacity(0.3),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.green.shade100,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  Icons.route,
+                  size: 28,
+                  color: Colors.green.shade700,
+                ),
+              ),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Start Foundation Journey',
+                      style: theme.textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.green.shade800,
+                      ),
+                    ),
+                    Text(
+                      'Build JEE-level thinking step by step',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: Colors.green.shade600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              Expanded(
+                flex: 3,
+                child: FilledButton.icon(
+                  onPressed: onStartJourney,
+                  icon: const Icon(Icons.play_arrow),
+                  label: const Text('Start Journey'),
+                  style: FilledButton.styleFrom(
+                    backgroundColor: Colors.green.shade600,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    // Show journey info
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Learn more about Foundation Journey'),
+                      ),
+                    );
+                  },
+                  icon: Icon(Icons.info_outline, color: Colors.green.shade600),
+                  label: Text(
+                    'Learn More',
+                    style: TextStyle(color: Colors.green.shade600),
+                  ),
+                  style: OutlinedButton.styleFrom(
+                    side: BorderSide(color: Colors.green.shade300),
+                    padding: const EdgeInsets.symmetric(vertical: 16),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 16),
+          Row(
+            children: [
+              _HeroFeature(
+                icon: Icons.school,
+                label: 'Class 7 Start',
+                color: Colors.green,
+              ),
+              const SizedBox(width: 16),
+              _HeroFeature(
+                icon: Icons.trending_up,
+                label: 'Step-by-Step',
+                color: Colors.green,
+              ),
+              const SizedBox(width: 16),
+              _HeroFeature(
+                icon: Icons.emoji_events,
+                label: 'JEE Ready',
+                color: Colors.green,
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _HeroFeature extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final Color color;
+
+  const _HeroFeature({
+    required this.icon,
+    required this.label,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    
+    return Row(
+      children: [
+        Icon(
+          icon,
+          size: 16,
+          color: color.shade600,
+        ),
+        const SizedBox(width: 4),
+        Text(
+          label,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: color.shade700,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
 class _ModeChip extends StatelessWidget {
   final String label;
   final IconData icon;
   final bool isSelected;
   final Color color;
   final VoidCallback onTap;
+  final bool isFullWidth;
+  final bool isPrimary;
 
   const _ModeChip({
     required this.label,
@@ -762,10 +979,64 @@ class _ModeChip extends StatelessWidget {
     required this.isSelected,
     required this.color,
     required this.onTap,
+    this.isFullWidth = false,
+    this.isPrimary = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final containerWidth = isFullWidth ? double.infinity : null;
+    
+    if (isPrimary) {
+      // Primary Foundation Journey chip style
+      return GestureDetector(
+        onTap: onTap,
+        child: Container(
+          width: containerWidth,
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          decoration: BoxDecoration(
+            color: isSelected ? color : color.withOpacity(0.1),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isSelected ? color : color.withOpacity(0.3),
+              width: isSelected ? 2 : 1,
+            ),
+            boxShadow: isSelected ? [
+              BoxShadow(
+                color: color.withOpacity(0.2),
+                blurRadius: 8,
+                offset: const Offset(0, 2),
+              ),
+            ] : null,
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: 24,
+                color: isSelected ? Colors.white : color,
+              ),
+              const SizedBox(width: 12),
+              Flexible(
+                child: Text(
+                  label,
+                  style: TextStyle(
+                    color: isSelected ? Colors.white : color,
+                    fontWeight: isSelected ? FontWeight.bold : FontWeight.w600,
+                    fontSize: 16,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
+    
+    // Regular mode chip style
     return Material(
       color: isSelected ? color.withOpacity(0.15) : Colors.grey.shade200,
       borderRadius: BorderRadius.circular(12),
