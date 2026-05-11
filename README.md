@@ -1,8 +1,65 @@
 # Diagram Engine
 
-Interactive diagram runtime for JEE exam preparation — built with Flutter.
+**Interactive diagram-first STEM mastery platform** — built with Flutter.
 
-Diagrams are **interactive thinking tools**, not static images. Students can zoom, tap, highlight, toggle layers, and expand to fullscreen — all while keeping the question context visible.
+## Vision
+
+Every STEM question should be an **interactive learning object**, not a static image. The goal is to build a platform where:
+
+1. **Diagrams teach** — animated, progressive reveals show *how* to solve, not just the answer
+2. **Mistakes become learning opportunities** — explain *why* an answer is wrong, not just that it's incorrect
+3. **Two distinct modes** serve different purposes:
+   - **Learner Mode**: Teaches, forgives, adapts. Shows hints, reveals steps, explains concepts, offers rescue questions on wrong answers.
+   - **Mock Exam Mode**: Measures, times, exposes gaps. No hints, shows timer, produces diagnostic report with learning prescription.
+
+### Core Principle
+> *Mock Exam exposes gaps; Learner Mode closes them.*
+
+This creates a virtuous cycle: exam reveals what you don't know → learner mode teaches it → spaced revision keeps it → next exam confirms mastery.
+
+## Key Features
+
+### Adaptive Learning Intelligence
+- **Concept Graph**: Maps 15+ math/physics concepts with prerequisites and relationships
+- **Mastery Tracker**: Weighted scoring by difficulty, recency, and mistake patterns
+- **Recommendation Engine**: Suggests what to practice based on weak areas
+- **Rescue System**: On wrong answer, offers easier questions to rebuild confidence
+
+### Schema-First Design
+Every question includes:
+- `whyWrongExplanations`: Per-option explanations for why each wrong answer is incorrect
+- `solutionSteps`: Visual step-by-step breakdown with numbered progression
+- `mistakePatterns`: Common errors students make (e.g., "Forgot to apply chain rule")
+- `prerequisites`: Concepts needed before attempting this question
+
+### Practice Modes
+| Feature | Learner | Mock Exam | Revision |
+|---------|---------|------------|----------|
+| Hints | ✅ | ❌ | ❌ |
+| Reveal Steps | ✅ | ❌ | ❌ |
+| Concept Explanation | ✅ | ❌ | ✅ |
+| Timer | ❌ | ✅ | ❌ |
+| Spaced Repetition | ❌ | ❌ | ✅ |
+| Adaptive Difficulty | ✅ | ❌ | ✅ |
+
+## Why This Matters
+
+Traditional exam prep apps show a question → expect an answer → show correct/incorrect. That's passive.
+
+This platform makes every question **active learning**:
+- Animated diagrams draw themselves, showing the logic visually
+- Wrong answers teach *why* — "You chose B because you forgot the derivative of e^x is e^x"
+- Rescue questions rebuild understanding before moving on
+- Post-exam diagnosis tells you exactly which concepts to focus on
+
+---
+
+## Feature Overview
+
+### Split Focus UI
+- **Mobile**: Top 45% diagram, bottom 55% question + options
+- **Desktop/Wide**: Side-by-side layout
+- Student never "leaves" the question context
 
 ## Features
 
@@ -87,27 +144,50 @@ lib/
 ├── models/
 │   ├── diagram_element.dart     # Element types + properties
 │   ├── diagram_data.dart        # Diagram container model
-│   └── question_data.dart       # Question with diagram + options
+│   ├── question_data.dart       # Question with whyWrong, solutionSteps, prerequisites
+│   ├── practice_mode.dart       # Enum: learner/mockExam/revision + ExamResult
+│   ├── rescue_system.dart       # Adaptive difficulty + rescue question paths
+│   ├── concept_graph.dart       # 15+ concepts with prerequisites
+│   ├── mastery_tracker.dart     # Weighted scoring by difficulty/recency
+│   ├── recommendation_engine.dart # Suggests practice based on weak areas
+│   └── revision_manager.dart    # Spaced repetition tracking
 ├── data/
-│   └── mock_questions.dart      # 5 JEE mock questions
+│   ├── mock_questions.dart      # 5 JEE geometry/physics questions
+│   └── algebrica_questions.dart # 11 Algebra/Calculus questions with diagrams
 ├── widgets/
 │   ├── diagram_painter.dart     # CustomPainter for all element types
 │   ├── diagram_canvas.dart      # InteractiveViewer + hit testing
 │   ├── question_panel.dart      # Question text + option tiles
 │   ├── fullscreen_diagram.dart  # Fullscreen mode with overlay
-│   └── layer_toggle.dart        # Values/Hints/Labels toggle bar
+│   ├── layer_toggle.dart        # Values/Hints/Labels toggle bar
+│   └── reveal_panel.dart        # Shows solution steps + concept explanation
 └── screens/
-    ├── home_screen.dart         # Landing page with feature cards
-    └── question_screen.dart     # Split Focus layout + navigation
+    ├── home_screen.dart         # Landing page with mode selector
+    ├── question_screen.dart    # Split Focus layout + mode-based features
+    └── topic_revision_screen.dart # Topic-based visual review with animations
 ```
 
 ## Roadmap
 
-- [ ] Phase 1: SVG rendering + zoom/pan + tap highlight (done)
-- [ ] Phase 2: Layer toggles + fullscreen expand (done)
-- [ ] Phase 3: Drawing layer (vectors, angles, point marking)
-- [ ] Phase 4: AI-enhanced diagram parsing
-- [ ] Phase 5: Real JEE content integration
+### Completed
+- ✅ Phase 1: CustomPainter rendering + zoom/pan + tap highlight
+- ✅ Phase 2: Layer toggles + fullscreen expand
+- ✅ Phase 3: Progressive diagram animations + bounce on answer selection
+- ✅ Phase 4: Concept Graph (15+ concepts) + Mastery Tracker + Recommendation Engine
+- ✅ Phase 5: Per-option "Why Wrong" explanations + solution steps
+- ✅ Phase 6: Practice Mode selector (Learner/MockExam/Revision) with behavior gating
+
+### In Progress
+- ⏳ Post-exam diagnosis screen with learning prescription
+- ⏳ Rescue question flow on wrong answer (adaptive difficulty)
+- ⏳ Exam timer display in Mock Exam mode
+- ⏳ Topic revision screen with animated diagrams
+
+### Future
+- [ ] AI-enhanced diagram parsing ("Explain this diagram")
+- [ ] Question difficulty auto-calibration based on user performance
+- [ ] Spaced repetition algorithm (SM-2 variant)
+- [ ] Real JEE question integration (100+ questions across topics)
 
 ## Tech Decisions
 

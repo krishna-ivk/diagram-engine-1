@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 
+import '../data/algebrica_questions.dart';
 import '../data/mock_questions.dart';
 import '../main.dart';
 import '../models/performance_tracker.dart';
+import '../models/practice_mode.dart';
 import '../models/premium_state.dart';
 import '../models/question_data.dart';
 import '../models/revision_manager.dart';
@@ -21,16 +23,20 @@ class _HomeScreenState extends State<HomeScreen> {
   final PerformanceTracker _tracker = PerformanceTracker();
   final PremiumState _premiumState = PremiumState();
   final RevisionManager _revisionManager = RevisionManager();
+  PracticeMode _selectedMode = PracticeMode.learner;
 
   void _startPractice() {
+    // Combine all questions for now
+    final allQuestions = [...mockQuestions, ...algebricaQuestions];
     Navigator.push(
       context,
       MaterialPageRoute(
         builder: (_) => QuestionScreen(
-          questions: mockQuestions,
+          questions: allQuestions,
           tracker: _tracker,
           premiumState: _premiumState,
           revisionManager: _revisionManager,
+          practiceMode: _selectedMode,
         ),
       ),
     );
@@ -375,6 +381,42 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 12),
 
+              // Practice Mode Selector
+              Row(
+                children: [
+                  Expanded(
+                    child: _ModeChip(
+                      label: 'Learner',
+                      icon: Icons.school,
+                      isSelected: _selectedMode == PracticeMode.learner,
+                      color: Colors.blue,
+                      onTap: () => setState(() => _selectedMode = PracticeMode.learner),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _ModeChip(
+                      label: 'Mock Exam',
+                      icon: Icons.timer,
+                      isSelected: _selectedMode == PracticeMode.mockExam,
+                      color: Colors.red,
+                      onTap: () => setState(() => _selectedMode = PracticeMode.mockExam),
+                    ),
+                  ),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: _ModeChip(
+                      label: 'Revision',
+                      icon: Icons.replay,
+                      isSelected: _selectedMode == PracticeMode.revision,
+                      color: Colors.purple,
+                      onTap: () => setState(() => _selectedMode = PracticeMode.revision),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+
               // Buttons
               Row(
                 children: [
@@ -384,10 +426,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: SizedBox(
                       height: 56,
                       child: FilledButton.icon(
-                        onPressed: _startPractice,
+                        onPressed: _selectedMode == PracticeMode.revision
+                            ? _startRevision
+                            : _startPractice,
                         icon: const Icon(Icons.play_arrow),
                         label: Text(
-                          'Solve with Interactive Diagrams (${mockQuestions.length})',
+                          'Solve with Interactive Diagrams (${mockQuestions.length + algebricaQuestions.length})',
                           style: const TextStyle(fontSize: 15),
                         ),
                       ),
@@ -700,6 +744,53 @@ class _TopicRow extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _ModeChip extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  final bool isSelected;
+  final Color color;
+  final VoidCallback onTap;
+
+  const _ModeChip({
+    required this.label,
+    required this.icon,
+    required this.isSelected,
+    required this.color,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: isSelected ? color.withOpacity(0.15) : Colors.grey.shade200,
+      borderRadius: BorderRadius.circular(12),
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(icon, size: 20, color: isSelected ? color : Colors.grey.shade600),
+              const SizedBox(height: 4),
+              Text(
+                label,
+                style: TextStyle(
+                  fontSize: 12,
+                  fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+                  color: isSelected ? color : Colors.grey.shade700,
+                ),
+                textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
