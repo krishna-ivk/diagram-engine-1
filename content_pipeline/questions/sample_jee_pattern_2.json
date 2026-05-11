@@ -120,7 +120,6 @@
   "question_role": "jee_pattern",
   "diagram_requirements": {
     "needs_diagram": false,
-    "diagram_type": null,
     "diagram_specification": ""
   },
   "mistake_patterns": [

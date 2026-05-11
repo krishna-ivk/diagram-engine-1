@@ -60,7 +60,7 @@
       "description": "Multiple choice options (if applicable)"
     },
     "answer": {
-      "oneOf": [
+      "anyOf": [
         {
           "type": "string",
           "description": "Correct option label for MCQ"
