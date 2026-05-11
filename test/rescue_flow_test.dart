@@ -1,327 +1,197 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:flutter/material.dart';
-import '../lib/models/question.dart';
+
+import '../lib/models/concept_graph.dart';
+import '../lib/models/diagram_data.dart';
+import '../lib/models/question_data.dart';
+import '../lib/models/rescue_system.dart';
 import '../lib/services/content_loader.dart';
-import '../lib/services/rescue_system.dart';
-import '../lib/services/concept_graph.dart';
-import '../lib/screens/question_screen.dart';
 
 void main() {
-  group('Rescue Flow Integration Tests', () {
-    late List<Question> testQuestions;
+  TestWidgetsFlutterBinding.ensureInitialized();
+
+  group('RescueSystem', () {
+    late List<QuestionData> questions;
     late ConceptGraph conceptGraph;
     late RescueSystem rescueSystem;
-    
-    setUp(() async {
-      // Setup test data
-      testQuestions = [
-        // Main JEE question
-        Question(
-          id: 'jee_main_001',
-          questionText: 'Find the area of a regular hexagon with side length 4 cm.',
+
+    setUp(() {
+      questions = [
+        _question(
+          id: 'main_hexagon_area',
+          text: 'Find the area of a regular hexagon.',
+          topic: 'Regular Polygons',
           primaryConcept: 'regular_hexagon_area',
-          difficulty: Difficulty.jee,
-          questionRole: QuestionRole.main,
-          correctAnswer: 'D',
-          options: [
-            Option(label: 'A', text: '16√3 cm²', isCorrect: false),
-            Option(label: 'B', text: '24√3 cm²', isCorrect: false),
-            Option(label: 'C', text: '32√3 cm²', isCorrect: false),
-            Option(label: 'D', text: '48√3 cm²', isCorrect: true),
-          ],
-          explanation: 'Area = (3√3/2) × side² = (3√3/2) × 16 = 24√3 cm²',
-          prerequisites: ['regular_polygon_basics', 'area_formula'],
-          rescueQuestionIds: ['foundation_001', 'bridge_001'],
-          diagramRequired: true,
-          diagramId: 'hexagon_area',
-          reviewStatus: 'published',
+          difficulty: Difficulty.hard,
+          prerequisites: ['hexagon_center_angle', 'hexagon_perimeter'],
         ),
-        // Foundation rescue question
-        Question(
-          id: 'foundation_001',
-          questionText: 'What is the central angle of a regular hexagon?',
+        _question(
+          id: 'foundation_center_angle',
+          text: 'What is the central angle of a regular hexagon?',
+          topic: 'Regular Polygons',
           primaryConcept: 'hexagon_center_angle',
-          difficulty: Difficulty.foundation,
-          questionRole: QuestionRole.foundation,
-          correctAnswer: 'B',
-          options: [
-            Option(label: 'A', text: '45°', isCorrect: false),
-            Option(label: 'B', text: '60°', isCorrect: true),
-            Option(label: 'C', text: '90°', isCorrect: false),
-            Option(label: 'D', text: '120°', isCorrect: false),
-          ],
-          explanation: 'Central angle = 360° ÷ number of sides = 360° ÷ 6 = 60°',
-          prerequisites: ['regular_polygon_basics'],
-          rescueQuestionIds: [],
-          diagramRequired: true,
-          diagramId: 'hexagon_center_angle',
-          reviewStatus: 'published',
+          difficulty: Difficulty.easy,
         ),
-        // Bridge rescue question
-        Question(
-          id: 'bridge_001',
-          questionText: 'A regular hexagon has side length 2 cm. Find its perimeter.',
+        _question(
+          id: 'foundation_perimeter',
+          text: 'What is the perimeter of a regular hexagon with side 2?',
+          topic: 'Regular Polygons',
           primaryConcept: 'hexagon_perimeter',
-          difficulty: Difficulty.bridge,
-          questionRole: QuestionRole.bridge,
-          correctAnswer: 'C',
-          options: [
-            Option(label: 'A', text: '8 cm', isCorrect: false),
-            Option(label: 'B', text: '10 cm', isCorrect: false),
-            Option(label: 'C', text: '12 cm', isCorrect: true),
-            Option(label: 'D', text: '14 cm', isCorrect: false),
-          ],
-          explanation: 'Perimeter = 6 × side length = 6 × 2 = 12 cm',
-          prerequisites: ['regular_polygon_basics', 'hexagon_center_angle'],
-          rescueQuestionIds: ['foundation_001'],
-          diagramRequired: true,
-          diagramId: 'hexagon_perimeter',
-          reviewStatus: 'published',
+          difficulty: Difficulty.easy,
         ),
       ];
-      
-      // Setup concept graph
-      conceptGraph = ConceptGraph();
-      conceptGraph.addConcept('regular_polygon_basics', 'Basic polygon properties');
-      conceptGraph.addConcept('hexagon_center_angle', 'Central angle of hexagon');
-      conceptGraph.addConcept('hexagon_perimeter', 'Perimeter of hexagon');
-      conceptGraph.addConcept('regular_hexagon_area', 'Area of regular hexagon');
-      
-      conceptGraph.addPrerequisite('hexagon_center_angle', 'regular_polygon_basics');
-      conceptGraph.addPrerequisite('hexagon_perimeter', 'regular_polygon_basics');
-      conceptGraph.addPrerequisite('regular_hexagon_area', 'hexagon_center_angle');
-      conceptGraph.addPrerequisite('regular_hexagon_area', 'hexagon_perimeter');
-      
-      // Setup rescue system
+
+      conceptGraph = const ConceptGraph(
+        nodes: {
+          'regular_hexagon_area': ConceptNode(
+            id: 'regular_hexagon_area',
+            name: 'Regular Hexagon Area',
+            subject: 'Mathematics',
+            chapter: 'Geometry',
+            prerequisites: ['hexagon_center_angle', 'hexagon_perimeter'],
+          ),
+          'hexagon_center_angle': ConceptNode(
+            id: 'hexagon_center_angle',
+            name: 'Hexagon Center Angle',
+            subject: 'Mathematics',
+            chapter: 'Geometry',
+          ),
+          'hexagon_perimeter': ConceptNode(
+            id: 'hexagon_perimeter',
+            name: 'Hexagon Perimeter',
+            subject: 'Mathematics',
+            chapter: 'Geometry',
+          ),
+        },
+      );
+
       rescueSystem = RescueSystem(
-        allQuestions: testQuestions,
+        allQuestions: questions,
         conceptGraph: conceptGraph,
       );
     });
-    
-    testWidgets('Complete Rescue Flow Test', (WidgetTester tester) async {
-      // Create test widget
-      await tester.pumpWidget(
-        MaterialApp(
-          home: QuestionScreen(
-            questions: testQuestions,
-            sessionType: SessionType.practice,
-            onSessionComplete: (results) {},
-            onExit: () {},
+
+    test('builds a rescue path from question prerequisites', () {
+      final rescuePath = rescueSystem.getRescuePath(questions.first);
+
+      expect(rescuePath, isNotEmpty);
+      expect(
+        rescuePath.map((rescue) => rescue.question.id),
+        containsAll(['foundation_center_angle', 'foundation_perimeter']),
+      );
+      expect(
+        rescuePath.map((rescue) => rescue.reason),
+        contains(startsWith('Question prerequisite:')),
+      );
+    });
+
+    test('falls back to concept graph prerequisites', () {
+      final failedQuestion = _question(
+        id: 'main_without_local_prereqs',
+        text: 'Find the area of a regular hexagon.',
+        topic: 'Regular Polygons',
+        primaryConcept: 'regular_hexagon_area',
+        difficulty: Difficulty.hard,
+      );
+
+      final rescuePath = rescueSystem.getRescuePath(failedQuestion);
+
+      expect(rescuePath, isNotEmpty);
+      expect(
+        rescuePath.map((rescue) => rescue.question.id),
+        contains('foundation_center_angle'),
+      );
+      expect(
+        rescuePath.map((rescue) => rescue.reason),
+        contains(startsWith('Prerequisite concept:')),
+      );
+    });
+
+    test('returns no rescue questions when no easier support exists', () {
+      final emptySystem = RescueSystem(
+        allQuestions: [
+          _question(
+            id: 'isolated_question',
+            text: 'Isolated hard question',
+            topic: 'Unknown',
+            primaryConcept: 'unknown_concept',
+            difficulty: Difficulty.hard,
+            prerequisites: ['missing_concept'],
           ),
-        ),
+        ],
+        conceptGraph: const ConceptGraph(),
       );
-      
-      // Verify initial state
-      expect(find.text('Find the area of a regular hexagon with side length 4 cm.'), findsOneWidget);
-      expect(find.text('Smart Rescue'), findsOneWidget);
-      
-      // Step 1: Answer incorrectly to trigger rescue
-      await tester.tap(find.text('A')); // Wrong answer
-      await tester.pumpAndSettle();
-      
-      // Step 2: Verify rescue dialog appears
-      expect(find.text('Smart Rescue Available'), findsOneWidget);
-      expect(find.text('Let\'s build up to this with easier questions'), findsOneWidget);
-      
-      // Step 3: Accept rescue
-      await tester.tap(find.text('Start Rescue'));
-      await tester.pumpAndSettle();
-      
-      // Step 4: Verify foundation question is loaded
-      expect(find.text('What is the central angle of a regular hexagon?'), findsOneWidget);
-      expect(find.text('Foundation Question'), findsOneWidget);
-      
-      // Step 5: Answer foundation question correctly
-      await tester.tap(find.text('B')); // Correct answer
-      await tester.pumpAndSettle();
-      
-      // Step 6: Verify bridge question is loaded
-      expect(find.text('A regular hexagon has side length 2 cm. Find its perimeter.'), findsOneWidget);
-      expect(find.text('Bridge Question'), findsOneWidget);
-      
-      // Step 7: Answer bridge question correctly
-      await tester.tap(find.text('C')); // Correct answer
-      await tester.pumpAndSettle();
-      
-      // Step 8: Verify return to original question
-      expect(find.text('Find the area of a regular hexagon with side length 4 cm.'), findsOneWidget);
-      expect(find.text('Ready to try the original question again?'), findsOneWidget);
-      
-      // Step 9: Answer original question correctly
-      await tester.tap(find.text('D')); // Correct answer
-      await tester.pumpAndSettle();
-      
-      // Step 10: Verify success
-      expect(find.text('Correct!'), findsOneWidget);
-      expect(find.text('48√3 cm²'), findsOneWidget);
-    });
-    
-    test('Rescue System Logic', () async {
-      final mainQuestion = testQuestions.first;
-      
-      // Test rescue question generation
-      final rescueQuestions = rescueSystem.generateRescueQuestions(mainQuestion);
-      
-      expect(rescueQuestions.length, 2, reason: 'Should generate 2 rescue questions');
-      expect(rescueQuestions[0].questionRole, QuestionRole.foundation, reason: 'First should be foundation');
-      expect(rescueQuestions[1].questionRole, QuestionRole.bridge, reason: 'Second should be bridge');
-      
-      // Test concept gap analysis
-      final gaps = rescueSystem.analyzeConceptGaps(mainQuestion);
-      expect(gaps.isNotEmpty, reason: 'Should identify concept gaps');
-      expect(gaps.contains('regular_polygon_basics'), reason: 'Should identify missing prerequisite');
-    });
-    
-    test('Content Loader Integration', () async {
-      final loader = ContentLoader();
-      
-      // Test loading geometry rescue ladder
-      final rescueLadder = await loader.loadGeometryRescueLadder();
-      
-      expect(rescueLadder.isNotEmpty, reason: 'Should load rescue ladder');
-      expect(rescueLadder.length, 3, reason: 'Should have 3 questions in ladder');
-      
-      // Verify ladder progression
-      expect(rescueLadder[0].questionRole, QuestionRole.foundation, reason: 'First should be foundation');
-      expect(rescueLadder[1].questionRole, QuestionRole.bridge, reason: 'Second should be bridge');
-      expect(rescueLadder[2].questionRole, QuestionRole.jee, reason: 'Third should be JEE pattern');
-      
-      // Verify concept progression
-      expect(rescueLadder[0].primaryConcept, 'square_center_angle', reason: 'Foundation should be basic');
-      expect(rescueLadder[1].primaryConcept, 'hexagon_center_angle', reason: 'Bridge should be intermediate');
-      expect(rescueLadder[2].primaryConcept, 'octagon_center_angle', reason: 'JEE should be advanced');
-    });
-    
-    test('Mock Exam Mode Disables Rescue', (WidgetTester tester) async {
-      // Create test widget in mock exam mode
-      await tester.pumpWidget(
-        MaterialApp(
-          home: QuestionScreen(
-            questions: testQuestions,
-            sessionType: SessionType.mockExam,
-            onSessionComplete: (results) {},
-            onExit: () {},
-          ),
-        ),
-      );
-      
-      // Verify rescue is disabled in mock exam mode
-      expect(find.text('Smart Rescue'), findsNothing, reason: 'Rescue should be disabled in mock exam');
-      
-      // Answer incorrectly
-      await tester.tap(find.text('A'));
-      await tester.pumpAndSettle();
-      
-      // Verify no rescue dialog appears
-      expect(find.text('Smart Rescue Available'), findsNothing, reason: 'No rescue dialog in mock exam');
-      expect(find.text('Incorrect!'), findsOneWidget, reason: 'Should show incorrect feedback');
-    });
-    
-    test('Rescue Progress Tracking', () async {
-      final mainQuestion = testQuestions.first;
-      
-      // Test progress tracking
-      final progress = rescueSystem.trackRescueProgress(mainQuestion, []);
-      expect(progress.currentLevel, 0, reason: 'Should start at level 0');
-      expect(progress.totalLevels, 2, reason: 'Should have 2 rescue levels');
-      expect(progress.isComplete, false, reason: 'Should not be complete initially');
-      
-      // Simulate completing foundation question
-      final progress2 = rescueSystem.trackRescueProgress(mainQuestion, ['foundation_001']);
-      expect(progress2.currentLevel, 1, reason: 'Should advance to level 1');
-      expect(progress2.isComplete, false, reason: 'Should not be complete yet');
-      
-      // Simulate completing both rescue questions
-      final progress3 = rescueSystem.trackRescueProgress(mainQuestion, ['foundation_001', 'bridge_001']);
-      expect(progress3.currentLevel, 2, reason: 'Should advance to level 2');
-      expect(progress3.isComplete, true, reason: 'Should be complete');
-    });
-    
-    test('Rescue Question Quality Validation', () async {
-      final loader = ContentLoader();
-      
-      // Test mock rescue question creation
-      final mockRescue = loader.createMockRescueQuestion(
-        id: 'mock_test_001',
-        text: 'What is the sum of interior angles of a triangle?',
-        primaryConcept: 'triangle_interior_sum',
-        correctAnswer: 'C',
-        difficulty: 'foundation',
-        questionRole: 'foundation',
-      );
-      
-      expect(mockRescue.id, 'mock_test_001');
-      expect(mockRescue.questionText, 'What is the sum of interior angles of a triangle?');
-      expect(mockRescue.primaryConcept, 'triangle_interior_sum');
-      expect(mockRescue.correctAnswer, 'C');
-      expect(mockRescue.difficulty, Difficulty.foundation);
-      expect(mockRescue.questionRole, QuestionRole.foundation);
-      expect(mockRescue.options.length, 4, reason: 'Should have 4 options');
-      expect(mockRescue.explanation.isNotEmpty, reason: 'Should have explanation');
-      expect(mockRescue.reviewStatus, 'published', reason: 'Should be published');
-    });
-    
-    test('Rescue System Error Handling', () async {
-      // Test with missing rescue questions
-      final incompleteQuestions = [
-        Question(
-          id: 'incomplete_001',
-          questionText: 'Question without rescue',
-          primaryConcept: 'test_concept',
-          difficulty: Difficulty.jee,
-          questionRole: QuestionRole.main,
-          correctAnswer: 'A',
-          options: [Option(label: 'A', text: 'Answer', isCorrect: true)],
-          explanation: 'Explanation',
-          rescueQuestionIds: ['missing_001', 'missing_002'], // Non-existent rescue questions
-          reviewStatus: 'published',
-        ),
-      ];
-      
-      final incompleteRescueSystem = RescueSystem(
-        allQuestions: incompleteQuestions,
-        conceptGraph: conceptGraph,
-      );
-      
-      final rescueQuestions = incompleteRescueSystem.generateRescueQuestions(incompleteQuestions.first);
-      expect(rescueQuestions.isEmpty, reason: 'Should handle missing rescue questions gracefully');
+
+      final rescuePath = emptySystem.getRescuePath(emptySystem.allQuestions.first);
+
+      expect(rescuePath, isEmpty);
     });
   });
-  
-  group('Rescue Flow Performance Tests', () {
-    test('Large Question Set Performance', () async {
-      // Create large question set
-      final largeQuestionSet = <Question>[];
-      for (int i = 0; i < 100; i++) {
-        largeQuestionSet.add(Question(
-          id: 'large_test_$i',
-          questionText: 'Test question $i',
-          primaryConcept: 'test_concept_$i',
-          difficulty: Difficulty.foundation,
-          questionRole: QuestionRole.main,
-          correctAnswer: 'A',
-          options: [Option(label: 'A', text: 'Answer', isCorrect: true)],
-          explanation: 'Explanation $i',
-          reviewStatus: 'published',
-        ));
-      }
-      
-      final stopwatch = Stopwatch()..start();
-      
-      final rescueSystem = RescueSystem(
-        allQuestions: largeQuestionSet,
-        conceptGraph: ConceptGraph(),
+
+  group('ContentLoader', () {
+    test('loads curated geometry rescue ladder from assets', () async {
+      final rescueQuestions = await ContentLoader.loadGeometryRescueLadder();
+
+      expect(rescueQuestions.length, 3);
+      expect(rescueQuestions.first.id, isNotEmpty);
+      expect(rescueQuestions.first.text, isNotEmpty);
+      expect(rescueQuestions.first.primaryConcept, 'square_center_angle');
+    });
+
+    test('creates mock rescue questions with current QuestionData fields', () {
+      final mockQuestion = ContentLoader.createMockRescueQuestion(
+        id: 'mock_foundation_001',
+        text: 'What is the central angle of a square?',
+        primaryConcept: 'square_center_angle',
+        correctIndex: 1,
+        difficulty: 'easy',
       );
-      
-      // Test rescue question generation performance
-      for (final question in largeQuestionSet.take(10)) {
-        rescueSystem.generateRescueQuestions(question);
-      }
-      
-      stopwatch.stop();
-      
-      expect(stopwatch.elapsedMilliseconds < 1000, reason: 'Rescue generation should be fast');
+
+      expect(mockQuestion.id, 'mock_foundation_001');
+      expect(mockQuestion.text, 'What is the central angle of a square?');
+      expect(mockQuestion.primaryConcept, 'square_center_angle');
+      expect(mockQuestion.correctIndex, 1);
+      expect(mockQuestion.difficulty, Difficulty.easy);
+      expect(mockQuestion.options.length, 4);
+      expect(mockQuestion.isPublished, isTrue);
     });
   });
+}
+
+QuestionData _question({
+  required String id,
+  required String text,
+  required String topic,
+  required String primaryConcept,
+  required Difficulty difficulty,
+  List<String> prerequisites = const [],
+}) {
+  return QuestionData(
+    id: id,
+    text: text,
+    diagram: DiagramData(
+      id: '${id}_diagram',
+      type: DiagramType.geometry,
+      elements: const [],
+    ),
+    options: const ['A', 'B', 'C', 'D'],
+    correctIndex: 0,
+    explanation: 'Explanation',
+    subject: 'Mathematics',
+    chapter: 'Geometry',
+    topic: topic,
+    primaryConcept: primaryConcept,
+    prerequisites: prerequisites,
+    difficulty: difficulty,
+    estimatedSeconds: 60,
+    revealSteps: const [
+      RevealStep(text: 'Read the known values.'),
+    ],
+    solutionSteps: const ['Read the known values.'],
+    whyWrongExplanations: const {
+      1: 'This option uses the wrong concept.',
+      2: 'This option has a calculation slip.',
+      3: 'This option confuses perimeter with area.',
+    },
+    coreConcept: primaryConcept,
+  );
 }
