@@ -224,6 +224,7 @@ class ContentLoader {
           [],
       whyWrongExplanations: whyWrongMap,
       coreConcept: json['primary_concept'],
+      classLevel: json['class_level'] ?? 'Unknown',
     );
   }
 
