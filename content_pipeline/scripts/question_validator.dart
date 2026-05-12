@@ -191,7 +191,39 @@ class QuestionValidator {
     // Content quality checks
     validateContentQuality(question, errors);
     
+    // Additional validation for new question format
+    validateNewQuestionFormat(question, errors);
+    
     return errors;
+  }
+
+  /// Validate new question format specific fields
+  void validateNewQuestionFormat(Map<String, dynamic> question, List<String> errors) {
+    final questionId = question['question_id'] as String?;
+    
+    // Validate question ID format
+    if (questionId != null && !questionId.startsWith('fundamental_') && 
+        !questionId.startsWith('practice_') && 
+        !questionId.startsWith('challenge_') && 
+        !questionId.startsWith('jee_')) {
+      errors.add('Question ID should follow pattern: fundamental_, practice_, challenge_, or jee_');
+    }
+    
+    // Validate source pattern reference
+    final sourcePattern = question['source_pattern'] as String?;
+    if (sourcePattern != null && sourcePattern.isEmpty) {
+      errors.add('source_pattern cannot be empty for new questions');
+    }
+    
+    // Validate manipulative support
+    final manipulative = question['manipulative'] as String?;
+    final validManipulatives = [
+      'polygon_sides_slider', 'angle_calculator', 'pizza_slicer', 'stop_sign_visual',
+      'polygon_vertex_selector', 'algebra_solver', 'polygon_analyzer', 'none'
+    ];
+    if (manipulative != null && !validManipulatives.contains(manipulative)) {
+      errors.add('Unsupported manipulative: $manipulative. Valid: ${validManipulatives.join(', ')}');
+    }
   }
 
   /// Validate content quality requirements

@@ -103,7 +103,7 @@ class PYQPatternAnalyzer {
           "review_status": "draft"
         },
         {
-          "question_id": "fundamental_central_angle_triangle_002",
+          "question_id": "fundamental_central_angle_triangle_002_fixed",
           "source_type": "original_recreated",
           "source_pattern": patternId,
           "class_level": "Class 7",
@@ -112,6 +112,29 @@ class PYQPatternAnalyzer {
           "question_role": "starter",
           "question_text": "An equilateral triangle is divided from the center into 3 equal parts. What is each central angle?",
           "options": ["90°", "120°", "180°", "60°"],
+          "correct_answer": 3,
+          "formulae_used": ["central_angle = 360° / n"],
+          "why_wrong_explanations": {
+            "0": "90° is the central angle of a square (4 sides).",
+            "1": "120° would be for a triangle if it were 3 equal angles, but central angle is different.",
+            "2": "180° is a straight angle, not a central angle of a regular polygon."
+          },
+          "difficulty": "easy",
+          "estimated_time_seconds": 45,
+          "diagram_required": true,
+          "manipulative": "polygon_sides_slider",
+          "review_status": "draft"
+        },
+        {
+          "question_id": "fundamental_central_angle_triangle_002",
+          "source_type": "original_recreated",
+          "source_pattern": patternId,
+          "class_level": "Class 7",
+          "topic": "Central Angle of Regular Polygon",
+          "primary_concept": "central_angle_regular_polygon",
+          "question_role": "starter",
+          "question_text": "An equilateral triangle is divided from the center into 3 equal parts. What is each central angle?",
+          "options": ["90°", "120°", "60°", "180°"],
           "correct_answer": 3,
           "formulae_used": ["central_angle = 360° / n"],
           "why_wrong_explanations": {

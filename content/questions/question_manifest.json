@@ -1,0 +1,12 @@
+{
+  "metadata": {
+    "generated_date": "2026-05-12T06:59:00.000Z",
+    "total_question_files": 1,
+    "total_questions": 16,
+    "description": "Manifest for all question files in content/questions/ directory",
+    "version": "1.0"
+  },
+  "question_files": [
+    "central_angle_regular_polygon_questions.json"
+  ]
+}

@@ -23,15 +23,56 @@ class TopicContentLoader {
     }
   }
 
-  /// Load questions by their IDs from the journey questions file
+  /// Load questions by their IDs from the content/questions/ directory
   static Future<List<QuestionData>> loadQuestionsByIds(List<String> questionIds) async {
     try {
-      // Load the geometry foundation journey questions which contains our question IDs
-      final String jsonString = await rootBundle
-          .loadString('content/journeys/geometry_foundation_journey_questions.json');
-      final Map<String, dynamic> data = json.decode(jsonString);
+      // First, try to load from the new content/questions/ directory
+      final Map<String, QuestionData> allQuestions = {};
       
-      final questionsMap = data['questions'] as Map<String, dynamic>?;
+      // Scan all question files in content/questions/
+      final manifestContent = await rootBundle.loadString('content/questions/question_manifest.json');
+      final Map<String, dynamic> manifest = json.decode(manifestContent);
+      final questionFiles = manifest['question_files'] as List<String>? ?? [];
+      
+      for (final fileName in questionFiles) {
+        try {
+          final fileContent = await rootBundle.loadString('content/questions/$fileName');
+          final Map<String, dynamic> fileData = json.decode(fileContent);
+          final questions = fileData['questions'] as List;
+          
+          for (final question in questions) {
+            final questionData = _convertNewQuestionFormat(question as Map<String, dynamic>);
+            allQuestions[questionData.id] = questionData;
+          }
+        } catch (e) {
+          debugPrint('Error loading question file $fileName: $e');
+        }
+      }
+      
+      // If new questions not available, fallback to legacy journey questions
+      if (allQuestions.isEmpty) {
+        debugPrint('New questions not found, falling back to legacy journey questions');
+        return await _loadLegacyJourneyQuestions(questionIds);
+      }
+      
+      final List<QuestionData> results = [];
+      for (final questionId in questionIds) {
+        if (allQuestions.containsKey(questionId)) {
+          results.add(allQuestions[questionId]!);
+        } else {
+          debugPrint('Question ID $questionId not found in new content');
+          // Create a fallback question
+          results.add(_createFallbackQuestion(questionId));
+        }
+      }
+      
+      return results;
+    } catch (e) {
+      debugPrint('Error loading questions by IDs: $e');
+      // Return fallback questions for each requested ID
+      return questionIds.map(_createFallbackQuestion).toList();
+    }
+  }
       if (questionsMap == null) return [];
 
       final List<QuestionData> questions = [];
