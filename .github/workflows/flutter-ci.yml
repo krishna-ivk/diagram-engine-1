@@ -2,7 +2,7 @@ name: Flutter CI
 
 on:
   push:
-    branches: [main, feature/content-pipeline-integration]
+    branches: [main, 'feature/**']
   pull_request:
     branches: [main]
 

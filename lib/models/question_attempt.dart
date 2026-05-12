@@ -1,10 +1,13 @@
-enum ConfidenceLevel {
-  notSure,
-  somewhatSure,
-  verySure,
-}
+// Re-export unified model for backward compatibility.
+// All new code should import student_attempt_event.dart directly.
+import 'student_attempt_event.dart';
+export 'student_attempt_event.dart' show ConfidenceLevel;
 
-class QuestionAttempt {
+/// Backward-compatible alias for Foundation Journey attempt tracking.
+/// New code should use [StudentAttemptEvent] from student_attempt_event.dart.
+typedef QuestionAttempt = JourneyQuestionAttempt;
+
+class JourneyQuestionAttempt {
   final String questionId;
   final ConfidenceLevel confidenceLevel;
   final bool isCorrect;
@@ -12,7 +15,7 @@ class QuestionAttempt {
   final DateTime timestamp;
   final int levelIndex;
 
-  const QuestionAttempt({
+  const JourneyQuestionAttempt({
     required this.questionId,
     required this.confidenceLevel,
     required this.isCorrect,
@@ -32,10 +35,11 @@ class QuestionAttempt {
     };
   }
 
-  factory QuestionAttempt.fromJson(Map<String, dynamic> json) {
-    return QuestionAttempt(
+  factory JourneyQuestionAttempt.fromJson(Map<String, dynamic> json) {
+    return JourneyQuestionAttempt(
       questionId: json['questionId'] as String,
-      confidenceLevel: _parseConfidenceLevel(json['confidenceLevel'] as String?),
+      confidenceLevel:
+          _parseConfidenceLevel(json['confidenceLevel'] as String?),
       isCorrect: json['isCorrect'] as bool,
       timeSpentSeconds: json['timeSpentSeconds'] as int,
       timestamp: DateTime.parse(json['timestamp'] as String),

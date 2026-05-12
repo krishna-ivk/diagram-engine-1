@@ -1,5 +1,7 @@
 import 'concept_mastery.dart';
 
+/// Analytics-focused attempt model used by PerformanceTracker.
+/// New code should prefer [StudentAttemptEvent] from student_attempt_event.dart.
 class QuestionAttempt {
   final String questionId;
   final String topic;

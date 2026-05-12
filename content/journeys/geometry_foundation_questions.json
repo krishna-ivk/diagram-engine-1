@@ -1,0 +1,232 @@
+{
+  "journey_id": "geometry_foundation_journey",
+  "description": "Questions for the Geometry Foundation Journey progression",
+  "questions": {
+    "class7_square_parts_001": {
+      "question_id": "class7_square_parts_001",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Square Fractions",
+      "primary_concept": "square_fractions",
+      "class_level": "Class 7",
+      "difficulty": "easy",
+      "expected_time_seconds": 60,
+      "question_text": "A square is divided into 4 equal triangles by drawing lines from the center. What fraction of the square is each triangle?",
+      "options": ["1/2", "1/4", "1/3", "1/8"],
+      "correct_answer": 1,
+      "explanation": "A square divided into 4 equal parts means each part is 1/4 of the whole.",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "Draw diagonals from center to each corner of the square"
+        },
+        {
+          "step_number": 2,
+          "description": "Count the number of equal triangles formed: 4"
+        },
+        {
+          "step_number": 3,
+          "description": "Each triangle is 1 out of 4 equal parts = 1/4",
+          "calculation": "Fraction = 1/4"
+        }
+      ],
+      "why_wrong_explanations": {
+        "0": "1/2 would mean only 2 parts, but drawing from center to all corners creates 4 equal triangles.",
+        "2": "1/3 would mean 3 parts, but a square divides into 4 triangles from the center.",
+        "3": "1/8 is too small. Drawing from center to corners creates exactly 4 equal triangles, not 8."
+      },
+      "diagram_id": "diag_square_parts_001"
+    },
+    "rescue_foundation_square_center_angle_001": {
+      "question_id": "rescue_foundation_square_center_angle_001",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Square Central Angle",
+      "primary_concept": "square_center_angle",
+      "prerequisites": ["circle_angle_360"],
+      "class_level": "Class 7-8",
+      "difficulty": "easy",
+      "expected_time_seconds": 60,
+      "question_text": "A square is divided from its center into 4 equal triangles. What is the measure of each central angle?",
+      "options": ["45°", "90°", "180°", "360°"],
+      "correct_answer": 1,
+      "explanation": "A full circle is 360°. Dividing by 4 equal parts gives 90°.",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "A full circle around a point measures 360°",
+          "calculation": "Total angle = 360°"
+        },
+        {
+          "step_number": 2,
+          "description": "A square divides the circle into 4 equal central angles",
+          "calculation": "Number of parts = 4"
+        },
+        {
+          "step_number": 3,
+          "description": "Each central angle = Total angle ÷ Number of parts",
+          "calculation": "360° ÷ 4 = 90°"
+        }
+      ],
+      "why_wrong_explanations": {
+        "0": "45° would be for an octagon, not a square. A square has 4 equal parts.",
+        "2": "180° is a straight angle, not the central angle of a square.",
+        "3": "360° is the total angle around a point, not each individual central angle."
+      },
+      "diagram_id": "diag_square_center_angle_001"
+    },
+    "rescue_bridge_hexagon_center_angle_001": {
+      "question_id": "rescue_bridge_hexagon_center_angle_001",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Hexagon Central Angle",
+      "primary_concept": "hexagon_center_angle",
+      "prerequisites": ["square_center_angle", "circle_angle_360"],
+      "class_level": "Class 8-9",
+      "difficulty": "medium",
+      "expected_time_seconds": 90,
+      "question_text": "A regular hexagon has a side length of 6 cm. Find the area of one of the central triangles formed by drawing lines from the center to the vertices.",
+      "options": ["6√3 cm²", "9√3 cm²", "12√3 cm²", "18√3 cm²"],
+      "correct_answer": 1,
+      "explanation": "Central angle of hexagon = 360° ÷ 6 = 60°. Area = (1/2) × 6² × sin(60°) = 9√3 cm².",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "Central angle of regular hexagon = 360° ÷ 6",
+          "calculation": "Central angle = 60°"
+        },
+        {
+          "step_number": 2,
+          "description": "Each central triangle is isosceles with vertex angle 60°",
+          "calculation": "Triangle type: isosceles with vertex angle 60°"
+        },
+        {
+          "step_number": 3,
+          "description": "Area of triangle = (1/2) × r² × sin(vertex angle)",
+          "calculation": "Area = (1/2) × 6² × sin(60°) = 18 × (√3/2) = 9√3 cm²"
+        }
+      ],
+      "why_wrong_explanations": {
+        "0": "You may have used the wrong formula or incorrect trigonometric value.",
+        "2": "Check your calculation of the area formula for the triangle.",
+        "3": "This would be the area if the triangle was equilateral with side 6, but we need the central triangle."
+      },
+      "diagram_id": "diag_hexagon_center_angle_001"
+    },
+    "rescue_intermediate_octagon_center_angle_001": {
+      "question_id": "rescue_intermediate_octagon_center_angle_001",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Octagon Central Angle",
+      "primary_concept": "octagon_center_angle",
+      "prerequisites": ["hexagon_center_angle", "square_center_angle"],
+      "class_level": "Class 9-10",
+      "difficulty": "medium",
+      "expected_time_seconds": 120,
+      "question_text": "A regular octagon is inscribed in a circle of radius 10 cm. What is the measure of each central angle, and what is the side length of the octagon? (Use cos 45° = √2/2)",
+      "options": ["45°, 10√(2−√2) cm", "45°, 10√2 cm", "60°, 10 cm", "30°, 5√2 cm"],
+      "correct_answer": 0,
+      "explanation": "Central angle = 360° ÷ 8 = 45°. Using cosine law: side = r√(2 − 2cos45°) = 10√(2 − √2) cm.",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "Central angle of regular octagon = 360° ÷ 8",
+          "calculation": "Central angle = 45°"
+        },
+        {
+          "step_number": 2,
+          "description": "Use cosine law: side² = r² + r² - 2r²cos(central angle)",
+          "calculation": "side² = 100 + 100 - 200cos(45°) = 200 - 200(√2/2) = 200 - 100√2"
+        },
+        {
+          "step_number": 3,
+          "description": "Simplify: side = √(200 - 100√2) = 10√(2 - √2)",
+          "calculation": "side = 10√(2 − √2) cm"
+        }
+      ],
+      "why_wrong_explanations": {
+        "1": "10√2 is not correct — you need to apply the cosine law with the central angle of 45°.",
+        "2": "60° is the central angle for a hexagon, not an octagon. An octagon has 8 sides.",
+        "3": "30° would be for a 12-sided polygon. And the side length calculation is different."
+      },
+      "diagram_id": "diag_octagon_center_angle_001"
+    },
+    "pre_jee_octagon_area_001": {
+      "question_id": "pre_jee_octagon_area_001",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Octagon Area",
+      "primary_concept": "octagon_area_subtraction",
+      "prerequisites": ["octagon_center_angle", "area_calculation"],
+      "class_level": "Class 10-11",
+      "difficulty": "hard",
+      "expected_time_seconds": 180,
+      "question_text": "A regular octagon ABCDEFGH is inscribed in a circle of radius r. Express the area of the octagon in terms of r.",
+      "options": ["2r²√2", "2√2 r²", "r²(1 + √2)", "4r²sin(45°)"],
+      "correct_answer": 1,
+      "explanation": "Area of regular octagon = 8 × (1/2) × r² × sin(45°) = 4r²sin(45°) = 4r²(√2/2) = 2√2 r².",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "A regular octagon inscribed in a circle can be divided into 8 identical triangles from the center"
+        },
+        {
+          "step_number": 2,
+          "description": "Each triangle has two sides equal to radius r and vertex angle = 360°/8 = 45°"
+        },
+        {
+          "step_number": 3,
+          "description": "Area of each triangle = (1/2) × r × r × sin(45°) = (r²/2)(√2/2) = r²√2/4"
+        },
+        {
+          "step_number": 4,
+          "description": "Total area = 8 × r²√2/4 = 2r²√2 = 2√2 r²",
+          "calculation": "Area = 2√2 r²"
+        }
+      ],
+      "why_wrong_explanations": {
+        "0": "2r²√2 and 2√2 r² are the same expression. Check the option carefully.",
+        "2": "r²(1 + √2) is a different formula. The octagon area uses sin(45°), not (1 + √2).",
+        "3": "4r²sin(45°) = 4r²(√2/2) = 2√2 r², which is the same as option B."
+      },
+      "diagram_id": "diag_octagon_area_001"
+    },
+    "jee_math_regular_polygon_001": {
+      "question_id": "jee_math_regular_polygon_001",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Regular Polygon Properties",
+      "primary_concept": "regular_polygon_diagonal",
+      "prerequisites": ["octagon_area_subtraction", "cosine_law"],
+      "class_level": "Class 11-12",
+      "difficulty": "hard",
+      "expected_time_seconds": 240,
+      "question_text": "The interior angle of a regular polygon is 150°. How many diagonals does the polygon have?",
+      "options": ["27", "35", "54", "90"],
+      "correct_answer": 2,
+      "explanation": "Interior angle = (n-2)×180/n = 150 → n = 12. Diagonals = n(n-3)/2 = 12×9/2 = 54.",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "Use the interior angle formula: (n-2) × 180° / n = 150°",
+          "calculation": "(n-2) × 180 = 150n → 180n - 360 = 150n → 30n = 360 → n = 12"
+        },
+        {
+          "step_number": 2,
+          "description": "The polygon has 12 sides (dodecagon)"
+        },
+        {
+          "step_number": 3,
+          "description": "Number of diagonals = n(n-3)/2",
+          "calculation": "12 × (12-3) / 2 = 12 × 9 / 2 = 54"
+        }
+      ],
+      "why_wrong_explanations": {
+        "0": "27 = 54/2. You may have divided by 2 an extra time.",
+        "1": "35 would be for a 10-sided polygon. Check your calculation of n from the interior angle.",
+        "3": "90 would be the number of diagonals for a 15-sided polygon."
+      },
+      "diagram_id": "diag_regular_polygon_001"
+    }
+  }
+}

@@ -9,6 +9,7 @@ import '../models/premium_state.dart';
 import '../models/practice_mode.dart';
 import '../models/question_attempt.dart';
 import '../models/question_data.dart';
+import '../services/content_loader.dart';
 
 class FoundationJourneyQuestionScreen extends StatefulWidget {
   final JourneyLevel level;
@@ -38,17 +39,29 @@ class FoundationJourneyQuestionScreen extends StatefulWidget {
 class _FoundationJourneyQuestionScreenState
     extends State<FoundationJourneyQuestionScreen> {
   int _currentQuestionIndex = 0;
-  late QuestionData _currentQuestion;
+  QuestionData? _currentQuestion;
   ConfidenceLevel _selectedConfidence = ConfidenceLevel.somewhatSure;
   bool _showConfidenceSelector = false;
   bool _isProcessingAnswer = false;
   int? _pendingSelectedIndex;
   final List<QuestionAttempt> _attempts = [];
+  Map<String, QuestionData> _contentQuestions = {};
+  bool _isLoadingQuestions = true;
 
   @override
   void initState() {
     super.initState();
-    _loadCurrentQuestion();
+    _loadContentQuestions();
+  }
+
+  Future<void> _loadContentQuestions() async {
+    final questions =
+        await ContentLoader.loadJourneyQuestions(widget.journey.journeyId);
+    setState(() {
+      _contentQuestions = questions;
+      _isLoadingQuestions = false;
+      _loadCurrentQuestion();
+    });
   }
 
   void _loadCurrentQuestion() {
@@ -59,85 +72,61 @@ class _FoundationJourneyQuestionScreenState
   }
 
   QuestionData _getQuestionForLevel(JourneyLevel level) {
-    switch (level.level) {
-      case 'L0':
-        return _journeyQuestion(
-          id: 'class7_square_parts_001',
-          text:
-              'A square is divided into 4 equal triangles by drawing lines from the center. What fraction of the square is each triangle?',
-          title: 'Square Divided into Triangles',
-          options: const ['1/2', '1/4', '1/3', '1/8'],
-          correctIndex: 1,
-          explanation:
-              'A square divided into 4 equal parts means each part is 1/4 of the whole.',
-          concept: 'square_fractions',
-          difficulty: Difficulty.easy,
-        );
-      case 'L1':
-        return _journeyQuestion(
-          id: 'rescue_foundation_square_center_angle_001',
-          text:
-              'A square is divided from its center into 4 equal triangles. What is the measure of each central angle?',
-          title: 'Square Central Angles',
-          options: const ['45°', '90°', '180°', '360°'],
-          correctIndex: 1,
-          explanation:
-              'A full circle is 360°. Dividing by 4 equal parts gives 90°.',
-          concept: 'square_center_angle',
-          difficulty: Difficulty.easy,
-        );
-      default:
-        return _journeyQuestion(
-          id: level.questionIds.isNotEmpty
-              ? level.questionIds.first
-              : 'foundation_journey_question',
-          text: 'What is the central angle of a regular hexagon?',
-          title: 'Hexagon Central Angle',
-          options: const ['45°', '60°', '90°', '120°'],
-          correctIndex: 1,
-          explanation:
-              'A hexagon has 6 sides. Central angle = 360° ÷ 6 = 60°.',
-          concept: 'hexagon_center_angle',
-          difficulty: Difficulty.medium,
-        );
+    // Load question from content by question ID
+    for (final qId in level.questionIds) {
+      final question = _contentQuestions[qId];
+      if (question != null) {
+        return question;
+      }
     }
+
+    // Fallback: create a placeholder question if content not found
+    final questionId = level.questionIds.isNotEmpty
+        ? level.questionIds.first
+        : 'foundation_journey_${level.level}';
+    return _fallbackQuestion(questionId, level);
   }
 
-  QuestionData _journeyQuestion({
-    required String id,
-    required String text,
-    required String title,
-    required List<String> options,
-    required int correctIndex,
-    required String explanation,
-    required String concept,
-    required Difficulty difficulty,
-  }) {
+  QuestionData _fallbackQuestion(String id, JourneyLevel level) {
     return QuestionData(
       id: id,
-      text: text,
+      text:
+          'Question for ${level.title} (content loading...)',
       diagram: DiagramData(
         id: '${id}_diagram',
         type: DiagramType.geometry,
-        title: title,
+        title: level.title,
         elements: const [],
       ),
-      options: options,
-      correctIndex: correctIndex,
-      explanation: explanation,
+      options: const ['Option A', 'Option B', 'Option C', 'Option D'],
+      correctIndex: 0,
+      explanation: 'Content for this question is being loaded.',
       subject: 'Mathematics',
       chapter: widget.journey.chapter,
       topic: 'Geometry',
-      primaryConcept: concept,
-      coreConcept: concept,
-      difficulty: difficulty,
-      estimatedSeconds: widget.level.expectedTimeSeconds ?? 60,
+      primaryConcept: level.level,
+      coreConcept: level.level,
+      difficulty: Difficulty.medium,
+      estimatedSeconds: level.expectedTimeSeconds ?? 60,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    if (_isLoadingQuestions || _currentQuestion == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.level.title),
+          backgroundColor: theme.colorScheme.surface,
+          elevation: 0,
+        ),
+        body: const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    final question = _currentQuestion!;
 
     return Scaffold(
       appBar: AppBar(
@@ -181,7 +170,7 @@ class _FoundationJourneyQuestionScreenState
           else
             Expanded(
               child: _QuestionContent(
-                question: _currentQuestion,
+                question: question,
                 onAnswerSelected: _handleAnswerSelected,
                 isProcessing: _isProcessingAnswer,
               ),
@@ -206,9 +195,10 @@ class _FoundationJourneyQuestionScreenState
   Future<void> _processAnswer(int selectedIndex) async {
     setState(() => _isProcessingAnswer = true);
 
-    final isCorrect = selectedIndex == _currentQuestion.correctIndex;
+    final question = _currentQuestion!;
+    final isCorrect = selectedIndex == question.correctIndex;
     final attempt = QuestionAttempt(
-      questionId: _currentQuestion.id,
+      questionId: question.id,
       isCorrect: isCorrect,
       confidenceLevel: _selectedConfidence,
       timeSpentSeconds: widget.level.expectedTimeSeconds ?? 60,
@@ -255,11 +245,11 @@ class _FoundationJourneyQuestionScreenState
             children: [
               if (!isCorrect) ...[
                 Text(
-                  'Correct answer: ${_currentQuestion.options[_currentQuestion.correctIndex]}',
+                  'Correct answer: ${_currentQuestion!.options[_currentQuestion!.correctIndex]}',
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 8),
-                Text(_currentQuestion.explanation ?? ''),
+                Text(_currentQuestion!.explanation ?? ''),
               ],
               const SizedBox(height: 16),
               Text(nextStep.message),
@@ -560,26 +550,5 @@ class _QuestionContent extends StatelessWidget {
   }
 }
 
-extension ConfidenceLevelExtension on ConfidenceLevel {
-  String get displayName {
-    switch (this) {
-      case ConfidenceLevel.notSure:
-        return 'Not sure';
-      case ConfidenceLevel.somewhatSure:
-        return 'Somewhat sure';
-      case ConfidenceLevel.verySure:
-        return 'Very sure';
-    }
-  }
-
-  String get description {
-    switch (this) {
-      case ConfidenceLevel.notSure:
-        return 'I guessed or need help';
-      case ConfidenceLevel.somewhatSure:
-        return 'I think I understand';
-      case ConfidenceLevel.verySure:
-        return 'I can explain this';
-    }
-  }
-}
+// ConfidenceLevel.displayName and .description are now defined
+// directly on the enum in student_attempt_event.dart.
