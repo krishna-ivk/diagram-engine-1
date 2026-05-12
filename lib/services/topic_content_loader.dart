@@ -39,7 +39,7 @@ class TopicContentLoader {
       for (final questionId in questionIds) {
         if (questionsMap.containsKey(questionId)) {
           try {
-            final questionData = ContentLoader._convertJourneyQuestion(
+            final questionData = ContentLoader.convertJourneyQuestion(
               questionsMap[questionId] as Map<String, dynamic>
             );
             questions.add(questionData);

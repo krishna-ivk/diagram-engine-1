@@ -181,7 +181,7 @@ class ContentLoader {
   }
 
   /// Convert a journey question JSON entry to QuestionData
-  static QuestionData _convertJourneyQuestion(Map<String, dynamic> json) {
+  static QuestionData convertJourneyQuestion(Map<String, dynamic> json) {
     final correctAnswer = json['correct_answer'];
     final int correctIdx = correctAnswer is int ? correctAnswer : 0;
 

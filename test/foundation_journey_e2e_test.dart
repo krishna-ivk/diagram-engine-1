@@ -8,6 +8,7 @@ import 'package:diagram_engine/models/foundation_journey.dart';
 import 'package:diagram_engine/models/journey_progression_engine.dart';
 import 'package:diagram_engine/models/journey_state.dart';
 import 'package:diagram_engine/models/performance_tracker.dart' hide QuestionAttempt;
+import 'package:diagram_engine/models/student_attempt_event.dart';
 import 'package:diagram_engine/models/premium_state.dart';
 import 'package:diagram_engine/models/student_profile.dart';
 import 'package:diagram_engine/models/question_attempt.dart' as attempt;
@@ -208,12 +209,11 @@ void main() {
           ),
         ],
         levelStates: {
-          'L0': LevelState.mastered,
-          'L1': LevelState.mastered,
-          'L2': LevelState.notStarted,
+          0: LevelState.mastered,
+          1: LevelState.mastered,
+          2: LevelState.notStarted,
         },
-        journeyStartTime: DateTime.now().subtract(Duration(minutes: 10)),
-        lastActivityTime: DateTime.now(),
+        startDate: DateTime.now().subtract(Duration(minutes: 10)),
       );
 
       await persistence.saveJourneyState(studentState);

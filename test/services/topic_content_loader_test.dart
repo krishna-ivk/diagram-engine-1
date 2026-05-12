@@ -154,8 +154,8 @@ void main() {
         ];
 
         for (final manipulative in topicCapsule.manipulatives) {
-          expect(validManipulatives, contains(manulative),
-              reason: 'Invalid manipulative: $manulative');
+          expect(validManipulatives, contains(manipulative),
+              reason: 'Invalid manipulative: $manipulative');
         }
       });
 

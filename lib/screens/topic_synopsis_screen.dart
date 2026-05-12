@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import '../models/diagram_data.dart';
 import '../models/performance_tracker.dart';
 import '../models/premium_state.dart';
 import '../models/practice_mode.dart';
 import '../models/question_data.dart';
+import '../models/revision_manager.dart';
 import '../models/topic_capsule.dart';
 import '../services/topic_content_loader.dart';
 import '../widgets/diagram_manipulatives.dart';
@@ -815,8 +817,8 @@ class _QuestionTypeCard extends StatelessWidget {
               questions: questions,
               tracker: tracker,
               premiumState: premiumState,
+              revisionManager: RevisionManager(),
               practiceMode: PracticeMode.learner,
-              title: title,
             ),
           ),
         );
