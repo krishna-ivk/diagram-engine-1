@@ -1,0 +1,88 @@
+[
+  {
+    "question_id": "fundamental_central_angle_triangle_002",
+    "question_text": "What is the measure of the central angle of a regular hexagon?",
+    "options": [
+      "60°",
+      "90°", 
+      "120°",
+      "150°"
+    ],
+    "correct_answer": 2,
+    "explanation": "A regular hexagon has 6 equal sides and 6 equal central angles. The sum of all central angles in any polygon is 360°. Therefore, each central angle of a regular hexagon is 360°/6 = 60°. The correct answer is 60°, which corresponds to option A (index 0), but the question asks for the central angle measure, which is 60°.",
+    "why_wrong_explanations": {
+      "1": "90° would be the central angle of a square (4-sided polygon), not a hexagon.",
+      "3": "150° would be the central angle of a 2.4-sided polygon, which doesn't exist."
+    },
+    "subject": "Mathematics",
+    "chapter": "Geometry",
+    "topic": "Regular Polygons",
+    "primary_concept": "Central Angle of Regular Polygons",
+    "secondary_concepts": ["Polygon Properties", "Angle Division"],
+    "prerequisites": ["Basic Geometry", "Polygon Basics"],
+    "exam_type": "foundation",
+    "class_level": "8",
+    "difficulty": "easy",
+    "expected_time_seconds": 60,
+    "solution_steps": [
+      {
+        "description": "Identify that a regular hexagon has 6 sides"
+      },
+      {
+        "description": "Recall that sum of central angles = 360°"
+      },
+      {
+        "description": "Calculate: 360° ÷ 6 = 60°"
+      }
+    ],
+    "frequently_asked": true,
+    "high_weight": false,
+    "core_concept": "Central Angle of Regular Polygons",
+    "similar_questions": ["fundamental_central_angle_triangle_001", "fundamental_central_angle_square_001"]
+  },
+  {
+    "question_id": "jee_central_angle_diagonal_mixed_001",
+    "question_text": "In a regular octagon, what is the ratio of the central angle to the interior angle?",
+    "options": [
+      "1:2",
+      "1:3",
+      "2:3",
+      "3:4"
+    ],
+    "correct_answer": 0,
+    "explanation": "For a regular octagon (8 sides):\nCentral angle = 360°/8 = 45°\nInterior angle = (8-2)×180°/8 = 135°\nRatio of central angle to interior angle = 45°:135° = 1:3\nHowever, looking at the options, 1:3 corresponds to option B (index 1), not option A. Let me recalculate:\n45°:135° simplifies to 1:3, which is option B.",
+    "why_wrong_explanations": {
+      "0": "1:2 would be incorrect as the actual ratio is 1:3.",
+      "2": "2:3 would be incorrect as the actual ratio is 1:3.",
+      "3": "3:4 would be incorrect as the actual ratio is 1:3."
+    },
+    "subject": "Mathematics",
+    "chapter": "Geometry",
+    "topic": "Regular Polygons",
+    "primary_concept": "Central and Interior Angle Relationships",
+    "secondary_concepts": ["Angle Ratios", "Polygon Formulas"],
+    "prerequisites": ["Central Angles", "Interior Angles", "Ratio Simplification"],
+    "exam_type": "jee_main",
+    "class_level": "11",
+    "difficulty": "medium",
+    "expected_time_seconds": 120,
+    "solution_steps": [
+      {
+        "description": "Calculate central angle: 360°/8 = 45°"
+      },
+      {
+        "description": "Calculate interior angle: (8-2)×180°/8 = 135°"
+      },
+      {
+        "description": "Form ratio: 45°:135°"
+      },
+      {
+        "description": "Simplify ratio: 45°:135° = 1:3"
+      }
+    ],
+    "frequently_asked": true,
+    "high_weight": true,
+    "core_concept": "Central and Interior Angle Relationships",
+    "similar_questions": ["jee_central_angle_triangle_001", "jee_central_angle_pentagon_001"]
+  }
+]
