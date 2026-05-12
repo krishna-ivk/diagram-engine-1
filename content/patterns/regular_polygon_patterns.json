@@ -1,0 +1,135 @@
+{
+  "pattern_metadata": {
+    "generated_date": "2026-05-12",
+    "source_repo": "HostServer001/jee_mains_pyqs_data_base",
+    "usage_note": "This file contains pattern indices only. No direct question text, options, or solutions from the external repo are copied. Used for pattern discovery to create original fundamental questions.",
+    "do_not_copy_source_text": true
+  },
+  "patterns": [
+    {
+      "pattern_id": "regular_polygon_central_angle",
+      "observed_in": {
+        "subject": "Mathematics",
+        "chapter": "Geometry",
+        "topic": "Regular Polygon"
+      },
+      "frequency_in_jee": "high",
+      "skills_required": [
+        "central_angle_calculation",
+        "number_of_sides_relationship",
+        "360_degree_full_turn"
+      ],
+      "fundamental_topics_to_create": [
+        "central_angle_regular_polygon",
+        "full_turn_concept",
+        "polygon_sides_counting"
+      ],
+      "target_topic_capsule": "central_angle_regular_polygon",
+      "difficulty_bridge": "Class 7 → JEE",
+      "observed_formulae": [
+        "central_angle = 360° / n",
+        "n = 360° / central_angle"
+      ],
+      "common_misconceptions": [
+        "confusing central angle with interior angle",
+        "assuming all polygons have 90° angles",
+        "mixing up sides and angles count"
+      ],
+      "prerequisite_concepts": [
+        "basic_fraction_division",
+        "angle_measurement",
+        "polygon_identification"
+      ]
+    },
+    {
+      "pattern_id": "regular_polygon_interior_angle",
+      "observed_in": {
+        "subject": "Mathematics", 
+        "chapter": "Geometry",
+        "topic": "Regular Polygon"
+      },
+      "frequency_in_jee": "high",
+      "skills_required": [
+        "interior_angle_calculation",
+        "sum_of_interior_angles",
+        "relationship_with_central_angle"
+      ],
+      "fundamental_topics_to_create": [
+        "interior_angle_regular_polygon",
+        "angle_sum_properties",
+        "central_vs_interior_comparison"
+      ],
+      "target_topic_capsule": "central_angle_regular_polygon",
+      "difficulty_bridge": "Class 8 → JEE",
+      "observed_formulae": [
+        "interior_angle = (n-2) × 180° / n",
+        "sum_of_interior_angles = (n-2) × 180°"
+      ],
+      "common_misconceptions": [
+        "using central angle formula for interior angle",
+        "forgetting to subtract 2 from number of sides",
+        "assuming interior angle = 180° - central_angle"
+      ],
+      "prerequisite_concepts": [
+        "triangle_angle_sum",
+        "polygon_decomposition",
+        "fraction_operations"
+      ]
+    },
+    {
+      "pattern_id": "regular_polygon_diagonal_count",
+      "observed_in": {
+        "subject": "Mathematics",
+        "chapter": "Geometry", 
+        "topic": "Regular Polygon"
+      },
+      "frequency_in_jee": "medium",
+      "skills_required": [
+        "diagonal_formula_application",
+        "combinatorial_thinking",
+        "vertex_connections"
+      ],
+      "fundamental_topics_to_create": [
+        "diagonal_count_polygon",
+        "vertex_connections",
+        "combination_basics"
+      ],
+      "target_topic_capsule": "central_angle_regular_polygon",
+      "difficulty_bridge": "Class 9 → JEE",
+      "observed_formulae": [
+        "diagonals = n × (n-3) / 2",
+        "total_connections = n × (n-1) / 2"
+      ],
+      "common_misconceptions": [
+        "counting sides as diagonals",
+        "forgetting division by 2 for double counting",
+        "using n-2 instead of n-3"
+      ],
+      "prerequisite_concepts": [
+        "basic_combinations",
+        "polygon_vertices",
+        "line_segments"
+      ]
+    }
+  ],
+  "content_generation_plan": {
+    "target_topic": "Central Angle of Regular Polygon",
+    "question_distribution": {
+      "starter": 5,
+      "practice": 7, 
+      "challenge": 3,
+      "jee_style": 1
+    },
+    "total_questions": 16,
+    "age_focus": "Class 7-8",
+    "quality_requirements": {
+      "one_concept_only": true,
+      "age_appropriate_wording": true,
+      "no_unnecessary_jee_jargon": true,
+      "one_clear_formula": true,
+      "misconception_mapped_options": true,
+      "diagram_manipulative_support": true,
+      "manual_answer_verification": true
+    }
+  }
+}
