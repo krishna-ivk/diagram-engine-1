@@ -140,7 +140,7 @@ class _PolygonManipulativeState extends State<PolygonManipulative>
                       boxShadow: isSelected
                           ? [
                               BoxShadow(
-                                color: color.withValues(alpha: 0.3),
+                                color: color.withOpacity(0.3),
                                 blurRadius: 8,
                                 offset: const Offset(0, 2),
                               ),
@@ -321,7 +321,7 @@ class _PolygonPainter extends CustomPainter {
 
     // Draw filled polygon
     final fillPaint = Paint()
-      ..color = accentColor.withValues(alpha: 0.08)
+      ..color = accentColor.withOpacity(0.08)
       ..style = PaintingStyle.fill;
     final path = Path()..addPolygon(vertices, true);
     canvas.drawPath(path, fillPaint);
@@ -329,7 +329,7 @@ class _PolygonPainter extends CustomPainter {
     // Highlight one central triangle
     if (vertices.length >= 2) {
       final trianglePaint = Paint()
-        ..color = accentColor.withValues(alpha: 0.18)
+        ..color = accentColor.withOpacity(0.18)
         ..style = PaintingStyle.fill;
       final trianglePath = Path()
         ..moveTo(center.dx, center.dy)
@@ -341,7 +341,7 @@ class _PolygonPainter extends CustomPainter {
 
     // Draw radial lines from center to each vertex
     final radialPaint = Paint()
-      ..color = accentColor.withValues(alpha: 0.35)
+      ..color = accentColor.withOpacity(0.35)
       ..strokeWidth = 1.2
       ..style = PaintingStyle.stroke;
     for (final vertex in vertices) {

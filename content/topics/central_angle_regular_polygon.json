@@ -1,0 +1,48 @@
+{
+  "topic_id": "math.geometry.central_angle_regular_polygon",
+  "title": "Central Angle of a Regular Polygon",
+  "class_level": "Class 7-8",
+  "target_exam_bridge": "JEE Foundation",
+  "synopsis_cards": [
+    {
+      "title": "What is a central angle?",
+      "body": "A full turn around a point is 360°. If a regular polygon is divided equally from the center, each part has the same angle."
+    },
+    {
+      "title": "Formula",
+      "body": "Central angle = 360° ÷ number of sides"
+    },
+    {
+      "title": "Why it matters",
+      "body": "Central angles help us understand regular polygons and solve geometry problems step by step."
+    }
+  ],
+  "formulae": [
+    "Central angle = 360° / n"
+  ],
+  "common_mistakes": [
+    "Confusing central angle with interior angle",
+    "Dividing by the wrong number of sides",
+    "Forgetting that total is always 360°"
+  ],
+  "starter_question_ids": [
+    "class7_square_parts_001",
+    "rescue_foundation_square_center_angle_001",
+    "rescue_foundation_square_center_angle_002"
+  ],
+  "practice_question_ids": [
+    "rescue_foundation_square_center_angle_003",
+    "rescue_bridge_hexagon_center_angle_001",
+    "rescue_bridge_hexagon_center_angle_002"
+  ],
+  "challenge_question_ids": [
+    "rescue_intermediate_octagon_center_angle_001",
+    "pre_jee_octagon_area_001"
+  ],
+  "revision_question_ids": [
+    "class7_square_parts_002",
+    "rescue_bridge_hexagon_center_angle_003"
+  ],
+  "manipulatives": ["polygon_sides_slider", "angle_calculator"],
+  "estimated_duration_minutes": 25
+}

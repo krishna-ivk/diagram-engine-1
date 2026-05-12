@@ -157,17 +157,9 @@ QuestionData _getQuestionForLevel(JourneyLevel level) {
       primaryConcept: level.level,
       coreConcept: level.level,
       difficulty: Difficulty.medium,
-      estimatedSeconds: level.expectedTimeSeconds ?? 60,
+estimatedSeconds: level.expectedTimeSeconds ?? 60,
     );
   }
-    }
-
-    // Content not found - throw error instead of showing placeholder
-    final missingIds = level.questionIds.where((id) => !_contentQuestions.containsKey(id)).toList();
-    throw Exception('Content not found for question(s): $missingIds. Please check content files.');
-  }
-
-  
 
   @override
   Widget build(BuildContext context) {
@@ -593,7 +585,7 @@ class _QuestionContent extends StatelessWidget {
                 color: theme.colorScheme.surfaceContainerHighest,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
-                  color: theme.colorScheme.outline.withValues(alpha: 0.2),
+                  color: theme.colorScheme.outline.withOpacity(0.2),
                 ),
               ),
               child: Column(
