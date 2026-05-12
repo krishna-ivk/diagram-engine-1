@@ -4,13 +4,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:diagram_engine/screens/foundation_journey_screen.dart';
 import 'package:diagram_engine/screens/foundation_journey_question_screen.dart';
-import 'package:diagram_engine/models/foundation_journey.dart';
 import 'package:diagram_engine/models/journey_progression_engine.dart';
 import 'package:diagram_engine/models/journey_state.dart';
-import 'package:diagram_engine/models/performance_tracker.dart' hide QuestionAttempt;
+import 'package:diagram_engine/models/performance_tracker.dart'
+    hide QuestionAttempt;
 import 'package:diagram_engine/models/student_attempt_event.dart';
 import 'package:diagram_engine/models/premium_state.dart';
-import 'package:diagram_engine/models/student_profile.dart';
 import 'package:diagram_engine/models/question_attempt.dart' as attempt;
 import 'package:diagram_engine/services/content_loader.dart';
 import 'package:diagram_engine/services/journey_persistence.dart';
@@ -31,7 +30,7 @@ void main() {
       tracker = PerformanceTracker();
       premiumState = PremiumState();
       persistence = JourneyPersistence();
-      
+
       // Load the journey content
       await engine.loadJourney('geometry_foundation_journey');
     });
@@ -61,7 +60,7 @@ void main() {
       if (levelTitle.evaluate().isNotEmpty) {
         expect(levelTitle, findsOneWidget);
       }
-      
+
       // Tap to start L0 - look for Start button or any button
       final startButton = find.text('Start');
       if (startButton.evaluate().isNotEmpty) {
@@ -83,7 +82,8 @@ void main() {
       await tester.pump();
 
       // Should load first question - check for any question content
-      final firstQuestion = find.textContaining('square is divided into 4 equal triangles');
+      final firstQuestion =
+          find.textContaining('square is divided into 4 equal triangles');
       if (firstQuestion.evaluate().isNotEmpty) {
         expect(firstQuestion, findsOneWidget);
       } else {
@@ -96,7 +96,7 @@ void main() {
           expect(find.byType(Scaffold), findsWidgets);
         }
       }
-      
+
       // Answer the first question correctly (option B = 1/4)
       final answerOption = find.text('1/4');
       if (answerOption.evaluate().isNotEmpty) {
@@ -115,7 +115,7 @@ void main() {
       final confidenceText = find.text('How confident are you?');
       if (confidenceText.evaluate().isNotEmpty) {
         expect(confidenceText, findsOneWidget);
-        
+
         // Select high confidence
         final verySureButton = find.text('Very Sure');
         if (verySureButton.evaluate().isNotEmpty) {
@@ -149,7 +149,7 @@ void main() {
       final secondQuestion = find.textContaining('square has side length 4 cm');
       if (secondQuestion.evaluate().isNotEmpty) {
         expect(secondQuestion, findsOneWidget);
-        
+
         // Answer correctly (option B = 8√2 cm)
         final answerOption2 = find.text('8√2 cm');
         if (answerOption2.evaluate().isNotEmpty) {
@@ -157,7 +157,7 @@ void main() {
         }
         await tester.pump(Duration(milliseconds: 500));
         await tester.pump();
-        
+
         // Complete answer flow if available
         if (find.text('Very Sure').evaluate().isNotEmpty) {
           await tester.tap(find.text('Very Sure'));
@@ -173,10 +173,11 @@ void main() {
       await tester.pump();
 
       // Should load third question - check flexibly
-      final thirdQuestion = find.textContaining('area of one triangle is 9 cm²');
+      final thirdQuestion =
+          find.textContaining('area of one triangle is 9 cm²');
       if (thirdQuestion.evaluate().isNotEmpty) {
         expect(thirdQuestion, findsOneWidget);
-        
+
         // Answer correctly (option A = 24 cm)
         final answerOption3 = find.text('24 cm');
         if (answerOption3.evaluate().isNotEmpty) {
@@ -184,7 +185,7 @@ void main() {
         }
         await tester.pump(Duration(milliseconds: 500));
         await tester.pump();
-        
+
         // Complete answer flow if available
         if (find.text('Very Sure').evaluate().isNotEmpty) {
           await tester.tap(find.text('Very Sure'));
@@ -219,33 +220,33 @@ void main() {
         // At minimum, we should be back on some screen
         expect(find.byType(FoundationJourneyScreen), findsOneWidget);
       }
-      
+
       // Continue through L1 questions
       for (int i = 0; i < 3; i++) {
         await tester.pump(Duration(milliseconds: 500));
-      await tester.pump();
-        
+        await tester.pump();
+
         // Find and tap an answer option
         final answerOptions = find.byType(RadioListTile<int>);
         if (answerOptions.evaluate().isNotEmpty) {
           await tester.tap(answerOptions.first);
         }
         await tester.pump(Duration(milliseconds: 500));
-      await tester.pump();
-        
+        await tester.pump();
+
         // Confirm confidence and answer - check flexibly
         final verySureButton = find.text('Very Sure');
         if (verySureButton.evaluate().isNotEmpty) {
           await tester.tap(verySureButton);
           await tester.pump(Duration(milliseconds: 500));
           await tester.pump();
-          
+
           final confirmButton = find.text('Confirm');
           if (confirmButton.evaluate().isNotEmpty) {
             await tester.tap(confirmButton);
             await tester.pump(Duration(milliseconds: 500));
             await tester.pump();
-            
+
             final continueButton = find.text('Continue');
             if (continueButton.evaluate().isNotEmpty) {
               await tester.tap(continueButton);
@@ -253,21 +254,23 @@ void main() {
           }
         }
         await tester.pump(Duration(milliseconds: 500));
-      await tester.pump();
+        await tester.pump();
       }
 
       // Should complete L1 and move to L2
       if (find.text('Level Complete!').evaluate().isNotEmpty) {
         await tester.tap(find.text('Continue to Next Level'));
         await tester.pump(Duration(milliseconds: 500));
-      await tester.pump();
+        await tester.pump();
       }
 
       // Verify journey progress is saved - check flexibly
-      final savedState = await persistence.loadJourneyState('geometry_foundation_journey');
+      final savedState =
+          await persistence.loadJourneyState('geometry_foundation_journey');
       if (savedState != null) {
         expect(savedState.journeyId, equals('geometry_foundation_journey'));
-        expect(savedState.attempts.length, greaterThan(6)); // At least 6 attempts from L0+L1
+        expect(savedState.attempts.length,
+            greaterThan(6)); // At least 6 attempts from L0+L1
       } else {
         // If state isn't saved, at least verify tracker has attempts
         expect(tracker.attempts.length, greaterThanOrEqualTo(0));
@@ -277,7 +280,8 @@ void main() {
       expect(tracker.attempts.length, greaterThanOrEqualTo(0));
     });
 
-    testWidgets('should handle incorrect answers with rescue flow', (tester) async {
+    testWidgets('should handle incorrect answers with rescue flow',
+        (tester) async {
       await tester.pumpWidget(
         MaterialApp(
           home: FoundationJourneyScreen(
@@ -290,7 +294,7 @@ void main() {
 
       await tester.pump(Duration(milliseconds: 500));
       await tester.pump();
-      
+
       // Start L0 - look for Start button or any button
       final startButton = find.text('Start');
       if (startButton.evaluate().isNotEmpty) {
@@ -327,7 +331,7 @@ void main() {
         await tester.tap(notSureButton);
         await tester.pump(Duration(milliseconds: 500));
         await tester.pump();
-        
+
         final confirmButton = find.text('Confirm');
         if (confirmButton.evaluate().isNotEmpty) {
           await tester.tap(confirmButton);
@@ -340,11 +344,12 @@ void main() {
       final incorrectDialog = find.text('Not quite right');
       if (incorrectDialog.evaluate().isNotEmpty) {
         expect(incorrectDialog, findsOneWidget);
-        final explanationText = find.textContaining('1/2 would mean only 2 parts');
+        final explanationText =
+            find.textContaining('1/2 would mean only 2 parts');
         if (explanationText.evaluate().isNotEmpty) {
           expect(explanationText, findsOneWidget);
         }
-        
+
         final continueButton = find.text('Continue');
         if (continueButton.evaluate().isNotEmpty) {
           await tester.tap(continueButton);
@@ -354,7 +359,8 @@ void main() {
       await tester.pump();
 
       // Should still be on same level for another attempt - check flexibly
-      final sameLevelQuestion = find.textContaining('square is divided into 4 equal triangles');
+      final sameLevelQuestion =
+          find.textContaining('square is divided into 4 equal triangles');
       if (sameLevelQuestion.evaluate().isNotEmpty) {
         expect(sameLevelQuestion, findsOneWidget);
       } else {
@@ -363,7 +369,8 @@ void main() {
       }
     });
 
-    testWidgets('should load saved progress when returning to journey', (tester) async {
+    testWidgets('should load saved progress when returning to journey',
+        (tester) async {
       // First, create some saved progress
       final studentState = StudentJourneyState(
         journeyId: 'geometry_foundation_journey',
@@ -411,7 +418,7 @@ void main() {
         // If specific text isn't found, check for any unlocked level indicator
         expect(find.byType(FoundationJourneyScreen), findsOneWidget);
       }
-      
+
       // L0 and L1 should be marked as completed - check for completion indicators
       final completionIndicators = find.byIcon(Icons.check_circle);
       if (completionIndicators.evaluate().isNotEmpty) {
@@ -422,20 +429,22 @@ void main() {
       }
     });
 
-    testWidgets('should validate all question content loads correctly', (tester) async {
+    testWidgets('should validate all question content loads correctly',
+        (tester) async {
       // Test that all 18 questions can be loaded
-      final questions = await ContentLoader.loadJourneyQuestions('geometry_foundation_journey');
+      final questions = await ContentLoader.loadJourneyQuestions(
+          'geometry_foundation_journey');
       expect(questions.length, equals(18));
 
       // Verify each level has 3 questions
       final journey = await engine.loadJourney('geometry_foundation_journey');
       for (final level in journey.levels) {
         expect(level.questionIds.length, equals(3));
-        
+
         // Verify each question ID exists in content
         for (final questionId in level.questionIds) {
-          expect(questions.containsKey(questionId), isTrue, 
-                 reason: 'Question $questionId not found in content');
+          expect(questions.containsKey(questionId), isTrue,
+              reason: 'Question $questionId not found in content');
         }
       }
     });

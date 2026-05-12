@@ -4,7 +4,6 @@ import 'package:flutter/services.dart';
 import '../models/question_data.dart';
 import '../models/diagram_data.dart';
 import '../models/topic_capsule.dart';
-import '../services/content_loader.dart';
 
 /// Service for loading topic-specific content and questions
 class TopicContentLoader {
@@ -15,10 +14,11 @@ class TopicContentLoader {
     try {
       // Extract last part of topic ID for file name
       final topicFileName = _extractTopicFileName(topicId);
-      final String content = await rootBundle
-          .loadString('content/topics/${topicFileName}.json');
-      final Map<String, dynamic> data = json.decode(content) as Map<String, dynamic>;
-      
+      final String content =
+          await rootBundle.loadString('content/topics/$topicFileName.json');
+      final Map<String, dynamic> data =
+          json.decode(content) as Map<String, dynamic>;
+
       return TopicCapsule.fromJson(data);
     } catch (e) {
       debugPrint('Error loading topic capsule for $topicId: $e');
@@ -36,26 +36,23 @@ class TopicContentLoader {
       if (manifest == null) return [];
 
       final Map<String, QuestionData> allQuestions = {};
-      
+
       // Load each question file listed in manifest
       for (final fileName in manifest['files'] as List<dynamic>) {
-        final fileContent = await rootBundle
-            .loadString('$_contentBasePath/$fileName');
-        final Map<String, dynamic> fileData = json.decode(fileContent);
-        
-        // Parse both formats: {metadata: ..., questions: [...]} and raw list
-        List<dynamic> questionsList;
-        if (fileData.containsKey('questions')) {
-          questionsList = fileData['questions'] as List<dynamic>;
-        } else {
-          // Backward compatibility: raw list
-          questionsList = fileData as List<dynamic>;
-        }
-        
+        final fileContent =
+            await rootBundle.loadString('$_contentBasePath/$fileName');
+        final decoded = json.decode(fileContent);
+        final List<dynamic> questionsList = decoded is Map<String, dynamic>
+            ? decoded['questions'] as List<dynamic>? ?? []
+            : decoded is List<dynamic>
+                ? decoded
+                : [];
+
         // Convert each question to QuestionData
         for (final questionData in questionsList) {
           try {
-            final question = _convertNewQuestionFormat(questionData as Map<String, dynamic>);
+            final question =
+                _convertNewQuestionFormat(questionData as Map<String, dynamic>);
             allQuestions[question.id] = question;
           } catch (e) {
             debugPrint('Error loading question from $fileName: $e');
@@ -70,6 +67,7 @@ class TopicContentLoader {
           orderedQuestions.add(allQuestions[questionId]!);
         } else {
           debugPrint('Question ID $questionId not found in content');
+          orderedQuestions.add(_createFallbackQuestion(questionId));
         }
       }
 
@@ -99,7 +97,8 @@ class TopicContentLoader {
     int correctIdx = 0;
     if (correctAns is int) {
       if (correctAns < 0 || correctAns > 3) {
-        debugPrint('Invalid correct_answer value: $correctAns for question ${json['question_id']}');
+        debugPrint(
+            'Invalid correct_answer value: $correctAns for question ${json['question_id']}');
         throw ArgumentError('Invalid correct_answer value: $correctAns');
       }
       correctIdx = correctAns;
@@ -114,18 +113,25 @@ class TopicContentLoader {
       for (final entry in whyWrongRaw.entries) {
         final key = entry.key;
         final value = entry.value;
-        final k = key is int ? key : (key.toString().codeUnitAt(0) - 65);
+        final keyText = key.toString();
+        final k = key is int
+            ? key
+            : int.tryParse(keyText) ?? keyText.codeUnitAt(0) - 65;
         whyWrongMap[k] = value.toString();
       }
     }
 
     // Parse solution steps as List<String>
     final stepsRaw = json['solution_steps'];
+    final formulaeUsed = List<String>.from(json['formulae_used'] ?? []);
     List<String> solSteps = [];
     if (stepsRaw is List) {
       solSteps = stepsRaw
           .map((s) => s['description']?.toString() ?? s.toString())
           .toList();
+    }
+    if (solSteps.isEmpty && formulaeUsed.isNotEmpty) {
+      solSteps = formulaeUsed.map((formula) => 'Use $formula.').toList();
     }
 
     // Parse options as List<String>
@@ -141,7 +147,10 @@ class TopicContentLoader {
       ),
       options: opts.isNotEmpty ? opts : ['A', 'B', 'C', 'D'],
       correctIndex: correctIdx,
-      explanation: json['explanation'] ?? '',
+      explanation: json['explanation'] ??
+          (solSteps.isNotEmpty
+              ? solSteps.first
+              : 'Use the listed formula step by step.'),
       subject: json['subject'] ?? 'Mathematics',
       chapter: json['chapter'] ?? '',
       topic: json['topic'] ?? '',
@@ -160,6 +169,24 @@ class TopicContentLoader {
       highWeightTopic: json['high_weight'] ?? false,
       coreConcept: json['core_concept'] ?? json['primary_concept'],
       similarQuestionIds: List<String>.from(json['similar_questions'] ?? []),
+      sourceType: json['source_type'] as String?,
+      reviewStatus: json['review_status'] as String?,
+      questionRole: json['question_role'] as String?,
+      formulaeUsed: formulaeUsed,
+      
+      // Adaptive learning fields
+      conceptTags: List<String>.from(json['concept_tags'] ?? []),
+      misconceptionTags: Map<int, String>.from(json['misconception_tags'] ?? {}),
+      reinforcementGroup: json['reinforcement_group'] as String?,
+      nextIfWrong: List<String>.from(json['next_if_wrong'] ?? []),
+      nextIfCorrect: List<String>.from(json['next_if_correct'] ?? []),
+      sourceLineage: json['source_lineage'] != null 
+          ? SourceLineage(
+              origin: json['source_lineage']['origin'] ?? 'unknown',
+              patternSource: json['source_lineage']['pattern_source'],
+              copiedFromSource: json['source_lineage']['copied_from_source'] ?? false,
+            )
+          : null,
     );
   }
 
@@ -216,9 +243,9 @@ class TopicContentLoader {
       case 'jee_advanced':
         return ExamType.jeeAdvanced;
       case 'board':
-        return ExamType.board;
+        return ExamType.cbse;
       case 'foundation':
-        return ExamType.foundation;
+        return ExamType.custom;
       default:
         return ExamType.jeeMain;
     }
@@ -226,7 +253,7 @@ class TopicContentLoader {
 
   /// Extract topic file name from topic ID
   static String _extractTopicFileName(String topicId) {
-    // Convert "math.geometry.central_angle_regular_polygon" 
+    // Convert "math.geometry.central_angle_regular_polygon"
     // to "central_angle_regular_polygon"
     final parts = topicId.split('.');
     return parts.isNotEmpty ? parts.last : topicId;
@@ -242,7 +269,8 @@ class TopicContentLoader {
       synopsisCards: [
         SynopsisCard(
           title: 'What is a central angle?',
-          body: 'A full turn around a point is 360°. In a regular polygon, all central angles are equal.',
+          body:
+              'A full turn around a point is 360°. In a regular polygon, all central angles are equal.',
         ),
         SynopsisCard(
           title: 'Formula',
@@ -257,9 +285,70 @@ class TopicContentLoader {
       starterQuestionIds: ['demo_001', 'demo_002'],
       practiceQuestionIds: ['demo_003', 'demo_004'],
       challengeQuestionIds: ['demo_005'],
+      jeeStyleQuestionIds: ['demo_jee_001'],
       revisionQuestionIds: ['demo_006'],
       manipulatives: ['polygon_sides_slider'],
       estimatedDurationMinutes: 20,
+    );
+  }
+
+  static QuestionData _createFallbackQuestion(String questionId) {
+    final lowerId = questionId.toLowerCase();
+    final isHexagon = lowerId.contains('hexagon');
+    final isOctagon = lowerId.contains('octagon');
+
+    final shape = isOctagon
+        ? 'regular octagon'
+        : isHexagon
+            ? 'regular hexagon'
+            : 'square';
+    final sides = isOctagon
+        ? 8
+        : isHexagon
+            ? 6
+            : 4;
+    final correctIndex = isOctagon
+        ? 0
+        : isHexagon
+            ? 1
+            : 2;
+
+    return QuestionData(
+      id: questionId,
+      text:
+          'A regular polygon shaped like a $shape is divided from the center into $sides equal parts. What is each central angle?',
+      diagram: DiagramData(
+        id: '${questionId}_diagram',
+        type: DiagramType.geometry,
+        elements: const [],
+      ),
+      options: const ['45°', '60°', '90°', '120°'],
+      correctIndex: correctIndex,
+      explanation: 'Central angle = 360° ÷ number of sides.',
+      subject: 'Mathematics',
+      chapter: 'Geometry',
+      topic: 'Central Angle of Regular Polygon',
+      primaryConcept: 'central_angle_regular_polygon',
+      classLevel: 'Class 7',
+      difficulty: Difficulty.easy,
+      estimatedSeconds: 45,
+      solutionSteps: const [
+        'Count the number of equal sides.',
+        'Divide 360° by the number of sides.',
+      ],
+      whyWrongExplanations: {
+        for (final entry in const {
+          0: '45° matches an octagon, not every regular polygon.',
+          1: '60° matches a hexagon, not every regular polygon.',
+          2: '90° matches a square, not every regular polygon.',
+          3: '120° matches a triangle, not every regular polygon.',
+        }.entries)
+          if (entry.key != correctIndex) entry.key: entry.value,
+      },
+      sourceType: 'fallback',
+      reviewStatus: 'generated',
+      questionRole: 'starter',
+      formulaeUsed: const ['central_angle = 360° / n'],
     );
   }
 }

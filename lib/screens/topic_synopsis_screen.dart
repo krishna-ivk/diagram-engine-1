@@ -137,9 +137,11 @@ class _TopicSynopsisScreenState extends State<TopicSynopsisScreen> {
           const SizedBox(height: 24),
 
           // Practice Button
-          _PracticeButtonSection(topic: topic, onStartPractice: () {
-            setState(() => _showPractice = true);
-          }),
+          _PracticeButtonSection(
+              topic: topic,
+              onStartPractice: () {
+                setState(() => _showPractice = true);
+              }),
         ],
       ),
     );
@@ -180,15 +182,22 @@ class _TopicSynopsisScreenState extends State<TopicSynopsisScreen> {
                       children: [
                         Text(
                           'Practice Time',
-                          style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall
+                              ?.copyWith(
+                                fontWeight: FontWeight.bold,
+                              ),
                         ),
                         Text(
                           'Apply what you learned',
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7),
-                          ),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.7),
+                                  ),
                         ),
                       ],
                     ),
@@ -374,7 +383,7 @@ class _SynopsisSection extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 16),
-          
+
           // Card Content
           Container(
             width: double.infinity,
@@ -408,9 +417,9 @@ class _SynopsisSection extends StatelessWidget {
               ],
             ),
           ),
-          
+
           const SizedBox(height: 16),
-          
+
           // Navigation
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -421,7 +430,9 @@ class _SynopsisSection extends StatelessWidget {
                 label: const Text('Previous'),
               ),
               TextButton.icon(
-                onPressed: currentIndex < topic.synopsisCards.length - 1 ? onNext : null,
+                onPressed: currentIndex < topic.synopsisCards.length - 1
+                    ? onNext
+                    : null,
                 icon: const Icon(Icons.arrow_forward),
                 label: const Text('Next'),
               ),
@@ -472,23 +483,23 @@ class _FormulaSection extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           ...topic.formulae.map((formula) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Container(
-              width: double.infinity,
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.secondaryContainer,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                formula,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: theme.colorScheme.onSecondaryContainer,
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.secondaryContainer,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    formula,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      fontWeight: FontWeight.w600,
+                      color: theme.colorScheme.onSecondaryContainer,
+                    ),
+                  ),
                 ),
-              ),
-            ),
-          )),
+              )),
         ],
       ),
     );
@@ -538,7 +549,7 @@ class _ManipulativesSectionState extends State<_ManipulativesSection> {
             ],
           ),
           const SizedBox(height: 16),
-          
+
           // Create a dummy question for manipulatives
           DiagramManipulatives(
             question: QuestionData(
@@ -604,40 +615,40 @@ class _CommonMistakesSection extends StatelessWidget {
           ),
           const SizedBox(height: 16),
           ...topic.commonMistakes.asMap().entries.map((entry) => Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: 24,
-                  height: 24,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.errorContainer,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Center(
-                    child: Text(
-                      '${entry.key + 1}',
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
-                        color: theme.colorScheme.onErrorContainer,
+                padding: const EdgeInsets.only(bottom: 8),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 24,
+                      height: 24,
+                      decoration: BoxDecoration(
+                        color: theme.colorScheme.errorContainer,
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Center(
+                        child: Text(
+                          '${entry.key + 1}',
+                          style: TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: theme.colorScheme.onErrorContainer,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    entry.value,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: theme.colorScheme.onErrorContainer,
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        entry.value,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: theme.colorScheme.onErrorContainer,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
-            ),
-          )),
+              )),
         ],
       ),
     );
@@ -803,8 +814,11 @@ class _QuestionTypeCard extends StatelessWidget {
   void _startQuestionSession(BuildContext context) async {
     try {
       // Load questions by their IDs
-      final questions = await TopicContentLoader.loadQuestionsByIds(questionIds);
-      
+      final questions =
+          await TopicContentLoader.loadQuestionsByIds(questionIds);
+
+      if (!context.mounted) return;
+
       if (questions.isEmpty) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('No questions available')),
@@ -813,20 +827,18 @@ class _QuestionTypeCard extends StatelessWidget {
       }
 
       // Navigate to question screen with loaded questions
-      if (context.mounted) {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => QuestionScreen(
-              questions: questions,
-              tracker: tracker,
-              premiumState: premiumState,
-              revisionManager: RevisionManager(),
-              practiceMode: PracticeMode.learner,
-            ),
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => QuestionScreen(
+            questions: questions,
+            tracker: tracker,
+            premiumState: premiumState,
+            revisionManager: RevisionManager(),
+            practiceMode: PracticeMode.learner,
           ),
-        );
-      }
+        ),
+      );
     } catch (e) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(

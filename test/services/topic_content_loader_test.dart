@@ -1,6 +1,5 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:diagram_engine/services/topic_content_loader.dart';
-import 'package:diagram_engine/services/content_loader.dart';
 import 'package:diagram_engine/models/question_data.dart';
 
 void main() {
@@ -12,18 +11,20 @@ void main() {
           'math.geometry.central_angle_regular_polygon',
         );
 
-        expect(topicCapsule.topicId, 'math.geometry.central_angle_regular_polygon');
+        expect(topicCapsule.topicId,
+            'math.geometry.central_angle_regular_polygon');
         expect(topicCapsule.title, 'Central Angle of a Regular Polygon');
         expect(topicCapsule.classLevel, 'Class 7-8');
         expect(topicCapsule.targetExamBridge, 'JEE Foundation');
         expect(topicCapsule.synopsisCards.length, 3);
         expect(topicCapsule.formulae.length, 1);
         expect(topicCapsule.commonMistakes.length, 3);
-        expect(topicCapsule.starterQuestionIds.length, 3);
-        expect(topicCapsule.practiceQuestionIds.length, 3);
-        expect(topicCapsule.challengeQuestionIds.length, 2);
+        expect(topicCapsule.starterQuestionIds.length, 5);
+        expect(topicCapsule.practiceQuestionIds.length, 7);
+        expect(topicCapsule.challengeQuestionIds.length, 3);
+        expect(topicCapsule.jeeStyleQuestionIds.length, 1);
         expect(topicCapsule.manipulatives.length, 2);
-        expect(topicCapsule.estimatedDurationMinutes, 25);
+        expect(topicCapsule.estimatedDurationMinutes, 45);
       });
 
       test('should return fallback capsule for invalid topic', () async {
@@ -40,42 +41,43 @@ void main() {
     group('loadQuestionsByIds', () {
       test('should load questions by valid IDs', () async {
         final questionIds = [
-          'class7_square_parts_001',
-          'rescue_foundation_square_center_angle_001',
-          'rescue_foundation_square_center_angle_002',
+          'fundamental_central_angle_square_001',
+          'fundamental_central_angle_triangle_002',
+          'fundamental_central_angle_hexagon_003',
         ];
 
-        final questions = await TopicContentLoader.loadQuestionsByIds(questionIds);
+        final questions =
+            await TopicContentLoader.loadQuestionsByIds(questionIds);
 
         expect(questions.length, 3);
-        
+
         // Check first question
         final firstQuestion = questions.firstWhere(
-          (q) => q.id == 'class7_square_parts_001',
+          (q) => q.id == 'fundamental_central_angle_square_001',
         );
-        expect(firstQuestion.id, 'class7_square_parts_001');
+        expect(firstQuestion.id, 'fundamental_central_angle_square_001');
         expect(firstQuestion.subject, 'Mathematics');
-        expect(firstQuestion.chapter, 'Geometry');
-        expect(firstQuestion.topic, 'Square Fractions');
-        expect(firstQuestion.primaryConcept, 'square_fractions');
+        expect(firstQuestion.topic, 'Central Angle of Regular Polygon');
+        expect(firstQuestion.primaryConcept, 'central_angle_regular_polygon');
         expect(firstQuestion.classLevel, 'Class 7');
         expect(firstQuestion.difficulty, Difficulty.easy);
         expect(firstQuestion.options.length, 4);
-        expect(firstQuestion.correctIndex, 1); // 1/4 is option B
+        expect(firstQuestion.correctIndex, 2); // 90° is option C
         expect(firstQuestion.whyWrongExplanations?.isNotEmpty, true);
       });
 
       test('should handle missing question IDs gracefully', () async {
         final questionIds = [
-          'class7_square_parts_001',
+          'fundamental_central_angle_square_001',
           'non_existent_question_id',
-          'rescue_foundation_square_center_angle_001',
+          'fundamental_central_angle_hexagon_003',
         ];
 
-        final questions = await TopicContentLoader.loadQuestionsByIds(questionIds);
+        final questions =
+            await TopicContentLoader.loadQuestionsByIds(questionIds);
 
         expect(questions.length, 3); // Should create fallback for missing
-        
+
         // Check that fallback question was created
         final fallbackQuestion = questions.firstWhere(
           (q) => q.id == 'non_existent_question_id',
@@ -91,16 +93,19 @@ void main() {
       });
 
       test('should create appropriate fallback questions', () async {
-        final squareQuestions = await TopicContentLoader.loadQuestionsByIds(['demo_square_001']);
-        final hexagonQuestions = await TopicContentLoader.loadQuestionsByIds(['demo_hexagon_001']);
-        final octagonQuestions = await TopicContentLoader.loadQuestionsByIds(['demo_octagon_001']);
+        final squareQuestions =
+            await TopicContentLoader.loadQuestionsByIds(['demo_square_001']);
+        final hexagonQuestions =
+            await TopicContentLoader.loadQuestionsByIds(['demo_hexagon_001']);
+        final octagonQuestions =
+            await TopicContentLoader.loadQuestionsByIds(['demo_octagon_001']);
 
         // Square fallback
         final squareQuestion = squareQuestions.first;
         expect(squareQuestion.text, contains('square'));
         expect(squareQuestion.correctIndex, 2); // 90°
 
-        // Hexagon fallback  
+        // Hexagon fallback
         final hexagonQuestion = hexagonQuestions.first;
         expect(hexagonQuestion.text, contains('hexagon'));
         expect(hexagonQuestion.correctIndex, 1); // 60°
@@ -123,7 +128,7 @@ void main() {
           ...topicCapsule.starterQuestionIds,
           ...topicCapsule.practiceQuestionIds,
           ...topicCapsule.challengeQuestionIds,
-          ...topicCapsule.revisionQuestionIds,
+          ...topicCapsule.jeeStyleQuestionIds,
         ];
 
         for (final questionId in allQuestionIds) {
@@ -166,7 +171,7 @@ void main() {
         );
 
         expect(topicCapsule.synopsisCards, isNotEmpty);
-        
+
         for (final card in topicCapsule.synopsisCards) {
           expect(card.title, isNotEmpty);
           expect(card.body, isNotEmpty);
@@ -193,7 +198,7 @@ void main() {
     group('Question Content Integration', () {
       test('should load questions with complete metadata', () async {
         final questions = await TopicContentLoader.loadQuestionsByIds([
-          'rescue_foundation_square_center_angle_001',
+          'fundamental_central_angle_square_001',
         ]);
 
         expect(questions.length, 1);
@@ -217,15 +222,17 @@ void main() {
         expect(question.solutionSteps, isNotEmpty);
         expect(question.whyWrongExplanations, isNotNull);
         if (question.whyWrongExplanations != null) {
-          expect(question.whyWrongExplanations!.length, greaterThan(0)); // At least one wrong explanation
-          expect(question.whyWrongExplanations!.length, lessThanOrEqualTo(4)); // Max 4 options
+          expect(question.whyWrongExplanations!.length,
+              greaterThan(0)); // At least one wrong explanation
+          expect(question.whyWrongExplanations!.length,
+              lessThanOrEqualTo(4)); // Max 4 options
         }
       });
 
       test('should maintain question-answer consistency', () async {
         final questions = await TopicContentLoader.loadQuestionsByIds([
-          'class7_square_parts_001',
-          'rescue_foundation_square_center_angle_001',
+          'fundamental_central_angle_square_001',
+          'fundamental_central_angle_triangle_002',
         ]);
 
         for (final question in questions) {

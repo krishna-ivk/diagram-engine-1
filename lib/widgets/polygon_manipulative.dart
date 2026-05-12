@@ -185,7 +185,8 @@ class _PolygonManipulativeState extends State<PolygonManipulative>
                     ),
                     _InfoChip(
                       label: 'Central Angle',
-                      value: '${centralAngle.toStringAsFixed(centralAngle == centralAngle.roundToDouble() ? 0 : 1)}°',
+                      value:
+                          '${centralAngle.toStringAsFixed(centralAngle == centralAngle.roundToDouble() ? 0 : 1)}°',
                       color: Colors.orange.shade700,
                     ),
                   ],
@@ -308,8 +309,6 @@ class _PolygonPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     final center = Offset(size.width / 2, size.height / 2);
     final radius = size.width * 0.38;
-    final effectiveSides = morphProgress >= 1.0 ? sides : _maxSides;
-
     // Interpolate vertex count for smooth morphing
     final targetVertices = _computeVertices(center, radius, sides);
     final fromVertices = _computeVertices(center, radius, previousSides);
@@ -392,7 +391,8 @@ class _PolygonPainter extends CustomPainter {
       final degrees = 360.0 / sides;
       final textPainter = TextPainter(
         text: TextSpan(
-          text: '${degrees.toStringAsFixed(degrees == degrees.roundToDouble() ? 0 : 1)}°',
+          text:
+              '${degrees.toStringAsFixed(degrees == degrees.roundToDouble() ? 0 : 1)}°',
           style: TextStyle(
             color: Colors.orange.shade800,
             fontSize: 12,
@@ -422,8 +422,6 @@ class _PolygonPainter extends CustomPainter {
       canvas.drawCircle(vertex, 3.5, vertexDot);
     }
   }
-
-  int get _maxSides => math.max(sides, previousSides);
 
   List<Offset> _computeVertices(Offset center, double radius, int n) {
     final vertices = <Offset>[];

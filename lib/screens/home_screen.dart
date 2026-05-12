@@ -9,7 +9,6 @@ import '../models/premium_state.dart';
 import '../models/question_data.dart';
 import '../models/revision_manager.dart';
 import '../widgets/premium_gate.dart';
-import 'foundation_journey_screen.dart';
 import 'question_screen.dart';
 import 'topic_synopsis_screen.dart';
 import 'topic_revision_screen.dart';
@@ -55,19 +54,6 @@ class _HomeScreenState extends State<HomeScreen> {
           premiumState: _premiumState,
           revisionManager: _revisionManager,
           practiceMode: _selectedMode,
-        ),
-      ),
-    );
-  }
-
-  void _startFoundationJourney() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (_) => FoundationJourneyScreen(
-          journeyId: 'geometry_foundation_journey', // Load from content
-          tracker: _tracker,
-          premiumState: _premiumState,
         ),
       ),
     );
@@ -911,13 +897,15 @@ class _TopicCapsuleHero extends StatelessWidget {
                       ),
                     );
                   },
-                  icon: Icon(Icons.info_outline, color: theme.colorScheme.primary),
+                  icon: Icon(Icons.info_outline,
+                      color: theme.colorScheme.primary),
                   label: Text(
                     'Learn More',
                     style: TextStyle(color: theme.colorScheme.primary),
                   ),
                   style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: theme.colorScheme.primary.withOpacity(0.3)),
+                    side: BorderSide(
+                        color: theme.colorScheme.primary.withOpacity(0.3)),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                 ),

@@ -4,7 +4,13 @@ enum Difficulty { easy, medium, hard }
 
 enum ExamType { jeeMain, jeeAdvanced, neet, cbse, olympiad, custom }
 
-enum QuestionType { mcq, integer, multipleCorrect, assertionReason, comprehension }
+enum QuestionType {
+  mcq,
+  integer,
+  multipleCorrect,
+  assertionReason,
+  comprehension
+}
 
 enum MistakeType {
   formulaRecall,
@@ -71,6 +77,10 @@ class QuestionData {
   final bool highWeightTopic;
   final int? yearAsked;
   final String? source;
+  final String? sourceType;
+  final String? reviewStatus;
+  final String? questionRole;
+  final List<String> formulaeUsed;
 
   // Content management
   final List<String> tags;
@@ -80,6 +90,14 @@ class QuestionData {
 
   // Cross-references
   final List<String> similarQuestionIds;
+
+  // Adaptive learning fields
+  final List<String> conceptTags;
+  final Map<int, String> misconceptionTags;
+  final String? reinforcementGroup;
+  final List<String> nextIfWrong;
+  final List<String> nextIfCorrect;
+  final SourceLineage? sourceLineage;
 
   // Backward compatibility - coreConcept maps to primaryConcept
   // This allows old question data to work with new schema
@@ -129,6 +147,10 @@ class QuestionData {
     this.highWeightTopic = false,
     this.yearAsked,
     this.source,
+    this.sourceType,
+    this.reviewStatus,
+    this.questionRole,
+    this.formulaeUsed = const [],
 
     // Content management
     this.tags = const [],
@@ -138,6 +160,26 @@ class QuestionData {
 
     // Cross-references
     this.similarQuestionIds = const [],
+
+    // Adaptive learning fields
+    this.conceptTags = const [],
+    this.misconceptionTags = const {},
+    this.reinforcementGroup,
+    this.nextIfWrong = const [],
+    this.nextIfCorrect = const [],
+    this.sourceLineage,
+  });
+}
+
+class SourceLineage {
+  final String origin; // original_authored, original_recreated
+  final String? patternSource;
+  final bool copiedFromSource;
+
+  const SourceLineage({
+    required this.origin,
+    this.patternSource,
+    required this.copiedFromSource,
   });
 }
 

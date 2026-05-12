@@ -31,11 +31,26 @@
         "1": "60° is the central angle of a hexagon (6 sides).",
         "3": "120° is the central angle of a triangle (3 sides)."
       },
-      "difficulty": "easy",
+      "difficulty": "starter",
       "estimated_time_seconds": 45,
       "diagram_required": true,
       "manipulative": "polygon_sides_slider",
-      "review_status": "draft"
+      "review_status": "draft",
+      
+      "concept_tags": ["central_angle", "full_turn", "division", "square"],
+      "misconception_tags": {
+        "0": "confuses_with_octagon",
+        "1": "confuses_with_hexagon", 
+        "3": "confuses_with_triangle"
+      },
+      "reinforcement_group": "central_angle_basic",
+      "next_if_wrong": ["practice_central_angle_full_turn_repair_001"],
+      "next_if_correct": ["practice_central_angle_inverse_002"],
+      "source_lineage": {
+        "origin": "original_recreated",
+        "pattern_source": "regular_polygon_central_angle",
+        "copied_from_source": false
+      }
     },
     {
       "question_id": "fundamental_central_angle_triangle_002",

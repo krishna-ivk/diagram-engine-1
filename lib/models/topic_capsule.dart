@@ -1,5 +1,3 @@
-
-
 enum TopicMasteryLevel {
   notStarted,
   beginner,
@@ -19,6 +17,7 @@ class TopicCapsule {
   final List<String> starterQuestionIds;
   final List<String> practiceQuestionIds;
   final List<String> challengeQuestionIds;
+  final List<String> jeeStyleQuestionIds;
   final List<String> revisionQuestionIds;
   final List<String> manipulatives;
   final int estimatedDurationMinutes;
@@ -34,6 +33,7 @@ class TopicCapsule {
     required this.starterQuestionIds,
     required this.practiceQuestionIds,
     required this.challengeQuestionIds,
+    this.jeeStyleQuestionIds = const [],
     required this.revisionQuestionIds,
     required this.manipulatives,
     required this.estimatedDurationMinutes,
@@ -48,9 +48,8 @@ class TopicCapsule {
       synopsisCards: (json['synopsis_cards'] as List<dynamic>)
           .map((e) => SynopsisCard.fromJson(e as Map<String, dynamic>))
           .toList(),
-      formulae: (json['formulae'] as List<dynamic>)
-          .map((e) => e.toString())
-          .toList(),
+      formulae:
+          (json['formulae'] as List<dynamic>).map((e) => e.toString()).toList(),
       commonMistakes: (json['common_mistakes'] as List<dynamic>)
           .map((e) => e.toString())
           .toList(),
@@ -63,12 +62,17 @@ class TopicCapsule {
       challengeQuestionIds: (json['challenge_question_ids'] as List<dynamic>)
           .map((e) => e.toString())
           .toList(),
+      jeeStyleQuestionIds: (json['jee_style_question_ids'] as List<dynamic>?)
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
       revisionQuestionIds: (json['revision_question_ids'] as List<dynamic>)
           .map((e) => e.toString())
           .toList(),
       manipulatives: (json['manipulatives'] as List<dynamic>?)
-          ?.map((e) => e.toString())
-          .toList() ?? [],
+              ?.map((e) => e.toString())
+              .toList() ??
+          [],
       estimatedDurationMinutes: json['estimated_duration_minutes'] as int,
     );
   }
