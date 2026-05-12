@@ -4,6 +4,7 @@ import 'package:diagram_engine/services/content_loader.dart';
 import 'package:diagram_engine/models/question_data.dart';
 
 void main() {
+  TestWidgetsFlutterBinding.ensureInitialized();
   group('TopicContentLoader Tests', () {
     group('loadTopicCapsule', () {
       test('should load topic capsule successfully', () async {
