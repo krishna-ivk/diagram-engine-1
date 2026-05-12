@@ -40,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _startPractice() {
     if (_selectedMode == PracticeMode.foundationJourney) {
-      _startFoundationJourney();
+      _startTopicCapsule();
       return;
     }
 
@@ -423,16 +423,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 12),
 
-                // Practice Mode Selector (Foundation Journey prioritized)
+                // Practice Mode Selector (Topic Capsule prioritized)
                 Column(
                   children: [
-                    // Primary: Foundation Journey
+                    // Primary: Topic Capsule
                     _ModeChip(
-                      label: 'Foundation Journey',
-                      icon: Icons.route,
+                      label: 'Topic Capsule',
+                      icon: Icons.auto_stories,
                       isSelected:
                           _selectedMode == PracticeMode.foundationJourney,
-                      color: Colors.green,
+                      color: Colors.blue,
                       onTap: () => setState(
                           () => _selectedMode = PracticeMode.foundationJourney),
                       isFullWidth: true,
@@ -495,7 +495,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           icon: const Icon(Icons.play_arrow),
                           label: Text(
                             _selectedMode == PracticeMode.foundationJourney
-                                ? 'Start Foundation Journey'
+                                ? 'Start Topic Capsule'
                                 : 'Practice with Interactive Diagrams (${mockQuestions.length + algebricaQuestions.length})',
                             style: const TextStyle(fontSize: 15),
                           ),

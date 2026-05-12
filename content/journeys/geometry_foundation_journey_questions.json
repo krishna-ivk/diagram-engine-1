@@ -271,7 +271,7 @@
       "expected_time_seconds": 60,
       "question_text": "A square is divided into 4 equal triangles by its diagonals. If the area of one triangle is 9 cm², what is the perimeter of the square?",
       "options": ["12 cm", "18 cm", "24 cm", "36 cm"],
-      "correct_answer": 0,
+      "correct_answer": 2,
       "explanation": "Area of square = 4 × 9 = 36 cm². Side = √36 = 6 cm. Perimeter = 4 × 6 = 24 cm.",
       "solution_steps": [
         {
@@ -291,8 +291,8 @@
         }
       ],
       "why_wrong_explanations": {
+        "0": "12 cm would be 2 × side length, not the full perimeter.",
         "1": "18 cm would be 3 × side length, not the perimeter.",
-        "2": "24 cm is the correct perimeter, not 36 cm.",
         "3": "36 cm is the area, not the perimeter."
       },
       "diagram_id": "diag_square_area_003"
