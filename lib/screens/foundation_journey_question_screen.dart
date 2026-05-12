@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../models/diagram_data.dart';
@@ -10,6 +11,7 @@ import '../models/practice_mode.dart';
 import '../models/question_attempt.dart';
 import '../models/question_data.dart';
 import '../services/content_loader.dart';
+import '../services/journey_persistence.dart';
 import '../widgets/polygon_manipulative.dart';
 
 class FoundationJourneyQuestionScreen extends StatefulWidget {
@@ -48,11 +50,20 @@ class _FoundationJourneyQuestionScreenState
   final List<QuestionAttempt> _attempts = [];
   Map<String, QuestionData> _contentQuestions = {};
   bool _isLoadingQuestions = true;
+  String? _contentError;
+  final Stopwatch _questionTimer = Stopwatch();
+  final JourneyPersistence _persistence = JourneyPersistence();
 
   @override
   void initState() {
     super.initState();
     _loadContentQuestions();
+  }
+
+  @override
+  void dispose() {
+    _questionTimer.stop();
+    super.dispose();
   }
 
   Future<void> _loadContentQuestions() async {
@@ -66,14 +77,22 @@ class _FoundationJourneyQuestionScreenState
   }
 
   void _loadCurrentQuestion() {
-    _currentQuestion = _getQuestionForLevel(widget.level);
-    _selectedConfidence = ConfidenceLevel.somewhatSure;
-    _showConfidenceSelector = false;
-    _pendingSelectedIndex = null;
+    try {
+      _currentQuestion = _getQuestionForLevel(widget.level);
+      _selectedConfidence = ConfidenceLevel.somewhatSure;
+      _showConfidenceSelector = false;
+      _pendingSelectedIndex = null;
+      _questionTimer.reset();
+      _questionTimer.start();
+      _contentError = null;
+    } catch (e) {
+      setState(() {
+        _contentError = e.toString();
+      });
+    }
   }
 
-  QuestionData _getQuestionForLevel(JourneyLevel level) {
-    // Load question from content by question ID
+QuestionData _getQuestionForLevel(JourneyLevel level) {
     for (final qId in level.questionIds) {
       final question = _contentQuestions[qId];
       if (question != null) {
@@ -81,11 +100,16 @@ class _FoundationJourneyQuestionScreenState
       }
     }
 
-    // Fallback: create a placeholder question if content not found
     final questionId = level.questionIds.isNotEmpty
         ? level.questionIds.first
         : 'foundation_journey_${level.level}';
-    return _fallbackQuestion(questionId, level);
+
+    if (kDebugMode) {
+      return _fallbackQuestion(questionId, level);
+    } else {
+      debugPrint('Content missing for journey question: $questionId');
+      return _errorQuestion(questionId, level);
+    }
   }
 
   QuestionData _fallbackQuestion(String id, JourneyLevel level) {
@@ -112,6 +136,39 @@ class _FoundationJourneyQuestionScreenState
     );
   }
 
+  QuestionData _errorQuestion(String id, JourneyLevel level) {
+    return QuestionData(
+      id: id,
+      text:
+          'Error: Content not found for "${level.title}"',
+      diagram: DiagramData(
+        id: '${id}_diagram',
+        type: DiagramType.geometry,
+        title: level.title,
+        elements: const [],
+      ),
+      options: const ['N/A', 'N/A', 'N/A', 'N/A'],
+      correctIndex: 0,
+      explanation:
+          'This question content is missing. Please report this to the development team.',
+      subject: 'Mathematics',
+      chapter: widget.journey.chapter,
+      topic: 'Geometry',
+      primaryConcept: level.level,
+      coreConcept: level.level,
+      difficulty: Difficulty.medium,
+      estimatedSeconds: level.expectedTimeSeconds ?? 60,
+    );
+  }
+    }
+
+    // Content not found - throw error instead of showing placeholder
+    final missingIds = level.questionIds.where((id) => !_contentQuestions.containsKey(id)).toList();
+    throw Exception('Content not found for question(s): $missingIds. Please check content files.');
+  }
+
+  
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -123,7 +180,46 @@ class _FoundationJourneyQuestionScreenState
           backgroundColor: theme.colorScheme.surface,
           elevation: 0,
         ),
-        body: const Center(child: CircularProgressIndicator()),
+        body: _contentError != null
+            ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 64,
+                        color: theme.colorScheme.error,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Content Loading Error',
+                        style: theme.textTheme.headlineSmall,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        _contentError!,
+                        style: theme.textTheme.bodyMedium,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _contentError = null;
+                            _isLoadingQuestions = true;
+                          });
+                          _loadContentQuestions();
+                        },
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : const Center(child: CircularProgressIndicator()),
       );
     }
 
@@ -196,14 +292,16 @@ class _FoundationJourneyQuestionScreenState
 
   Future<void> _processAnswer(int selectedIndex) async {
     setState(() => _isProcessingAnswer = true);
+    _questionTimer.stop();
 
     final question = _currentQuestion!;
     final isCorrect = selectedIndex == question.correctIndex;
+    final actualTimeSpent = _questionTimer.elapsed.inSeconds;
     final attempt = QuestionAttempt(
       questionId: question.id,
       isCorrect: isCorrect,
       confidenceLevel: _selectedConfidence,
-      timeSpentSeconds: widget.level.expectedTimeSeconds ?? 60,
+      timeSpentSeconds: actualTimeSpent > 0 ? actualTimeSpent : (widget.level.expectedTimeSeconds ?? 60),
       timestamp: DateTime.now(),
       levelIndex: widget.levelIndex,
     );
@@ -216,6 +314,9 @@ class _FoundationJourneyQuestionScreenState
       journey: widget.journey,
     );
     widget.engine.updateStudentState(widget.studentState, attempt, nextStep);
+    
+    // Save journey progress locally
+    await _persistence.saveJourneyState(widget.studentState);
 
     if (!mounted) return;
     await _showResultDialog(isCorrect, nextStep);

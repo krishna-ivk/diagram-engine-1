@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'concept_mastery.dart';
 
 /// Analytics-focused attempt model used by PerformanceTracker.
@@ -61,11 +63,94 @@ class TopicPerformance {
 
 class PerformanceTracker {
   final List<QuestionAttempt> _attempts = [];
+  static const String _attemptsKey = 'journey_attempts';
 
   List<QuestionAttempt> get attempts => List.unmodifiable(_attempts);
 
   void recordAttempt(QuestionAttempt attempt) {
     _attempts.add(attempt);
+    _saveAttempts();
+  }
+
+  /// Save attempts to local storage
+  Future<void> _saveAttempts() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final attemptsJson = _attempts.map((attempt) => _attemptToJson(attempt)).toList();
+      await prefs.setString(_attemptsKey, json.encode(attemptsJson));
+    } catch (e) {
+      // Silently fail for now - in production, log this error
+      print('Error saving attempts: $e');
+    }
+  }
+
+  /// Load attempts from local storage
+  Future<void> loadAttempts() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final attemptsJson = prefs.getString(_attemptsKey);
+      if (attemptsJson != null) {
+        final List<dynamic> attemptsList = json.decode(attemptsJson);
+        _attempts.clear();
+        _attempts.addAll(attemptsList.map((json) => _attemptFromJson(json)));
+      }
+    } catch (e) {
+      // Silently fail for now - in production, log this error
+      print('Error loading attempts: $e');
+    }
+  }
+
+  /// Clear all attempts from local storage
+  Future<void> clearAttempts() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(_attemptsKey);
+      _attempts.clear();
+    } catch (e) {
+      print('Error clearing attempts: $e');
+    }
+  }
+
+  /// Convert QuestionAttempt to JSON for storage
+  Map<String, dynamic> _attemptToJson(QuestionAttempt attempt) {
+    return {
+      'questionId': attempt.questionId,
+      'topic': attempt.topic,
+      'coreConcept': attempt.coreConcept,
+      'primaryConcept': attempt.primaryConcept,
+      'subject': attempt.subject,
+      'chapter': attempt.chapter,
+      'correct': attempt.correct,
+      'timeSeconds': attempt.timeSeconds,
+      'tapCount': attempt.tapCount,
+      'hintsUsed': attempt.hintsUsed,
+      'expectedTimeSeconds': attempt.expectedTimeSeconds,
+      'timestamp': attempt.timestamp.millisecondsSinceEpoch,
+      'isRevision': attempt.isRevision,
+      'confidenceLevel': attempt.confidenceLevel,
+      'mistakeType': attempt.mistakeType,
+    };
+  }
+
+  /// Convert JSON to QuestionAttempt for loading
+  QuestionAttempt _attemptFromJson(Map<String, dynamic> json) {
+    return QuestionAttempt(
+      questionId: json['questionId'],
+      topic: json['topic'],
+      coreConcept: json['coreConcept'],
+      primaryConcept: json['primaryConcept'],
+      subject: json['subject'],
+      chapter: json['chapter'],
+      correct: json['correct'],
+      timeSeconds: json['timeSeconds'],
+      tapCount: json['tapCount'],
+      hintsUsed: json['hintsUsed'],
+      expectedTimeSeconds: json['expectedTimeSeconds'],
+      timestamp: DateTime.fromMillisecondsSinceEpoch(json['timestamp']),
+      isRevision: json['isRevision'] ?? false,
+      confidenceLevel: json['confidenceLevel'] ?? 2,
+      mistakeType: json['mistakeType'],
+    );
   }
 
   Map<String, TopicPerformance> getTopicPerformance() {

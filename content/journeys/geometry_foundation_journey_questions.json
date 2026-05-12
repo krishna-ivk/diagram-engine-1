@@ -1,0 +1,651 @@
+{
+  "journey_id": "geometry_foundation_journey",
+  "description": "Questions for the Geometry Foundation Journey progression",
+  "questions": {
+    "class7_square_parts_001": {
+      "question_id": "class7_square_parts_001",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Square Fractions",
+      "primary_concept": "square_fractions",
+      "class_level": "Class 7",
+      "difficulty": "easy",
+      "expected_time_seconds": 60,
+      "question_text": "A square is divided into 4 equal triangles by drawing lines from the center. What fraction of the square is each triangle?",
+      "options": ["1/2", "1/4", "1/3", "1/8"],
+      "correct_answer": 1,
+      "explanation": "A square divided into 4 equal parts means each part is 1/4 of the whole.",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "Draw diagonals from center to each corner of the square"
+        },
+        {
+          "step_number": 2,
+          "description": "Count the number of equal triangles formed: 4"
+        },
+        {
+          "step_number": 3,
+          "description": "Each triangle is 1 out of 4 equal parts = 1/4",
+          "calculation": "Fraction = 1/4"
+        }
+      ],
+      "why_wrong_explanations": {
+        "0": "1/2 would mean only 2 parts, but drawing from center to all corners creates 4 equal triangles.",
+        "2": "1/3 would mean 3 parts, but a square divides into 4 triangles from the center.",
+        "3": "1/8 is too small. Drawing from center to corners creates exactly 4 equal triangles, not 8."
+      },
+      "diagram_id": "diag_square_parts_001"
+    },
+    "rescue_foundation_square_center_angle_001": {
+      "question_id": "rescue_foundation_square_center_angle_001",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Square Central Angle",
+      "primary_concept": "square_center_angle",
+      "prerequisites": ["circle_angle_360"],
+      "class_level": "Class 7-8",
+      "difficulty": "easy",
+      "expected_time_seconds": 60,
+      "question_text": "A square is divided from its center into 4 equal triangles. What is the measure of each central angle?",
+      "options": ["45°", "90°", "180°", "360°"],
+      "correct_answer": 1,
+      "explanation": "A full circle is 360°. Dividing by 4 equal parts gives 90°.",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "A full circle around a point measures 360°",
+          "calculation": "Total angle = 360°"
+        },
+        {
+          "step_number": 2,
+          "description": "A square divides the circle into 4 equal central angles",
+          "calculation": "Number of parts = 4"
+        },
+        {
+          "step_number": 3,
+          "description": "Each central angle = Total angle ÷ Number of parts",
+          "calculation": "360° ÷ 4 = 90°"
+        }
+      ],
+      "why_wrong_explanations": {
+        "0": "45° would be for an octagon, not a square. A square has 4 equal parts.",
+        "2": "180° is a straight angle, not the central angle of a square.",
+        "3": "360° is the total angle around a point, not each individual central angle."
+      },
+      "diagram_id": "diag_square_center_angle_001"
+    },
+    "rescue_bridge_hexagon_center_angle_001": {
+      "question_id": "rescue_bridge_hexagon_center_angle_001",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Hexagon Central Angle",
+      "primary_concept": "hexagon_center_angle",
+      "prerequisites": ["square_center_angle", "circle_angle_360"],
+      "class_level": "Class 8-9",
+      "difficulty": "medium",
+      "expected_time_seconds": 90,
+      "question_text": "A regular hexagon has a side length of 6 cm. Find the area of one of the central triangles formed by drawing lines from the center to the vertices.",
+      "options": ["6√3 cm²", "9√3 cm²", "12√3 cm²", "18√3 cm²"],
+      "correct_answer": 1,
+      "explanation": "Central angle of hexagon = 360° ÷ 6 = 60°. Area = (1/2) × 6² × sin(60°) = 9√3 cm².",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "Central angle of regular hexagon = 360° ÷ 6",
+          "calculation": "Central angle = 60°"
+        },
+        {
+          "step_number": 2,
+          "description": "Each central triangle is isosceles with vertex angle 60°",
+          "calculation": "Triangle type: isosceles with vertex angle 60°"
+        },
+        {
+          "step_number": 3,
+          "description": "Area of triangle = (1/2) × r² × sin(vertex angle)",
+          "calculation": "Area = (1/2) × 6² × sin(60°) = 18 × (√3/2) = 9√3 cm²"
+        }
+      ],
+      "why_wrong_explanations": {
+        "0": "You may have used the wrong formula or incorrect trigonometric value.",
+        "2": "Check your calculation of the area formula for the triangle.",
+        "3": "This would be the area if the triangle was equilateral with side 6, but we need the central triangle."
+      },
+      "diagram_id": "diag_hexagon_center_angle_001"
+    },
+    "rescue_intermediate_octagon_center_angle_001": {
+      "question_id": "rescue_intermediate_octagon_center_angle_001",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Octagon Central Angle",
+      "primary_concept": "octagon_center_angle",
+      "prerequisites": ["hexagon_center_angle", "square_center_angle"],
+      "class_level": "Class 9-10",
+      "difficulty": "medium",
+      "expected_time_seconds": 120,
+      "question_text": "A regular octagon is inscribed in a circle of radius 10 cm. What is the measure of each central angle, and what is the side length of the octagon? (Use cos 45° = √2/2)",
+      "options": ["45°, 10√(2−√2) cm", "45°, 10√2 cm", "60°, 10 cm", "30°, 5√2 cm"],
+      "correct_answer": 0,
+      "explanation": "Central angle = 360° ÷ 8 = 45°. Using cosine law: side = r√(2 − 2cos45°) = 10√(2 − √2) cm.",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "Central angle of regular octagon = 360° ÷ 8",
+          "calculation": "Central angle = 45°"
+        },
+        {
+          "step_number": 2,
+          "description": "Use cosine law: side² = r² + r² - 2r²cos(central angle)",
+          "calculation": "side² = 100 + 100 - 200cos(45°) = 200 - 200(√2/2) = 200 - 100√2"
+        },
+        {
+          "step_number": 3,
+          "description": "Simplify: side = √(200 - 100√2) = 10√(2 - √2)",
+          "calculation": "side = 10√(2 − √2) cm"
+        }
+      ],
+      "why_wrong_explanations": {
+        "1": "10√2 is not correct — you need to apply the cosine law with the central angle of 45°.",
+        "2": "60° is the central angle for a hexagon, not an octagon. An octagon has 8 sides.",
+        "3": "30° would be for a 12-sided polygon. And the side length calculation is different."
+      },
+      "diagram_id": "diag_octagon_center_angle_001"
+    },
+    "pre_jee_octagon_area_001": {
+      "question_id": "pre_jee_octagon_area_001",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Octagon Area",
+      "primary_concept": "octagon_area_subtraction",
+      "prerequisites": ["octagon_center_angle", "area_calculation"],
+      "class_level": "Class 10-11",
+      "difficulty": "hard",
+      "expected_time_seconds": 180,
+      "question_text": "A regular octagon ABCDEFGH is inscribed in a circle of radius r. Express the area of the octagon in terms of r.",
+      "options": ["2r²√2", "2√2 r²", "r²(1 + √2)", "4r²sin(45°)"],
+      "correct_answer": 1,
+      "explanation": "Area of regular octagon = 8 × (1/2) × r² × sin(45°) = 4r²sin(45°) = 4r²(√2/2) = 2√2 r².",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "A regular octagon inscribed in a circle can be divided into 8 identical triangles from the center"
+        },
+        {
+          "step_number": 2,
+          "description": "Each triangle has two sides equal to radius r and vertex angle = 360°/8 = 45°"
+        },
+        {
+          "step_number": 3,
+          "description": "Area of each triangle = (1/2) × r × r × sin(45°) = (r²/2)(√2/2) = r²√2/4"
+        },
+        {
+          "step_number": 4,
+          "description": "Total area = 8 × r²√2/4 = 2r²√2 = 2√2 r²",
+          "calculation": "Area = 2√2 r²"
+        }
+      ],
+      "why_wrong_explanations": {
+        "0": "2r²√2 and 2√2 r² are the same expression. Check the option carefully.",
+        "2": "r²(1 + √2) is a different formula. The octagon area uses sin(45°), not (1 + √2).",
+        "3": "4r²sin(45°) = 4r²(√2/2) = 2√2 r², which is the same as option B."
+      },
+      "diagram_id": "diag_octagon_area_001"
+    },
+    "jee_math_regular_polygon_001": {
+      "question_id": "jee_math_regular_polygon_001",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Regular Polygon Properties",
+      "primary_concept": "regular_polygon_diagonal",
+      "prerequisites": ["octagon_area_subtraction", "cosine_law"],
+      "class_level": "Class 11-12",
+      "difficulty": "hard",
+      "expected_time_seconds": 240,
+      "question_text": "The interior angle of a regular polygon is 150°. How many diagonals does the polygon have?",
+      "options": ["27", "35", "54", "90"],
+      "correct_answer": 2,
+      "explanation": "Interior angle = (n-2)×180/n = 150 → n = 12. Diagonals = n(n-3)/2 = 12×9/2 = 54.",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "Use the interior angle formula: (n-2) × 180° / n = 150°",
+          "calculation": "(n-2) × 180 = 150n → 180n - 360 = 150n → 30n = 360 → n = 12"
+        },
+        {
+          "step_number": 2,
+          "description": "The polygon has 12 sides (dodecagon)"
+        },
+        {
+          "step_number": 3,
+          "description": "Number of diagonals = n(n-3)/2",
+          "calculation": "12 × (12-3) / 2 = 12 × 9 / 2 = 54"
+        }
+      ],
+      "why_wrong_explanations": {
+        "0": "27 = 54/2. You may have divided by 2 an extra time.",
+        "1": "35 would be for a 10-sided polygon. Check your calculation of n from the interior angle.",
+        "3": "90 would be the number of diagonals for a 15-sided polygon."
+      },
+      "diagram_id": "diag_regular_polygon_001"
+    },
+    "class7_square_parts_002": {
+      "question_id": "class7_square_parts_002",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Square Diagonals",
+      "primary_concept": "square_diagonals",
+      "class_level": "Class 7",
+      "difficulty": "easy",
+      "expected_time_seconds": 60,
+      "question_text": "A square has side length 4 cm. What is the total length of both diagonals?",
+      "options": ["8 cm", "8√2 cm", "16 cm", "16√2 cm"],
+      "correct_answer": 1,
+      "explanation": "Each diagonal = side × √2 = 4√2 cm. Two diagonals = 2 × 4√2 = 8√2 cm.",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "Diagonal of square = side × √2",
+          "calculation": "Diagonal = 4 × √2 = 4√2 cm"
+        },
+        {
+          "step_number": 2,
+          "description": "Total length of two diagonals = 2 × diagonal",
+          "calculation": "Total = 2 × 4√2 = 8√2 cm"
+        }
+      ],
+      "why_wrong_explanations": {
+        "0": "8 cm is just 2 × side length, not the diagonal length.",
+        "2": "16 cm would be 4 × side length, which is incorrect.",
+        "3": "16√2 cm is 4 times too large. Check your multiplication."
+      },
+      "diagram_id": "diag_square_diagonals_002"
+    },
+    "class7_square_parts_003": {
+      "question_id": "class7_square_parts_003",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Square Area",
+      "primary_concept": "square_area",
+      "class_level": "Class 7",
+      "difficulty": "easy",
+      "expected_time_seconds": 60,
+      "question_text": "A square is divided into 4 equal triangles by its diagonals. If the area of one triangle is 9 cm², what is the perimeter of the square?",
+      "options": ["12 cm", "18 cm", "24 cm", "36 cm"],
+      "correct_answer": 0,
+      "explanation": "Area of square = 4 × 9 = 36 cm². Side = √36 = 6 cm. Perimeter = 4 × 6 = 24 cm.",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "Total area of square = 4 × area of one triangle",
+          "calculation": "Area = 4 × 9 = 36 cm²"
+        },
+        {
+          "step_number": 2,
+          "description": "Side length = √area",
+          "calculation": "Side = √36 = 6 cm"
+        },
+        {
+          "step_number": 3,
+          "description": "Perimeter = 4 × side",
+          "calculation": "Perimeter = 4 × 6 = 24 cm"
+        }
+      ],
+      "why_wrong_explanations": {
+        "1": "18 cm would be 3 × side length, not the perimeter.",
+        "2": "24 cm is the correct perimeter, not 36 cm.",
+        "3": "36 cm is the area, not the perimeter."
+      },
+      "diagram_id": "diag_square_area_003"
+    },
+    "rescue_foundation_square_center_angle_002": {
+      "question_id": "rescue_foundation_square_center_angle_002",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Central Angle Properties",
+      "primary_concept": "central_angle_properties",
+      "prerequisites": ["circle_angle_360"],
+      "class_level": "Class 7-8",
+      "difficulty": "easy",
+      "expected_time_seconds": 60,
+      "question_text": "In a regular polygon, each central angle is 72°. How many sides does the polygon have?",
+      "options": ["3", "4", "5", "6"],
+      "correct_answer": 2,
+      "explanation": "Central angle = 360° ÷ number of sides. So 72° = 360° ÷ n → n = 360° ÷ 72° = 5.",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "Central angle formula: 360° ÷ number of sides",
+          "calculation": "72° = 360° ÷ n"
+        },
+        {
+          "step_number": 2,
+          "description": "Solve for number of sides",
+          "calculation": "n = 360° ÷ 72° = 5"
+        }
+      ],
+      "why_wrong_explanations": {
+        "0": "3 sides would give 120° central angle, not 72°.",
+        "1": "4 sides would give 90° central angle, not 72°.",
+        "3": "6 sides would give 60° central angle, not 72°."
+      },
+      "diagram_id": "diag_central_angle_properties_002"
+    },
+    "rescue_foundation_square_center_angle_003": {
+      "question_id": "rescue_foundation_square_center_angle_003",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Regular Polygon Sum",
+      "primary_concept": "regular_polygon_sum",
+      "prerequisites": ["central_angle_properties"],
+      "class_level": "Class 7-8",
+      "difficulty": "easy",
+      "expected_time_seconds": 60,
+      "question_text": "What is the sum of all central angles in any regular polygon?",
+      "options": ["180°", "270°", "360°", "540°"],
+      "correct_answer": 2,
+      "explanation": "The sum of all central angles around any point is always 360°, regardless of the number of sides.",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "Central angles are formed around the center point",
+          "calculation": "All angles around a point sum to 360°"
+        }
+      ],
+      "why_wrong_explanations": {
+        "0": "180° is a straight angle, not the full circle.",
+        "1": "270° is 3/4 of a full circle, not complete.",
+        "3": "540° is more than a full circle around a point."
+      },
+      "diagram_id": "diag_regular_polygon_sum_003"
+    },
+    "rescue_bridge_hexagon_center_angle_002": {
+      "question_id": "rescue_bridge_hexagon_center_angle_002",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Hexagon Area",
+      "primary_concept": "hexagon_area",
+      "prerequisites": ["hexagon_center_angle", "area_calculation"],
+      "class_level": "Class 8-9",
+      "difficulty": "medium",
+      "expected_time_seconds": 90,
+      "question_text": "A regular hexagon has side length 4 cm. What is its area?",
+      "options": ["16√3 cm²", "24√3 cm²", "32√3 cm²", "48√3 cm²"],
+      "correct_answer": 1,
+      "explanation": "Area of regular hexagon = (3√3/2) × side² = (3√3/2) × 16 = 24√3 cm².",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "Area formula for regular hexagon: (3√3/2) × side²",
+          "calculation": "Area = (3√3/2) × 4² = (3√3/2) × 16"
+        },
+        {
+          "step_number": 2,
+          "description": "Simplify the calculation",
+          "calculation": "Area = 24√3 cm²"
+        }
+      ],
+      "why_wrong_explanations": {
+        "0": "16√3 cm² would be if side² was multiplied by √3, missing the 3/2 factor.",
+        "2": "32√3 cm² is too large. Check your formula.",
+        "3": "48√3 cm² is double the correct answer."
+      },
+      "diagram_id": "diag_hexagon_area_002"
+    },
+    "rescue_bridge_hexagon_center_angle_003": {
+      "question_id": "rescue_bridge_hexagon_center_angle_003",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Hexagon Perimeter",
+      "primary_concept": "hexagon_perimeter",
+      "prerequisites": ["hexagon_center_angle"],
+      "class_level": "Class 8-9",
+      "difficulty": "medium",
+      "expected_time_seconds": 60,
+      "question_text": "A regular hexagon is inscribed in a circle of radius 6 cm. What is its perimeter?",
+      "options": ["24 cm", "30 cm", "36 cm", "42 cm"],
+      "correct_answer": 2,
+      "explanation": "In a regular hexagon inscribed in a circle, side length = radius = 6 cm. Perimeter = 6 × 6 = 36 cm.",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "For regular hexagon inscribed in circle: side = radius",
+          "calculation": "Side = 6 cm"
+        },
+        {
+          "step_number": 2,
+          "description": "Perimeter = number of sides × side length",
+          "calculation": "Perimeter = 6 × 6 = 36 cm"
+        }
+      ],
+      "why_wrong_explanations": {
+        "0": "24 cm would be if side was 4 cm, not 6 cm.",
+        "1": "30 cm would be if side was 5 cm, not 6 cm.",
+        "3": "42 cm would be if side was 7 cm, not 6 cm."
+      },
+      "diagram_id": "diag_hexagon_perimeter_003"
+    },
+    "rescue_intermediate_octagon_center_angle_002": {
+      "question_id": "rescue_intermediate_octagon_center_angle_002",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Octagon Side Length",
+      "primary_concept": "octagon_side_length",
+      "prerequisites": ["octagon_center_angle", "cosine_law"],
+      "class_level": "Class 9-10",
+      "difficulty": "medium",
+      "expected_time_seconds": 120,
+      "question_text": "A regular octagon is inscribed in a circle of radius 5√2 cm. What is the length of each side?",
+      "options": ["5 cm", "5√2 cm", "10 cm", "10√2 cm"],
+      "correct_answer": 0,
+      "explanation": "Using cosine law: side = r√(2 − 2cos45°) = 5√2 × √(2 − √2) = 5 cm.",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "Central angle = 360° ÷ 8 = 45°",
+          "calculation": "Central angle = 45°"
+        },
+        {
+          "step_number": 2,
+          "description": "Apply cosine law: side² = r² + r² - 2r²cos(45°)",
+          "calculation": "side² = 50 + 50 - 100cos(45°) = 100 - 100(√2/2) = 100 - 50√2"
+        },
+        {
+          "step_number": 3,
+          "description": "Simplify to find side length",
+          "calculation": "side = √(100 - 50√2) = 5 cm"
+        }
+      ],
+      "why_wrong_explanations": {
+        "1": "5√2 cm is the radius, not the side length.",
+        "2": "10 cm would be the diameter, not the side length.",
+        "3": "10√2 cm is double the radius, not the side length."
+      },
+      "diagram_id": "diag_octagon_side_length_002"
+    },
+    "rescue_intermediate_octagon_center_angle_003": {
+      "question_id": "rescue_intermediate_octagon_center_angle_003",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Octagon Interior Angle",
+      "primary_concept": "octagon_interior_angle",
+      "prerequisites": ["octagon_center_angle"],
+      "class_level": "Class 9-10",
+      "difficulty": "medium",
+      "expected_time_seconds": 60,
+      "question_text": "What is the measure of each interior angle of a regular octagon?",
+      "options": ["120°", "135°", "144°", "150°"],
+      "correct_answer": 1,
+      "explanation": "Interior angle = (n-2)×180°/n = (8-2)×180°/8 = 6×180°/8 = 135°.",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "Interior angle formula: (n-2)×180°/n",
+          "calculation": "(8-2)×180°/8 = 6×180°/8"
+        },
+        {
+          "step_number": 2,
+          "description": "Simplify the calculation",
+          "calculation": "Interior angle = 135°"
+        }
+      ],
+      "why_wrong_explanations": {
+        "0": "120° is the interior angle of a hexagon, not an octagon.",
+        "2": "144° is the interior angle of a decagon, not an octagon.",
+        "3": "150° is the interior angle of a dodecagon, not an octagon."
+      },
+      "diagram_id": "diag_octagon_interior_angle_003"
+    },
+    "pre_jee_octagon_area_002": {
+      "question_id": "pre_jee_octagon_area_002",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Octagon Area Calculation",
+      "primary_concept": "octagon_area_calculation",
+      "prerequisites": ["octagon_area_subtraction", "area_calculation"],
+      "class_level": "Class 10-11",
+      "difficulty": "hard",
+      "expected_time_seconds": 180,
+      "question_text": "A regular octagon has side length 4 cm. What is its area?",
+      "options": ["32(1+√2) cm²", "16(1+√2) cm²", "64√2 cm²", "32√2 cm²"],
+      "correct_answer": 0,
+      "explanation": "Area = 2(1+√2) × side² = 2(1+√2) × 16 = 32(1+√2) cm².",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "Area formula for regular octagon: 2(1+√2) × side²",
+          "calculation": "Area = 2(1+√2) × 4² = 2(1+√2) × 16"
+        },
+        {
+          "step_number": 2,
+          "description": "Simplify the calculation",
+          "calculation": "Area = 32(1+√2) cm²"
+        }
+      ],
+      "why_wrong_explanations": {
+        "1": "16(1+√2) cm² is half the correct area.",
+        "2": "64√2 cm² would be if we used only the √2 part, missing the +1.",
+        "3": "32√2 cm² is also incorrect, missing the +1 term."
+      },
+      "diagram_id": "diag_octagon_area_002"
+    },
+    "pre_jee_octagon_area_003": {
+      "question_id": "pre_jee_octagon_area_003",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Octagon Area Comparison",
+      "primary_concept": "octagon_area_comparison",
+      "prerequisites": ["octagon_area_calculation"],
+      "class_level": "Class 10-11",
+      "difficulty": "hard",
+      "expected_time_seconds": 180,
+      "question_text": "A regular octagon and a square have the same perimeter. If the octagon's area is 32(1+√2) cm², what is the area of the square?",
+      "options": ["64 cm²", "81 cm²", "100 cm²", "121 cm²"],
+      "correct_answer": 0,
+      "explanation": "Octagon area = 32(1+√2) → side = 4 cm → perimeter = 32 cm. Square side = 8 cm → area = 64 cm².",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "From octagon area, find side length: 32(1+√2) = 2(1+√2) × s² → s = 4 cm",
+          "calculation": "Octagon side = 4 cm"
+        },
+        {
+          "step_number": 2,
+          "description": "Octagon perimeter = 8 × 4 = 32 cm = Square perimeter",
+          "calculation": "Common perimeter = 32 cm"
+        },
+        {
+          "step_number": 3,
+          "description": "Square side = perimeter ÷ 4 = 8 cm",
+          "calculation": "Square side = 8 cm"
+        },
+        {
+          "step_number": 4,
+          "description": "Square area = side²",
+          "calculation": "Square area = 8² = 64 cm²"
+        }
+      ],
+      "why_wrong_explanations": {
+        "1": "81 cm² would be if square side was 9 cm, not 8 cm.",
+        "2": "100 cm² would be if square side was 10 cm, not 8 cm.",
+        "3": "121 cm² would be if square side was 11 cm, not 8 cm."
+      },
+      "diagram_id": "diag_octagon_area_comparison_003"
+    },
+    "jee_math_regular_polygon_002": {
+      "question_id": "jee_math_regular_polygon_002",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Regular Polygon Area",
+      "primary_concept": "regular_polygon_area",
+      "prerequisites": ["octagon_area_calculation", "cosine_law"],
+      "class_level": "Class 11-12",
+      "difficulty": "hard",
+      "expected_time_seconds": 240,
+      "question_text": "A regular polygon has area 48√3 cm² and each side is 4 cm. How many sides does the polygon have?",
+      "options": ["6", "8", "10", "12"],
+      "correct_answer": 0,
+      "explanation": "For regular hexagon: Area = (3√3/2) × side² = (3√3/2) × 16 = 24√3 cm². Given area is 48√3 = 2 × 24√3, so it's a hexagon with side 4√2, making 6 sides.",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "Test hexagon formula: Area = (3√3/2) × side²",
+          "calculation": "If n=6: Area = (3√3/2) × 4² = 24√3 cm²"
+        },
+        {
+          "step_number": 2,
+          "description": "Given area is 48√3 = 2 × 24√3, so side must be 4√2",
+          "calculation": "Check: (3√3/2) × (4√2)² = (3√3/2) × 32 = 48√3 ✓"
+        },
+        {
+          "step_number": 3,
+          "description": "Therefore, it's a regular hexagon",
+          "calculation": "Number of sides = 6"
+        }
+      ],
+      "why_wrong_explanations": {
+        "1": "Octagon area formula gives different result for side 4.",
+        "2": "Decagon area formula doesn't match 48√3 for side 4.",
+        "3": "Dodecagon area formula doesn't match 48√3 for side 4."
+      },
+      "diagram_id": "diag_regular_polygon_area_002"
+    },
+    "jee_math_regular_polygon_003": {
+      "question_id": "jee_math_regular_polygon_003",
+      "subject": "Mathematics",
+      "chapter": "Geometry",
+      "topic": "Regular Polygon Circumradius",
+      "primary_concept": "regular_polygon_circumradius",
+      "prerequisites": ["regular_polygon_area", "cosine_law"],
+      "class_level": "Class 11-12",
+      "difficulty": "hard",
+      "expected_time_seconds": 240,
+      "question_text": "A regular polygon has side length 6 cm and circumradius 6 cm. What is the sum of its interior angles?",
+      "options": ["540°", "720°", "900°", "1080°"],
+      "correct_answer": 1,
+      "explanation": "Side = circumradius means it's a regular hexagon. Sum of interior angles = (n-2)×180° = (6-2)×180° = 720°.",
+      "solution_steps": [
+        {
+          "step_number": 1,
+          "description": "In a regular hexagon, side length = circumradius",
+          "calculation": "Given: side = 6 cm, circumradius = 6 cm → hexagon"
+        },
+        {
+          "step_number": 2,
+          "description": "Number of sides = 6",
+          "calculation": "n = 6"
+        },
+        {
+          "step_number": 3,
+          "description": "Sum of interior angles = (n-2)×180°",
+          "calculation": "Sum = (6-2)×180° = 4×180° = 720°"
+        }
+      ],
+      "why_wrong_explanations": {
+        "0": "540° is for a pentagon (5 sides), not hexagon.",
+        "2": "900° is for a heptagon (7 sides), not hexagon.",
+        "3": "1080° is for an octagon (8 sides), not hexagon."
+      },
+      "diagram_id": "diag_regular_polygon_circumradius_003"
+    }
+  }
+}

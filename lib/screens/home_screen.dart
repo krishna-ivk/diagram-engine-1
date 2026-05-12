@@ -26,6 +26,17 @@ class _HomeScreenState extends State<HomeScreen> {
   final RevisionManager _revisionManager = RevisionManager();
   PracticeMode _selectedMode = PracticeMode.learner;
 
+  @override
+  void initState() {
+    super.initState();
+    _loadJourneyProgress();
+  }
+
+  Future<void> _loadJourneyProgress() async {
+    await _tracker.loadAttempts();
+    setState(() {}); // Refresh UI after loading progress
+  }
+
   void _startPractice() {
     if (_selectedMode == PracticeMode.foundationJourney) {
       _startFoundationJourney();

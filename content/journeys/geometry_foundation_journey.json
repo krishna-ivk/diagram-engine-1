@@ -19,7 +19,7 @@
         "body": "A square has 4 equal sides and 4 right angles. When you draw lines from the center to each corner, you get 4 identical triangles.",
         "visual_hint_ids": ["center", "triangles", "right_angles"]
       },
-      "question_ids": ["class7_square_parts_001"],
+      "question_ids": ["class7_square_parts_001", "class7_square_parts_002", "class7_square_parts_003"],
       "unlock_threshold": {
         "correct_required": 1,
         "confidence_threshold": "somewhat_sure"
@@ -37,7 +37,7 @@
         "body": "A full turn around any point is 360°. In a regular polygon, all central angles are equal. Each one is 360° divided by the number of sides.",
         "visual_hint_ids": ["center_angle", "360_division", "regular_polygon"]
       },
-      "question_ids": ["rescue_foundation_square_center_angle_001"],
+      "question_ids": ["rescue_foundation_square_center_angle_001", "rescue_foundation_square_center_angle_002", "rescue_foundation_square_center_angle_003"],
       "prerequisites": ["L0"],
       "unlock_threshold": {
         "correct_required": 2,
@@ -56,7 +56,7 @@
         "body": "A regular hexagon has 6 sides. Each central angle is 360° ÷ 6 = 60°. The central triangles are equilateral!",
         "visual_hint_ids": ["hexagon", "central_triangles", "60_degrees"]
       },
-      "question_ids": ["rescue_bridge_hexagon_center_angle_001"],
+      "question_ids": ["rescue_bridge_hexagon_center_angle_001", "rescue_bridge_hexagon_center_angle_002", "rescue_bridge_hexagon_center_angle_003"],
       "prerequisites": ["L1"],
       "unlock_threshold": {
         "correct_required": 2,
@@ -75,7 +75,7 @@
         "body": "For complex polygons, use cosine law: side² = r² + r² - 2r²cos(central angle). This helps find side lengths from the radius.",
         "visual_hint_ids": ["cosine_law", "octagon_geometry", "radius_lines"]
       },
-      "question_ids": ["rescue_intermediate_octagon_center_angle_001"],
+      "question_ids": ["rescue_intermediate_octagon_center_angle_001", "rescue_intermediate_octagon_center_angle_002", "rescue_intermediate_octagon_center_angle_003"],
       "prerequisites": ["L2"],
       "unlock_threshold": {
         "correct_required": 1,
@@ -94,7 +94,7 @@
         "body": "Complex shapes can be solved by subtracting areas. Octagon area = Square area - 4 corner triangle areas.",
         "visual_hint_ids": ["area_subtraction", "corner_triangles", "octagon_in_square"]
       },
-      "question_ids": ["pre_jee_octagon_area_001"],
+      "question_ids": ["pre_jee_octagon_area_001", "pre_jee_octagon_area_002", "pre_jee_octagon_area_003"],
       "prerequisites": ["L3"],
       "unlock_threshold": {
         "correct_required": 1,
@@ -113,7 +113,7 @@
         "body": "JEE questions combine multiple concepts. Break them down: identify shapes, recall formulas, apply step by step.",
         "visual_hint_ids": ["problem_breakdown", "formula_recall", "step_by_step"]
       },
-      "question_ids": ["jee_math_regular_polygon_001"],
+      "question_ids": ["jee_math_regular_polygon_001", "jee_math_regular_polygon_002", "jee_math_regular_polygon_003"],
       "prerequisites": ["L4"],
       "unlock_threshold": {
         "correct_required": 1,

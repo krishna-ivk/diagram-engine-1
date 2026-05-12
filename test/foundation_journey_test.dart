@@ -9,6 +9,7 @@ import 'package:diagram_engine/models/journey_state.dart';
 import 'package:diagram_engine/models/practice_mode.dart';
 import 'package:diagram_engine/models/question_attempt.dart';
 import 'package:diagram_engine/models/student_profile.dart';
+import 'package:diagram_engine/services/content_loader.dart';
 
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
@@ -36,6 +37,28 @@ void main() {
 
       expect(journey.levels.map((level) => level.level),
           containsAll(['L0', 'L5']));
+    });
+
+    test('loads all L0-L5 questions from geometry_foundation_journey_questions.json', () async {
+      final questions = await ContentLoader.loadJourneyQuestions('geometry_foundation_journey');
+
+      expect(questions, isNotEmpty);
+      expect(questions.containsKey('class7_square_parts_001'), isTrue);
+      expect(questions.containsKey('rescue_foundation_square_center_angle_001'), isTrue);
+      expect(questions.containsKey('rescue_bridge_hexagon_center_angle_001'), isTrue);
+      expect(questions.containsKey('rescue_intermediate_octagon_center_angle_001'), isTrue);
+      expect(questions.containsKey('pre_jee_octagon_area_001'), isTrue);
+      expect(questions.containsKey('jee_math_regular_polygon_001'), isTrue);
+    });
+
+    test('question text matches L0 title for first question', () async {
+      final questions = await ContentLoader.loadJourneyQuestions('geometry_foundation_journey');
+      final l0Question = questions['class7_square_parts_001'];
+
+      expect(l0Question, isNotNull);
+      expect(l0Question!.text, contains('square'));
+      expect(l0Question.options, hasLength(4));
+      expect(l0Question.correctIndex, 1);
     });
   });
 
