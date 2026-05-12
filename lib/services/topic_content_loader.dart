@@ -3,205 +3,196 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import '../models/question_data.dart';
 import '../models/diagram_data.dart';
-import '../models/topic_capsule.dart';
-import '../services/content_loader.dart';
 
-/// Service for loading topic capsule content and questions
+/// Service for loading topic-specific content and questions
 class TopicContentLoader {
-  /// Load a topic capsule from JSON file
-  static Future<TopicCapsule> loadTopicCapsule(String topicId) async {
+  static const String _contentBasePath = 'content/questions';
+
+  /// Load topic capsule containing all topic information
+  static Future<Map<String, dynamic>?> loadTopicCapsule(String topicId) async {
     try {
-      final String jsonString = await rootBundle
-          .loadString('content/topics/${_extractTopicFileName(topicId)}.json');
-      final Map<String, dynamic> data = json.decode(jsonString);
-      
-      return TopicCapsule.fromJson(data);
+      final String content = await rootBundle
+          .loadString('content/topics/${topicId}_capsule.json');
+      return json.decode(content) as Map<String, dynamic>;
     } catch (e) {
-      debugPrint('Error loading topic capsule $topicId: $e');
-      // Return fallback topic capsule
-      return _createFallbackTopicCapsule(topicId);
+      debugPrint('Error loading topic capsule for $topicId: $e');
+      return null;
     }
   }
 
-  /// Load questions by their IDs from the content/questions/ directory
-  static Future<List<QuestionData>> loadQuestionsByIds(List<String> questionIds) async {
+  /// Load questions by their IDs
+  static Future<Map<String, QuestionData>> loadQuestionsByIds(
+      List<String> questionIds) async {
     try {
-      // First, try to load from the new content/questions/ directory
-      final Map<String, QuestionData> allQuestions = {};
-      
-      // Scan all question files in content/questions/
-      final manifestContent = await rootBundle.loadString('content/questions/question_manifest.json');
-      final Map<String, dynamic> manifest = json.decode(manifestContent);
-      final questionFiles = manifest['question_files'] as List<String>? ?? [];
-      
-      for (final fileName in questionFiles) {
-        try {
-          final fileContent = await rootBundle.loadString('content/questions/$fileName');
-          final Map<String, dynamic> fileData = json.decode(fileContent);
-          final questions = fileData['questions'] as List;
-          
-          for (final question in questions) {
-            final questionData = _convertNewQuestionFormat(question as Map<String, dynamic>);
-            allQuestions[questionData.id] = questionData;
-          }
-        } catch (e) {
-          debugPrint('Error loading question file $fileName: $e');
-        }
-      }
-      
-      // If new questions not available, fallback to legacy journey questions
-      if (allQuestions.isEmpty) {
-        debugPrint('New questions not found, falling back to legacy journey questions');
-        return await _loadLegacyJourneyQuestions(questionIds);
-      }
-      
-      final List<QuestionData> results = [];
-      for (final questionId in questionIds) {
-        if (allQuestions.containsKey(questionId)) {
-          results.add(allQuestions[questionId]!);
-        } else {
-          debugPrint('Question ID $questionId not found in new content');
-          // Create a fallback question
-          results.add(_createFallbackQuestion(questionId));
-        }
-      }
-      
-      return results;
-    } catch (e) {
-      debugPrint('Error loading questions by IDs: $e');
-      // Return fallback questions for each requested ID
-      return questionIds.map(_createFallbackQuestion).toList();
-    }
-  }
-      if (questionsMap == null) return [];
+      // First load the question manifest
+      final manifest = await _loadQuestionManifest();
+      if (manifest == null) return {};
 
-      final List<QuestionData> questions = [];
+      final Map<String, QuestionData> questions = {};
       
-      for (final questionId in questionIds) {
-        if (questionsMap.containsKey(questionId)) {
+      // Load each question file listed in manifest
+      for (final fileName in manifest['files'] as List<dynamic>) {
+        final fileContent = await rootBundle
+            .loadString('$_contentBasePath/$fileName');
+        final List<dynamic> questionsList = json.decode(fileContent);
+        
+        // Convert each question to QuestionData
+        for (final questionData in questionsList) {
           try {
-            final questionData = ContentLoader.convertJourneyQuestion(
-              questionsMap[questionId] as Map<String, dynamic>
-            );
-            questions.add(questionData);
+            final question = _convertNewQuestionFormat(questionData);
+            if (questionIds.contains(question.id)) {
+              questions[question.id] = question;
+            }
           } catch (e) {
-            debugPrint('Error loading question $questionId: $e');
-            // Create a fallback question
-            questions.add(_createFallbackQuestion(questionId));
+            debugPrint('Error loading question from $fileName: $e');
           }
-        } else {
-          debugPrint('Question ID $questionId not found in content');
-          // Create a fallback question
-          questions.add(_createFallbackQuestion(questionId));
         }
       }
-      
+
       return questions;
     } catch (e) {
       debugPrint('Error loading questions by IDs: $e');
-      // Return fallback questions for each requested ID
-      return questionIds.map(_createFallbackQuestion).toList();
+      return {};
     }
   }
 
-  /// Extract topic file name from topic ID
-  static String _extractTopicFileName(String topicId) {
-    // Convert "math.geometry.central_angle_regular_polygon" 
-    // to "central_angle_regular_polygon"
-    final parts = topicId.split('.');
-    return parts.isNotEmpty ? parts.last : topicId;
+  /// Load question manifest file
+  static Future<Map<String, dynamic>?> _loadQuestionManifest() async {
+    try {
+      final String content = await rootBundle
+          .loadString('$_contentBasePath/question_manifest.json');
+      return json.decode(content) as Map<String, dynamic>;
+    } catch (e) {
+      debugPrint('Error loading question manifest: $e');
+      return null;
+    }
   }
 
-  /// Create a fallback topic capsule for when content loading fails
-  static TopicCapsule _createFallbackTopicCapsule(String topicId) {
-    return TopicCapsule(
-      topicId: topicId,
-      title: 'Central Angle of a Regular Polygon',
-      classLevel: 'Class 7-8',
-      targetExamBridge: 'JEE Foundation',
-      synopsisCards: [
-        SynopsisCard(
-          title: 'What is a central angle?',
-          body: 'A full turn around a point is 360°. In a regular polygon, all central angles are equal.',
-        ),
-        SynopsisCard(
-          title: 'Formula',
-          body: 'Central angle = 360° ÷ number of sides',
-        ),
-      ],
-      formulae: ['Central angle = 360° / n'],
-      commonMistakes: [
-        'Confusing central angle with interior angle',
-        'Dividing by the wrong number of sides',
-      ],
-      starterQuestionIds: ['demo_001', 'demo_002'],
-      practiceQuestionIds: ['demo_003', 'demo_004'],
-      challengeQuestionIds: ['demo_005'],
-      revisionQuestionIds: ['demo_006'],
-      manipulatives: ['polygon_sides_slider'],
-      estimatedDurationMinutes: 20,
-    );
-  }
+  /// Convert new question format to QuestionData
+  static QuestionData _convertNewQuestionFormat(Map<String, dynamic> json) {
+    // Parse correct answer as index
+    final correctAns = json['correct_answer'];
+    int correctIdx = 0;
+    if (correctAns is int) {
+      correctIdx = correctAns;
+    } else if (correctAns is String) {
+      correctIdx = correctAns.codeUnitAt(0) - 65; // 'A' -> 0, 'B' -> 1, etc.
+    }
 
-  /// Create a fallback question for when content loading fails
-  static QuestionData _createFallbackQuestion(String questionId) {
-    final questionText = _getFallbackQuestionText(questionId);
-    final correctAnswer = _getFallbackCorrectAnswer(questionId);
-    
+    // Parse why wrong explanations - need Map<int, String>
+    final whyWrongRaw = json['why_wrong_explanations'];
+    final whyWrongMap = <int, String>{};
+    if (whyWrongRaw is Map) {
+      for (final entry in whyWrongRaw.entries) {
+        final key = entry.key;
+        final value = entry.value;
+        final k = key is int ? key : (key.toString().codeUnitAt(0) - 65);
+        whyWrongMap[k] = value.toString();
+      }
+    }
+
+    // Parse solution steps as List<String>
+    final stepsRaw = json['solution_steps'];
+    List<String> solSteps = [];
+    if (stepsRaw is List) {
+      solSteps = stepsRaw
+          .map((s) => s['description']?.toString() ?? s.toString())
+          .toList();
+    }
+
+    // Parse options as List<String>
+    final opts = _convertOptions(json['options']);
+
     return QuestionData(
-      id: questionId,
-      text: questionText,
+      id: json['question_id'] ?? json['id'] ?? '',
+      text: json['question_text'] ?? json['text'] ?? '',
       diagram: DiagramData(
-        id: questionId,
+        id: json['question_id'] ?? json['id'] ?? 'default',
         type: DiagramType.geometry,
-        title: 'Central Angle Question',
         elements: [],
       ),
-      options: ['45°', '60°', '90°', '120°'],
-      correctIndex: correctAnswer,
-      explanation: 'The central angle of a regular polygon is 360° divided by the number of sides.',
-      subject: 'Mathematics',
-      chapter: 'Geometry',
-      topic: 'Central Angles',
-      primaryConcept: 'central_angle',
-      difficulty: Difficulty.medium,
-      estimatedSeconds: 60,
-      solutionSteps: [
-        'Identify the number of sides',
-        'Apply the formula: 360° ÷ n',
-        'Calculate the result',
-      ],
-      whyWrongExplanations: {
-        0: 'This would be correct for an octagon (8 sides).',
-        1: 'This would be correct for a hexagon (6 sides).',
-        3: 'This would be correct for a triangle (3 sides).',
-      },
+      options: opts.isNotEmpty ? opts : ['A', 'B', 'C', 'D'],
+      correctIndex: correctIdx.clamp(0, 3),
+      explanation: json['explanation'] ?? '',
+      subject: json['subject'] ?? 'Mathematics',
+      chapter: json['chapter'] ?? '',
+      topic: json['topic'] ?? '',
+      primaryConcept: json['primary_concept'] ?? '',
+      secondaryConcepts: List<String>.from(json['secondary_concepts'] ?? []),
+      prerequisites: List<String>.from(json['prerequisites'] ?? []),
+      exam: _mapExamType(json['exam_type']),
+      classLevel: json['class_level'] ?? '11',
+      questionType: QuestionType.mcq,
+      difficulty: _mapDifficulty(json['difficulty']),
+      estimatedSeconds: json['expected_time_seconds'] ?? 120,
+      revealSteps: _convertSolutionSteps(json['solution_steps']),
+      solutionSteps: solSteps,
+      whyWrongExplanations: whyWrongMap,
+      frequentlyAsked: json['frequently_asked'] ?? false,
+      highWeightTopic: json['high_weight'] ?? false,
+      coreConcept: json['core_concept'] ?? json['primary_concept'],
+      similarQuestionIds: List<String>.from(json['similar_questions'] ?? []),
     );
   }
 
-  /// Get fallback question text based on question ID
-  static String _getFallbackQuestionText(String questionId) {
-    if (questionId.contains('square')) {
-      return 'A square is divided from its center into 4 equal triangles. What is the measure of each central angle?';
-    } else if (questionId.contains('hexagon')) {
-      return 'A regular hexagon has 6 equal sides. What is the measure of each central angle?';
-    } else if (questionId.contains('octagon')) {
-      return 'A regular octagon has 8 equal sides. What is the measure of each central angle?';
-    } else {
-      return 'A regular polygon has equal sides and angles. If it has 4 sides, what is the measure of each central angle?';
+  /// Convert options from JSON - returns List<String>
+  static List<String> _convertOptions(dynamic optionsData) {
+    if (optionsData is List) {
+      return optionsData.map((opt) {
+        if (opt is String) return opt;
+        if (opt is Map) return opt['text']?.toString() ?? '';
+        return opt.toString();
+      }).toList();
+    }
+    return [];
+  }
+
+  /// Convert solution steps from JSON - returns List<RevealStep>
+  static List<RevealStep> _convertSolutionSteps(dynamic stepsData) {
+    if (stepsData is List) {
+      return stepsData.map((step) {
+        final Map<String, dynamic> stepData =
+            step is Map ? Map<String, dynamic>.from(step) : <String, dynamic>{};
+        return RevealStep(
+          text: stepData['description']?.toString() ??
+              stepData['calculation']?.toString() ??
+              '',
+        );
+      }).toList();
+    }
+    return [];
+  }
+
+  /// Map difficulty from string to enum
+  static Difficulty _mapDifficulty(String? difficultyStr) {
+    switch (difficultyStr) {
+      case 'easy':
+      case 'foundation':
+        return Difficulty.easy;
+      case 'medium':
+      case 'bridge':
+        return Difficulty.medium;
+      case 'hard':
+      case 'jee':
+        return Difficulty.hard;
+      default:
+        return Difficulty.medium;
     }
   }
 
-  /// Get fallback correct answer based on question ID
-  static int _getFallbackCorrectAnswer(String questionId) {
-    if (questionId.contains('square')) {
-      return 2; // 90°
-    } else if (questionId.contains('hexagon')) {
-      return 1; // 60°
-    } else if (questionId.contains('octagon')) {
-      return 0; // 45°
-    } else {
-      return 2; // 90° (square)
+  /// Map exam type from string to enum
+  static ExamType _mapExamType(String? examTypeStr) {
+    switch (examTypeStr) {
+      case 'jee_main':
+        return ExamType.jeeMain;
+      case 'jee_advanced':
+        return ExamType.jeeAdvanced;
+      case 'board':
+        return ExamType.board;
+      case 'foundation':
+        return ExamType.foundation;
+      default:
+        return ExamType.jeeMain;
     }
   }
 }

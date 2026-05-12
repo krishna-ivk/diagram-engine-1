@@ -47,12 +47,13 @@
       "question_role": "starter",
       "question_text": "An equilateral triangle is divided from the center into 3 equal parts. What is each central angle?",
       "options": ["90°", "120°", "180°", "60°"],
-      "correct_answer": 3,
+      "correct_answer": 1,
       "formulae_used": ["central_angle = 360° / n"],
       "why_wrong_explanations": {
         "0": "90° is the central angle of a square (4 sides).",
-        "1": "120° would be for a triangle if it were 3 equal angles, but central angle is different.",
-        "2": "180° is a straight angle, not a central angle of a regular polygon."
+        "1": "120° is the central angle of a triangle (3 sides).",
+        "2": "180° is a straight angle, not a central angle of a regular polygon.",
+        "3": "60° is the central angle of a hexagon (6 sides)."
       },
       "difficulty": "easy",
       "estimated_time_seconds": 45,
@@ -367,8 +368,8 @@
       "topic": "Central Angle of Regular Polygon",
       "primary_concept": "central_angle_regular_polygon",
       "question_role": "jee_style",
-      "question_text": "A regular polygon has 12 sides. The ratio of its central angle to its interior angle is 2:3. Find the number of diagonals that can be drawn from one vertex.",
-      "options": ["8", "9", "10", "11"],
+      "question_text": "A regular polygon has 12 sides. Each interior angle is 150°. What is the measure of each central angle?",
+      "options": ["15°", "30°", "45°", "60°"],
       "correct_answer": 1,
       "formulae_used": [
         "central_angle = 360° / n",
@@ -376,9 +377,9 @@
         "diagonals_from_vertex = n - 3"
       ],
       "why_wrong_explanations": {
-        "0": "8 diagonals would be for an 11-sided polygon (11 - 3 = 8).",
-        "2": "10 diagonals would be for a 13-sided polygon (13 - 3 = 10).",
-        "3": "11 diagonals would be for a 14-sided polygon (14 - 3 = 11)."
+        "0": "15° would be for a 24-sided polygon (360° ÷ 24 = 15°).",
+        "2": "45° would be for an octagon (360° ÷ 8 = 45°).",
+        "3": "60° would be for a hexagon (360° ÷ 6 = 60°)."
       },
       "difficulty": "very_hard",
       "estimated_time_seconds": 180,
