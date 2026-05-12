@@ -11,6 +11,7 @@ import '../models/revision_manager.dart';
 import '../widgets/premium_gate.dart';
 import 'foundation_journey_screen.dart';
 import 'question_screen.dart';
+import 'topic_synopsis_screen.dart';
 import 'topic_revision_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -26,9 +27,20 @@ class _HomeScreenState extends State<HomeScreen> {
   final RevisionManager _revisionManager = RevisionManager();
   PracticeMode _selectedMode = PracticeMode.learner;
 
+  @override
+  void initState() {
+    super.initState();
+    _loadJourneyProgress();
+  }
+
+  Future<void> _loadJourneyProgress() async {
+    await _tracker.loadAttempts();
+    setState(() {}); // Refresh UI after loading progress
+  }
+
   void _startPractice() {
     if (_selectedMode == PracticeMode.foundationJourney) {
-      _startFoundationJourney();
+      _startTopicCapsule();
       return;
     }
 
@@ -54,6 +66,19 @@ class _HomeScreenState extends State<HomeScreen> {
       MaterialPageRoute(
         builder: (_) => FoundationJourneyScreen(
           journeyId: 'geometry_foundation_journey', // Load from content
+          tracker: _tracker,
+          premiumState: _premiumState,
+        ),
+      ),
+    );
+  }
+
+  void _startTopicCapsule() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => TopicSynopsisScreen(
+          topicId: 'math.geometry.central_angle_regular_polygon',
           tracker: _tracker,
           premiumState: _premiumState,
         ),
@@ -178,9 +203,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 24),
 
-                // Foundation Journey HERO (primary CTA for Class 7 students)
-                _FoundationJourneyHero(
-                  onStartJourney: _startFoundationJourney,
+                // Topic Capsule HERO (primary CTA for Class 7 students)
+                _TopicCapsuleHero(
+                  onStartTopicCapsule: _startTopicCapsule,
                 ),
                 const SizedBox(height: 16),
 
@@ -398,16 +423,16 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 const SizedBox(height: 12),
 
-                // Practice Mode Selector (Foundation Journey prioritized)
+                // Practice Mode Selector (Topic Capsule prioritized)
                 Column(
                   children: [
-                    // Primary: Foundation Journey
+                    // Primary: Topic Capsule
                     _ModeChip(
-                      label: 'Foundation Journey',
-                      icon: Icons.route,
+                      label: 'Topic Capsule',
+                      icon: Icons.auto_stories,
                       isSelected:
                           _selectedMode == PracticeMode.foundationJourney,
-                      color: Colors.green,
+                      color: Colors.blue,
                       onTap: () => setState(
                           () => _selectedMode = PracticeMode.foundationJourney),
                       isFullWidth: true,
@@ -470,7 +495,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           icon: const Icon(Icons.play_arrow),
                           label: Text(
                             _selectedMode == PracticeMode.foundationJourney
-                                ? 'Start Foundation Journey'
+                                ? 'Start Topic Capsule'
                                 : 'Practice with Interactive Diagrams (${mockQuestions.length + algebricaQuestions.length})',
                             style: const TextStyle(fontSize: 15),
                           ),
@@ -787,10 +812,10 @@ class _TopicRow extends StatelessWidget {
   }
 }
 
-class _FoundationJourneyHero extends StatelessWidget {
-  final VoidCallback onStartJourney;
+class _TopicCapsuleHero extends StatelessWidget {
+  final VoidCallback onStartTopicCapsule;
 
-  const _FoundationJourneyHero({required this.onStartJourney});
+  const _TopicCapsuleHero({required this.onStartTopicCapsule});
 
   @override
   Widget build(BuildContext context) {
@@ -801,19 +826,19 @@ class _FoundationJourneyHero extends StatelessWidget {
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Colors.green.shade50,
-            Colors.teal.shade50,
+            theme.colorScheme.primary.withOpacity(0.1),
+            theme.colorScheme.secondary.withOpacity(0.1),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(20),
         border: Border.all(
-          color: Colors.green.shade200,
+          color: theme.colorScheme.primary.withOpacity(0.2),
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.green.shade100.withOpacity(0.3),
+            color: theme.colorScheme.primary.withOpacity(0.1),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -827,13 +852,13 @@ class _FoundationJourneyHero extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: Colors.green.shade100,
+                  color: theme.colorScheme.primary,
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
-                  Icons.route,
+                  Icons.auto_stories,
                   size: 28,
-                  color: Colors.green.shade700,
+                  color: theme.colorScheme.onPrimary,
                 ),
               ),
               const SizedBox(width: 16),
@@ -842,16 +867,16 @@ class _FoundationJourneyHero extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Start Foundation Journey',
+                      'Start Topic Capsule',
                       style: theme.textTheme.titleLarge?.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: Colors.green.shade800,
+                        color: theme.colorScheme.primary,
                       ),
                     ),
                     Text(
-                      'Build the foundations before solving the exam',
+                      'Read. Understand. Practice. Master.',
                       style: theme.textTheme.bodyMedium?.copyWith(
-                        color: Colors.green.shade600,
+                        color: theme.colorScheme.onSurface.withOpacity(0.7),
                       ),
                     ),
                   ],
@@ -865,12 +890,12 @@ class _FoundationJourneyHero extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: FilledButton.icon(
-                  onPressed: onStartJourney,
+                  onPressed: onStartTopicCapsule,
                   icon: const Icon(Icons.play_arrow),
-                  label: const Text('Start Journey'),
+                  label: const Text('Start Topic Capsule'),
                   style: FilledButton.styleFrom(
-                    backgroundColor: Colors.green.shade600,
-                    foregroundColor: Colors.white,
+                    backgroundColor: theme.colorScheme.primary,
+                    foregroundColor: theme.colorScheme.onPrimary,
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                 ),
@@ -879,20 +904,20 @@ class _FoundationJourneyHero extends StatelessWidget {
               Expanded(
                 child: OutlinedButton.icon(
                   onPressed: () {
-                    // Show journey info
+                    // Show topic capsule info
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
-                        content: Text('Learn more about Foundation Journey'),
+                        content: Text('Learn more about Topic Capsules'),
                       ),
                     );
                   },
-                  icon: Icon(Icons.info_outline, color: Colors.green.shade600),
+                  icon: Icon(Icons.info_outline, color: theme.colorScheme.primary),
                   label: Text(
                     'Learn More',
-                    style: TextStyle(color: Colors.green.shade600),
+                    style: TextStyle(color: theme.colorScheme.primary),
                   ),
                   style: OutlinedButton.styleFrom(
-                    side: BorderSide(color: Colors.green.shade300),
+                    side: BorderSide(color: theme.colorScheme.primary.withOpacity(0.3)),
                     padding: const EdgeInsets.symmetric(vertical: 16),
                   ),
                 ),

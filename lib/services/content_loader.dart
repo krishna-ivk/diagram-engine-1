@@ -152,6 +152,82 @@ class ContentLoader {
     }
   }
 
+  /// Load questions for a Foundation Journey by question IDs
+  static Future<Map<String, QuestionData>> loadJourneyQuestions(
+      String journeyId) async {
+    try {
+      final String jsonString = await rootBundle
+          .loadString('content/journeys/${journeyId}_questions.json');
+      final Map<String, dynamic> data = json.decode(jsonString);
+
+      final Map<String, QuestionData> questions = {};
+      final questionsMap = data['questions'] as Map<String, dynamic>?;
+      if (questionsMap != null) {
+        for (final entry in questionsMap.entries) {
+          try {
+            questions[entry.key] =
+                convertJourneyQuestion(entry.value as Map<String, dynamic>);
+          } catch (e) {
+            debugPrint('Error loading journey question ${entry.key}: $e');
+          }
+        }
+      }
+
+      return questions;
+    } catch (e) {
+      debugPrint('Error loading journey questions for $journeyId: $e');
+      return {};
+    }
+  }
+
+  /// Convert a journey question JSON entry to QuestionData
+  static QuestionData convertJourneyQuestion(Map<String, dynamic> json) {
+    final correctAnswer = json['correct_answer'];
+    final int correctIdx = correctAnswer is int ? correctAnswer : 0;
+
+    final whyWrongRaw = json['why_wrong_explanations'];
+    final whyWrongMap = <int, String>{};
+    if (whyWrongRaw is Map) {
+      for (final entry in whyWrongRaw.entries) {
+        final k = int.tryParse(entry.key.toString()) ?? 0;
+        whyWrongMap[k] = entry.value.toString();
+      }
+    }
+
+    final opts = _convertOptions(json['options']);
+
+    return QuestionData(
+      id: json['question_id'] ?? '',
+      text: json['question_text'] ?? '',
+      diagram: DiagramData(
+        id: json['diagram_id'] ?? json['question_id'] ?? 'default',
+        type: DiagramType.geometry,
+        title: json['topic'] ?? '',
+        elements: const [],
+      ),
+      options: opts.isNotEmpty ? opts : ['A', 'B', 'C', 'D'],
+      correctIndex: correctIdx.clamp(0, 3),
+      explanation: json['explanation'] ?? '',
+      subject: json['subject'] ?? 'Mathematics',
+      chapter: json['chapter'] ?? '',
+      topic: json['topic'] ?? '',
+      primaryConcept: json['primary_concept'] ?? '',
+      secondaryConcepts: List<String>.from(json['secondary_concepts'] ?? []),
+      prerequisites: List<String>.from(json['prerequisites'] ?? []),
+      difficulty: _mapDifficulty(json['difficulty']),
+      estimatedSeconds: json['expected_time_seconds'] ?? 120,
+      revealSteps: _convertSolutionSteps(json['solution_steps']),
+      solutionSteps: (json['solution_steps'] as List?)
+              ?.map((s) =>
+                  (s as Map)['description']?.toString() ?? s.toString())
+              .toList() ??
+          [],
+      whyWrongExplanations: whyWrongMap,
+      coreConcept: json['primary_concept'],
+      classLevel: json['class_level'] ?? 'Unknown',
+    );
+  }
+
   /// Load JEE question and merge with rescue ladder
   static Future<List<QuestionData>> loadJEEWithRescueLadder() async {
     // First load the main JEE question

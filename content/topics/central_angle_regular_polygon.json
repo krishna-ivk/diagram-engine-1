@@ -1,0 +1,59 @@
+{
+  "topic_id": "math.geometry.central_angle_regular_polygon",
+  "title": "Central Angle of a Regular Polygon",
+  "class_level": "Class 7-8",
+  "target_exam_bridge": "JEE Foundation",
+  "synopsis_cards": [
+    {
+      "title": "What is a central angle?",
+      "body": "A full turn around a point is 360°. If a regular polygon is divided equally from the center, each part has the same angle."
+    },
+    {
+      "title": "Formula",
+      "body": "Central angle = 360° ÷ number of sides"
+    },
+    {
+      "title": "Why it matters",
+      "body": "Central angles help us understand regular polygons and solve geometry problems step by step."
+    }
+  ],
+  "formulae": [
+    "Central angle = 360° / n"
+  ],
+  "common_mistakes": [
+    "Confusing central angle with interior angle",
+    "Dividing by the wrong number of sides",
+    "Forgetting that total is always 360°"
+  ],
+  "starter_question_ids": [
+    "fundamental_central_angle_square_001",
+    "fundamental_central_angle_triangle_002",
+    "fundamental_central_angle_hexagon_003",
+    "fundamental_central_angle_formula_004",
+    "fundamental_central_angle_full_turn_005"
+  ],
+  "practice_question_ids": [
+    "practice_central_angle_octagon_001",
+    "practice_central_angle_inverse_002",
+    "practice_central_angle_comparison_003",
+    "practice_central_angle_fraction_004",
+    "practice_central_angle_real_world_005",
+    "practice_central_angle_decimal_006",
+    "practice_central_angle_word_problem_007"
+  ],
+  "challenge_question_ids": [
+    "challenge_central_angle_dodecagon_001",
+    "challenge_central_angle_algebra_002",
+    "challenge_central_angle_comparison_003"
+  ],
+  "revision_question_ids": [
+    "fundamental_central_angle_square_001",
+    "practice_central_angle_real_world_005",
+    "challenge_central_angle_dodecagon_001"
+  ],
+  "jee_style_question_ids": [
+    "jee_central_angle_diagonal_mixed_001"
+  ],
+  "manipulatives": ["polygon_sides_slider", "angle_calculator"],
+  "estimated_duration_minutes": 45
+}

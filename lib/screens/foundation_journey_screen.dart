@@ -5,6 +5,7 @@ import '../models/foundation_journey.dart';
 import '../models/journey_progression_engine.dart';
 import '../models/journey_state.dart';
 import '../models/student_profile.dart';
+import '../services/journey_persistence.dart';
 import 'foundation_journey_question_screen.dart';
 
 class FoundationJourneyScreen extends StatefulWidget {
@@ -29,6 +30,8 @@ class _FoundationJourneyScreenState extends State<FoundationJourneyScreen> {
   late Future<FoundationJourney> _journeyFuture;
   late StudentJourneyState _studentState;
   late StudentProfile _studentProfile;
+  final JourneyPersistence _persistence = JourneyPersistence();
+  bool _isLoadingState = true;
 
   @override
   void initState() {
@@ -36,7 +39,7 @@ class _FoundationJourneyScreenState extends State<FoundationJourneyScreen> {
     _engine = JourneyProgressionEngine();
     _journeyFuture = _engine.loadJourney(widget.journeyId);
 
-    // Create mock student profile for now
+    // Create default student profile
     _studentProfile = StudentProfile(
       studentId: 'demo_student',
       name: 'Student',
@@ -47,6 +50,33 @@ class _FoundationJourneyScreenState extends State<FoundationJourneyScreen> {
 
     _studentState =
         _engine.getStudentState(_studentProfile.studentId, widget.journeyId);
+
+    _loadSavedState();
+  }
+
+  Future<void> _loadSavedState() async {
+    final savedState = await _persistence.loadJourneyState(widget.journeyId);
+    if (savedState != null && mounted) {
+      setState(() {
+        _studentState = savedState;
+        _isLoadingState = false;
+      });
+    } else if (mounted) {
+      setState(() => _isLoadingState = false);
+    }
+
+    final savedProfile = await _persistence.loadStudentProfile();
+    _studentProfile = StudentProfile(
+      studentId: savedProfile.studentId,
+      name: savedProfile.name,
+      currentClass: 7,
+      targetExam: TargetExam.jeeMain,
+      comfortLevel: ComfortLevel.beginner,
+    );
+  }
+
+  Future<void> _saveState() async {
+    await _persistence.saveJourneyState(_studentState);
   }
 
   @override
@@ -62,7 +92,8 @@ class _FoundationJourneyScreenState extends State<FoundationJourneyScreen> {
       body: FutureBuilder<FoundationJourney>(
         future: _journeyFuture,
         builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
+          if (snapshot.connectionState == ConnectionState.waiting ||
+              _isLoadingState) {
             return const Center(child: CircularProgressIndicator());
           }
 
@@ -172,7 +203,7 @@ class _FoundationJourneyScreenState extends State<FoundationJourneyScreen> {
 
       // Navigate to questions for this level
       if (mounted) {
-        Navigator.push(
+        await Navigator.push(
           context,
           MaterialPageRoute(
             builder: (_) => FoundationJourneyQuestionScreen(
@@ -186,6 +217,9 @@ class _FoundationJourneyScreenState extends State<FoundationJourneyScreen> {
             ),
           ),
         );
+        // Save progress after returning from question screen
+        await _saveState();
+        if (mounted) setState(() {});
       }
     } catch (e) {
       if (mounted) {

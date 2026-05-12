@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import '../models/diagram_data.dart';
@@ -9,6 +10,9 @@ import '../models/premium_state.dart';
 import '../models/practice_mode.dart';
 import '../models/question_attempt.dart';
 import '../models/question_data.dart';
+import '../services/content_loader.dart';
+import '../services/journey_persistence.dart';
+import '../widgets/polygon_manipulative.dart';
 
 class FoundationJourneyQuestionScreen extends StatefulWidget {
   final JourneyLevel level;
@@ -38,106 +42,180 @@ class FoundationJourneyQuestionScreen extends StatefulWidget {
 class _FoundationJourneyQuestionScreenState
     extends State<FoundationJourneyQuestionScreen> {
   int _currentQuestionIndex = 0;
-  late QuestionData _currentQuestion;
+  QuestionData? _currentQuestion;
   ConfidenceLevel _selectedConfidence = ConfidenceLevel.somewhatSure;
   bool _showConfidenceSelector = false;
   bool _isProcessingAnswer = false;
   int? _pendingSelectedIndex;
   final List<QuestionAttempt> _attempts = [];
+  Map<String, QuestionData> _contentQuestions = {};
+  bool _isLoadingQuestions = true;
+  String? _contentError;
+  final Stopwatch _questionTimer = Stopwatch();
+  final JourneyPersistence _persistence = JourneyPersistence();
 
   @override
   void initState() {
     super.initState();
-    _loadCurrentQuestion();
+    _loadContentQuestions();
+  }
+
+  @override
+  void dispose() {
+    _questionTimer.stop();
+    super.dispose();
+  }
+
+  Future<void> _loadContentQuestions() async {
+    final questions =
+        await ContentLoader.loadJourneyQuestions(widget.journey.journeyId);
+    setState(() {
+      _contentQuestions = questions;
+      _isLoadingQuestions = false;
+      _loadCurrentQuestion();
+    });
   }
 
   void _loadCurrentQuestion() {
-    _currentQuestion = _getQuestionForLevel(widget.level);
-    _selectedConfidence = ConfidenceLevel.somewhatSure;
-    _showConfidenceSelector = false;
-    _pendingSelectedIndex = null;
-  }
-
-  QuestionData _getQuestionForLevel(JourneyLevel level) {
-    switch (level.level) {
-      case 'L0':
-        return _journeyQuestion(
-          id: 'class7_square_parts_001',
-          text:
-              'A square is divided into 4 equal triangles by drawing lines from the center. What fraction of the square is each triangle?',
-          title: 'Square Divided into Triangles',
-          options: const ['1/2', '1/4', '1/3', '1/8'],
-          correctIndex: 1,
-          explanation:
-              'A square divided into 4 equal parts means each part is 1/4 of the whole.',
-          concept: 'square_fractions',
-          difficulty: Difficulty.easy,
-        );
-      case 'L1':
-        return _journeyQuestion(
-          id: 'rescue_foundation_square_center_angle_001',
-          text:
-              'A square is divided from its center into 4 equal triangles. What is the measure of each central angle?',
-          title: 'Square Central Angles',
-          options: const ['45°', '90°', '180°', '360°'],
-          correctIndex: 1,
-          explanation:
-              'A full circle is 360°. Dividing by 4 equal parts gives 90°.',
-          concept: 'square_center_angle',
-          difficulty: Difficulty.easy,
-        );
-      default:
-        return _journeyQuestion(
-          id: level.questionIds.isNotEmpty
-              ? level.questionIds.first
-              : 'foundation_journey_question',
-          text: 'What is the central angle of a regular hexagon?',
-          title: 'Hexagon Central Angle',
-          options: const ['45°', '60°', '90°', '120°'],
-          correctIndex: 1,
-          explanation:
-              'A hexagon has 6 sides. Central angle = 360° ÷ 6 = 60°.',
-          concept: 'hexagon_center_angle',
-          difficulty: Difficulty.medium,
-        );
+    try {
+      _currentQuestion = _getQuestionForLevel(widget.level);
+      _selectedConfidence = ConfidenceLevel.somewhatSure;
+      _showConfidenceSelector = false;
+      _pendingSelectedIndex = null;
+      _questionTimer.reset();
+      _questionTimer.start();
+      _contentError = null;
+    } catch (e) {
+      setState(() {
+        _contentError = e.toString();
+      });
     }
   }
 
-  QuestionData _journeyQuestion({
-    required String id,
-    required String text,
-    required String title,
-    required List<String> options,
-    required int correctIndex,
-    required String explanation,
-    required String concept,
-    required Difficulty difficulty,
-  }) {
+QuestionData _getQuestionForLevel(JourneyLevel level) {
+    for (final qId in level.questionIds) {
+      final question = _contentQuestions[qId];
+      if (question != null) {
+        return question;
+      }
+    }
+
+    final questionId = level.questionIds.isNotEmpty
+        ? level.questionIds.first
+        : 'foundation_journey_${level.level}';
+
+    if (kDebugMode) {
+      return _fallbackQuestion(questionId, level);
+    } else {
+      debugPrint('Content missing for journey question: $questionId');
+      return _errorQuestion(questionId, level);
+    }
+  }
+
+  QuestionData _fallbackQuestion(String id, JourneyLevel level) {
     return QuestionData(
       id: id,
-      text: text,
+      text:
+          'Question for ${level.title} (content loading...)',
       diagram: DiagramData(
         id: '${id}_diagram',
         type: DiagramType.geometry,
-        title: title,
+        title: level.title,
         elements: const [],
       ),
-      options: options,
-      correctIndex: correctIndex,
-      explanation: explanation,
+      options: const ['Option A', 'Option B', 'Option C', 'Option D'],
+      correctIndex: 0,
+      explanation: 'Content for this question is being loaded.',
       subject: 'Mathematics',
       chapter: widget.journey.chapter,
       topic: 'Geometry',
-      primaryConcept: concept,
-      coreConcept: concept,
-      difficulty: difficulty,
-      estimatedSeconds: widget.level.expectedTimeSeconds ?? 60,
+      primaryConcept: level.level,
+      coreConcept: level.level,
+      difficulty: Difficulty.medium,
+      estimatedSeconds: level.expectedTimeSeconds ?? 60,
+    );
+  }
+
+  QuestionData _errorQuestion(String id, JourneyLevel level) {
+    return QuestionData(
+      id: id,
+      text:
+          'Error: Content not found for "${level.title}"',
+      diagram: DiagramData(
+        id: '${id}_diagram',
+        type: DiagramType.geometry,
+        title: level.title,
+        elements: const [],
+      ),
+      options: const ['N/A', 'N/A', 'N/A', 'N/A'],
+      correctIndex: 0,
+      explanation:
+          'This question content is missing. Please report this to the development team.',
+      subject: 'Mathematics',
+      chapter: widget.journey.chapter,
+      topic: 'Geometry',
+      primaryConcept: level.level,
+      coreConcept: level.level,
+      difficulty: Difficulty.medium,
+estimatedSeconds: level.expectedTimeSeconds ?? 60,
     );
   }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    if (_isLoadingQuestions || _currentQuestion == null) {
+      return Scaffold(
+        appBar: AppBar(
+          title: Text(widget.level.title),
+          backgroundColor: theme.colorScheme.surface,
+          elevation: 0,
+        ),
+        body: _contentError != null
+            ? Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        Icons.error_outline,
+                        size: 64,
+                        color: theme.colorScheme.error,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        'Content Loading Error',
+                        style: theme.textTheme.headlineSmall,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 8),
+                      Text(
+                        _contentError!,
+                        style: theme.textTheme.bodyMedium,
+                        textAlign: TextAlign.center,
+                      ),
+                      const SizedBox(height: 16),
+                      ElevatedButton(
+                        onPressed: () {
+                          setState(() {
+                            _contentError = null;
+                            _isLoadingQuestions = true;
+                          });
+                          _loadContentQuestions();
+                        },
+                        child: const Text('Retry'),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : const Center(child: CircularProgressIndicator()),
+      );
+    }
+
+    final question = _currentQuestion!;
 
     return Scaffold(
       appBar: AppBar(
@@ -181,7 +259,8 @@ class _FoundationJourneyQuestionScreenState
           else
             Expanded(
               child: _QuestionContent(
-                question: _currentQuestion,
+                question: question,
+                manipulatives: widget.level.manipulatives,
                 onAnswerSelected: _handleAnswerSelected,
                 isProcessing: _isProcessingAnswer,
               ),
@@ -205,13 +284,16 @@ class _FoundationJourneyQuestionScreenState
 
   Future<void> _processAnswer(int selectedIndex) async {
     setState(() => _isProcessingAnswer = true);
+    _questionTimer.stop();
 
-    final isCorrect = selectedIndex == _currentQuestion.correctIndex;
+    final question = _currentQuestion!;
+    final isCorrect = selectedIndex == question.correctIndex;
+    final actualTimeSpent = _questionTimer.elapsed.inSeconds;
     final attempt = QuestionAttempt(
-      questionId: _currentQuestion.id,
+      questionId: question.id,
       isCorrect: isCorrect,
       confidenceLevel: _selectedConfidence,
-      timeSpentSeconds: widget.level.expectedTimeSeconds ?? 60,
+      timeSpentSeconds: actualTimeSpent > 0 ? actualTimeSpent : (widget.level.expectedTimeSeconds ?? 60),
       timestamp: DateTime.now(),
       levelIndex: widget.levelIndex,
     );
@@ -224,6 +306,9 @@ class _FoundationJourneyQuestionScreenState
       journey: widget.journey,
     );
     widget.engine.updateStudentState(widget.studentState, attempt, nextStep);
+    
+    // Save journey progress locally
+    await _persistence.saveJourneyState(widget.studentState);
 
     if (!mounted) return;
     await _showResultDialog(isCorrect, nextStep);
@@ -255,11 +340,11 @@ class _FoundationJourneyQuestionScreenState
             children: [
               if (!isCorrect) ...[
                 Text(
-                  'Correct answer: ${_currentQuestion.options[_currentQuestion.correctIndex]}',
+                  'Correct answer: ${_currentQuestion!.options[_currentQuestion!.correctIndex]}',
                   style: const TextStyle(fontWeight: FontWeight.w600),
                 ),
                 const SizedBox(height: 8),
-                Text(_currentQuestion.explanation ?? ''),
+                Text(_currentQuestion!.explanation ?? ''),
               ],
               const SizedBox(height: 16),
               Text(nextStep.message),
@@ -449,14 +534,33 @@ class _ConfidenceSelector extends StatelessWidget {
 
 class _QuestionContent extends StatelessWidget {
   final QuestionData question;
+  final List<String> manipulatives;
   final ValueChanged<int> onAnswerSelected;
   final bool isProcessing;
 
   const _QuestionContent({
     required this.question,
+    required this.manipulatives,
     required this.onAnswerSelected,
     required this.isProcessing,
   });
+
+  bool get _hasPolygonManipulative =>
+      manipulatives.any((m) =>
+          m.contains('sides') ||
+          m.contains('polygon') ||
+          m.contains('hexagon') ||
+          m.contains('octagon') ||
+          m == 'full_toolset');
+
+  int _initialSidesForQuestion() {
+    final concept = question.primaryConcept;
+    if (concept.contains('hexagon')) return 6;
+    if (concept.contains('octagon')) return 8;
+    if (concept.contains('pentagon')) return 5;
+    if (concept.contains('triangle')) return 3;
+    return 4; // default to square
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -469,34 +573,39 @@ class _QuestionContent extends StatelessWidget {
         children: [
           Text(question.text, style: theme.textTheme.titleLarge),
           const SizedBox(height: 24),
-          Container(
-            width: double.infinity,
-            height: 200,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: theme.colorScheme.outline.withOpacity(0.2),
-              ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.schema,
-                  size: 48,
-                  color: theme.colorScheme.onSurfaceVariant,
+          if (_hasPolygonManipulative)
+            PolygonManipulative(
+              initialSides: _initialSidesForQuestion(),
+            )
+          else
+            Container(
+              width: double.infinity,
+              height: 200,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: theme.colorScheme.outline.withOpacity(0.2),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  question.diagram.title ?? 'Diagram',
-                  style: theme.textTheme.bodyMedium?.copyWith(
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.schema,
+                    size: 48,
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
-                ),
-              ],
+                  const SizedBox(height: 8),
+                  Text(
+                    question.diagram.title ?? 'Diagram',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
           const SizedBox(height: 24),
           ...question.options.asMap().entries.map((entry) {
             final index = entry.key;
@@ -560,26 +669,5 @@ class _QuestionContent extends StatelessWidget {
   }
 }
 
-extension ConfidenceLevelExtension on ConfidenceLevel {
-  String get displayName {
-    switch (this) {
-      case ConfidenceLevel.notSure:
-        return 'Not sure';
-      case ConfidenceLevel.somewhatSure:
-        return 'Somewhat sure';
-      case ConfidenceLevel.verySure:
-        return 'Very sure';
-    }
-  }
-
-  String get description {
-    switch (this) {
-      case ConfidenceLevel.notSure:
-        return 'I guessed or need help';
-      case ConfidenceLevel.somewhatSure:
-        return 'I think I understand';
-      case ConfidenceLevel.verySure:
-        return 'I can explain this';
-    }
-  }
-}
+// ConfidenceLevel.displayName and .description are now defined
+// directly on the enum in student_attempt_event.dart.

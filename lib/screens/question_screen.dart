@@ -63,6 +63,9 @@ class _QuestionScreenState extends State<QuestionScreen>
   Timer? _inactivityTimer;
   bool _autoHighlighted = false;
 
+  // Confidence tracking
+  Confidence? _confidence;
+
   // Drawing tools
   bool _drawingEnabled = false;
   DrawingTool _activeTool = DrawingTool.none;
@@ -326,6 +329,7 @@ class _QuestionScreenState extends State<QuestionScreen>
       _rescueIndex = 0;
       _selectedOption = null;
       _showAnswer = false;
+      _confidence = null;
       _highlightedIds.clear();
     });
 
@@ -406,6 +410,7 @@ class _QuestionScreenState extends State<QuestionScreen>
       }
       _selectedOption = null;
       _showAnswer = false;
+      _confidence = null;
       _highlightedIds.clear();
     });
     _slideController.forward();
@@ -419,6 +424,7 @@ class _QuestionScreenState extends State<QuestionScreen>
           _rescueIndex++;
           _selectedOption = null;
           _showAnswer = false;
+          _confidence = null;
           _highlightedIds.clear();
         });
         _showRescueDialog(_rescuePath[_rescueIndex]);
@@ -472,6 +478,7 @@ class _QuestionScreenState extends State<QuestionScreen>
       _currentIndex = originalIndex >= 0 ? originalIndex : 0;
       _selectedOption = null;
       _showAnswer = false;
+      _confidence = null;
       _highlightedIds.clear();
       _rescuePath = [];
       _rescueIndex = 0;
@@ -485,6 +492,7 @@ class _QuestionScreenState extends State<QuestionScreen>
       _currentIndex = index;
       _selectedOption = null;
       _showAnswer = false;
+      _confidence = null;
       _highlightedIds.clear();
       _showHints = false;
       _lastTappedElement = null;
@@ -757,6 +765,8 @@ class _QuestionScreenState extends State<QuestionScreen>
             onOptionSelected: _onOptionSelected,
             onCheckAnswer: _checkAnswer,
             elapsedSeconds: _elapsedSeconds,
+            confidence: _confidence,
+            onConfidenceChanged: (c) => setState(() => _confidence = c),
           ),
         ),
         if (_currentQuestion.revealSteps.isNotEmpty &&

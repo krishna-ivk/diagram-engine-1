@@ -44,6 +44,21 @@ class ContentValidator {
           content['questions'] is List) {
         return _validateRescueLadder(content, filePath);
       }
+      // Handle new content formats
+      if (content is Map<String, dynamic>) {
+        if (content.containsKey('topic_id') && content.containsKey('synopsis_cards')) {
+          return _validateTopicCapsule(content, filePath);
+        }
+        if (content.containsKey('files') && content.containsKey('version')) {
+          return _validateQuestionManifest(content, filePath);
+        }
+        if (content.containsKey('patterns') || content.containsKey('pattern_metadata')) {
+          return _validatePatternFile(content, filePath);
+        }
+      }
+      if (content is List) {
+        return _validateQuestionList(content, filePath);
+      }
       return _validateContent(content, filePath);
     } catch (e) {
       return ValidationResult(
@@ -457,6 +472,125 @@ class ValidationResult {
     }
 
     return buffer.toString();
+  }
+
+  /// Validate topic capsule content
+  ValidationResult _validateTopicCapsule(
+    Map<String, dynamic> content,
+    String filePath,
+  ) {
+    final errors = <String>[];
+    final warnings = <String>[];
+
+    // Check required fields for topic capsule
+    final requiredFields = ['topic_id', 'title', 'synopsis_cards', 'formulae', 'common_mistakes'];
+    for (final field in requiredFields) {
+      if (!content.containsKey(field) || content[field] == null) {
+        errors.add('Missing required field "$field" in $filePath');
+      }
+    }
+
+    // Validate synopsis cards
+    if (content['synopsis_cards'] is List) {
+      final synopsisCards = content['synopsis_cards'] as List;
+      for (int i = 0; i < synopsisCards.length; i++) {
+        final card = synopsisCards[i];
+        if (card is Map<String, dynamic>) {
+          if (!card.containsKey('title') || card['title'] == null) {
+            errors.add('Synopsis card $i missing title in $filePath');
+          }
+          if (!card.containsKey('body') || card['body'] == null) {
+            errors.add('Synopsis card $i missing body in $filePath');
+          }
+        }
+      }
+    }
+
+    return ValidationResult(
+      isValid: errors.isEmpty,
+      errors: errors,
+      warnings: warnings,
+    );
+  }
+
+  /// Validate question manifest
+  ValidationResult _validateQuestionManifest(
+    Map<String, dynamic> content,
+    String filePath,
+  ) {
+    final errors = <String>[];
+    final warnings = <String>[];
+
+    // Check required fields for question manifest
+    if (!content.containsKey('files') || content['files'] == null) {
+      errors.add('Missing "files" field in question manifest $filePath');
+    }
+
+    if (!content.containsKey('version') || content['version'] == null) {
+      errors.add('Missing "version" field in question manifest $filePath');
+    }
+
+    return ValidationResult(
+      isValid: errors.isEmpty,
+      errors: errors,
+      warnings: warnings,
+    );
+  }
+
+  /// Validate pattern file
+  ValidationResult _validatePatternFile(
+    Map<String, dynamic> content,
+    String filePath,
+  ) {
+    final errors = <String>[];
+    final warnings = <String>[];
+
+    // Basic validation for pattern files
+    if (!content.containsKey('patterns') && !content.containsKey('pattern_metadata')) {
+      warnings.add('Pattern file $filePath may not have expected structure');
+    }
+
+    return ValidationResult(
+      isValid: errors.isEmpty,
+      errors: errors,
+      warnings: warnings,
+    );
+  }
+
+  /// Validate question list
+  ValidationResult _validateQuestionList(
+    List<dynamic> content,
+    String filePath,
+  ) {
+    final errors = <String>[];
+    final warnings = <String>[];
+
+    for (int i = 0; i < content.length; i++) {
+      final question = content[i];
+      if (question is Map<String, dynamic>) {
+        // Check required question fields
+        final requiredFields = ['question_id', 'question_text', 'options', 'correct_answer'];
+        for (final field in requiredFields) {
+          if (!question.containsKey(field) || question[field] == null) {
+            errors.add('Question $i missing required field "$field" in $filePath');
+          }
+        }
+
+        // Validate options
+        if (question['options'] is List) {
+          final options = question['options'] as List;
+          if (options.length != 4) {
+            errors.add('Question $i must have exactly 4 options in $filePath');
+          }
+        }
+      }
+    }
+
+    return ValidationResult(
+      isValid: errors.isEmpty,
+      errors: errors,
+      warnings: warnings,
+    );
   }
 }
 
