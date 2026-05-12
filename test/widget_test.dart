@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:diagram_engine/main.dart';
+import 'package:diagram_engine/screens/topic_synopsis_screen.dart';
 
 void main() {
   setUp(() {
@@ -46,7 +47,8 @@ void main() {
       expect(topicContent, findsOneWidget);
     } else {
       // If specific content isn't found, at least verify we're on a new screen
-      expect(find.text('Diagram Engine'), findsNothing);
+      // The app title "Diagram Engine" may still be present in AppBar, so check for TopicSynopsisScreen
+      expect(find.byType(TopicSynopsisScreen), findsOneWidget);
     }
   });
 
