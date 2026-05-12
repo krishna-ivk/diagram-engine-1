@@ -544,7 +544,11 @@ class _ManipulativesSectionState extends State<_ManipulativesSection> {
             question: QuestionData(
               id: 'dummy',
               text: 'Interactive demo',
-              diagram: DiagramData.empty(),
+              diagram: const DiagramData(
+                id: 'dummy',
+                type: DiagramType.geometry,
+                elements: [],
+              ),
               options: [],
               correctIndex: 0,
               subject: 'Mathematics',

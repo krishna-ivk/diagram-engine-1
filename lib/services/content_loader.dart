@@ -166,7 +166,7 @@ class ContentLoader {
         for (final entry in questionsMap.entries) {
           try {
             questions[entry.key] =
-                _convertJourneyQuestion(entry.value as Map<String, dynamic>);
+                convertJourneyQuestion(entry.value as Map<String, dynamic>);
           } catch (e) {
             debugPrint('Error loading journey question ${entry.key}: $e');
           }
