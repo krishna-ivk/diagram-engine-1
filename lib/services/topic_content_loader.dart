@@ -3,56 +3,80 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import '../models/question_data.dart';
 import '../models/diagram_data.dart';
+import '../models/topic_capsule.dart';
+import '../services/content_loader.dart';
 
 /// Service for loading topic-specific content and questions
 class TopicContentLoader {
   static const String _contentBasePath = 'content/questions';
 
   /// Load topic capsule containing all topic information
-  static Future<Map<String, dynamic>?> loadTopicCapsule(String topicId) async {
+  static Future<TopicCapsule> loadTopicCapsule(String topicId) async {
     try {
+      // Extract last part of topic ID for file name
+      final topicFileName = _extractTopicFileName(topicId);
       final String content = await rootBundle
-          .loadString('content/topics/${topicId}_capsule.json');
-      return json.decode(content) as Map<String, dynamic>;
+          .loadString('content/topics/${topicFileName}.json');
+      final Map<String, dynamic> data = json.decode(content) as Map<String, dynamic>;
+      
+      return TopicCapsule.fromJson(data);
     } catch (e) {
       debugPrint('Error loading topic capsule for $topicId: $e');
-      return null;
+      // Return fallback topic capsule
+      return _createFallbackTopicCapsule(topicId);
     }
   }
 
   /// Load questions by their IDs
-  static Future<Map<String, QuestionData>> loadQuestionsByIds(
+  static Future<List<QuestionData>> loadQuestionsByIds(
       List<String> questionIds) async {
     try {
       // First load the question manifest
       final manifest = await _loadQuestionManifest();
-      if (manifest == null) return {};
+      if (manifest == null) return [];
 
-      final Map<String, QuestionData> questions = {};
+      final Map<String, QuestionData> allQuestions = {};
       
       // Load each question file listed in manifest
       for (final fileName in manifest['files'] as List<dynamic>) {
         final fileContent = await rootBundle
             .loadString('$_contentBasePath/$fileName');
-        final List<dynamic> questionsList = json.decode(fileContent);
+        final Map<String, dynamic> fileData = json.decode(fileContent);
+        
+        // Parse both formats: {metadata: ..., questions: [...]} and raw list
+        List<dynamic> questionsList;
+        if (fileData.containsKey('questions')) {
+          questionsList = fileData['questions'] as List<dynamic>;
+        } else {
+          // Backward compatibility: raw list
+          questionsList = fileData as List<dynamic>;
+        }
         
         // Convert each question to QuestionData
         for (final questionData in questionsList) {
           try {
-            final question = _convertNewQuestionFormat(questionData);
-            if (questionIds.contains(question.id)) {
-              questions[question.id] = question;
-            }
+            final question = _convertNewQuestionFormat(questionData as Map<String, dynamic>);
+            allQuestions[question.id] = question;
           } catch (e) {
             debugPrint('Error loading question from $fileName: $e');
           }
         }
       }
 
-      return questions;
+      // Preserve the order of requested questionIds
+      final List<QuestionData> orderedQuestions = [];
+      for (final questionId in questionIds) {
+        if (allQuestions.containsKey(questionId)) {
+          orderedQuestions.add(allQuestions[questionId]!);
+        } else {
+          debugPrint('Question ID $questionId not found in content');
+        }
+      }
+
+      return orderedQuestions;
     } catch (e) {
       debugPrint('Error loading questions by IDs: $e');
-      return {};
+      return [];
     }
   }
 
@@ -74,6 +98,10 @@ class TopicContentLoader {
     final correctAns = json['correct_answer'];
     int correctIdx = 0;
     if (correctAns is int) {
+      if (correctAns < 0 || correctAns > 3) {
+        debugPrint('Invalid correct_answer value: $correctAns for question ${json['question_id']}');
+        throw ArgumentError('Invalid correct_answer value: $correctAns');
+      }
       correctIdx = correctAns;
     } else if (correctAns is String) {
       correctIdx = correctAns.codeUnitAt(0) - 65; // 'A' -> 0, 'B' -> 1, etc.
@@ -112,7 +140,7 @@ class TopicContentLoader {
         elements: [],
       ),
       options: opts.isNotEmpty ? opts : ['A', 'B', 'C', 'D'],
-      correctIndex: correctIdx.clamp(0, 3),
+      correctIndex: correctIdx,
       explanation: json['explanation'] ?? '',
       subject: json['subject'] ?? 'Mathematics',
       chapter: json['chapter'] ?? '',
@@ -194,5 +222,44 @@ class TopicContentLoader {
       default:
         return ExamType.jeeMain;
     }
+  }
+
+  /// Extract topic file name from topic ID
+  static String _extractTopicFileName(String topicId) {
+    // Convert "math.geometry.central_angle_regular_polygon" 
+    // to "central_angle_regular_polygon"
+    final parts = topicId.split('.');
+    return parts.isNotEmpty ? parts.last : topicId;
+  }
+
+  /// Create a fallback topic capsule for when content loading fails
+  static TopicCapsule _createFallbackTopicCapsule(String topicId) {
+    return TopicCapsule(
+      topicId: topicId,
+      title: 'Central Angle of a Regular Polygon',
+      classLevel: 'Class 7-8',
+      targetExamBridge: 'JEE Foundation',
+      synopsisCards: [
+        SynopsisCard(
+          title: 'What is a central angle?',
+          body: 'A full turn around a point is 360°. In a regular polygon, all central angles are equal.',
+        ),
+        SynopsisCard(
+          title: 'Formula',
+          body: 'Central angle = 360° ÷ number of sides',
+        ),
+      ],
+      formulae: ['Central angle = 360° / n'],
+      commonMistakes: [
+        'Confusing central angle with interior angle',
+        'Dividing by the wrong number of sides',
+      ],
+      starterQuestionIds: ['demo_001', 'demo_002'],
+      practiceQuestionIds: ['demo_003', 'demo_004'],
+      challengeQuestionIds: ['demo_005'],
+      revisionQuestionIds: ['demo_006'],
+      manipulatives: ['polygon_sides_slider'],
+      estimatedDurationMinutes: 20,
+    );
   }
 }
