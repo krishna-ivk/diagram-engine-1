@@ -161,7 +161,7 @@ class TopicContentLoader {
       classLevel: json['class_level'] ?? '11',
       questionType: QuestionType.mcq,
       difficulty: _mapDifficulty(json['difficulty']),
-      estimatedSeconds: json['expected_time_seconds'] ?? 120,
+      estimatedSeconds: json['expected_time_seconds'] ?? json['estimated_time_seconds'] ?? 120,
       revealSteps: _convertSolutionSteps(json['solution_steps']),
       solutionSteps: solSteps,
       whyWrongExplanations: whyWrongMap,
@@ -223,12 +223,17 @@ class TopicContentLoader {
     switch (difficultyStr) {
       case 'easy':
       case 'foundation':
+      case 'starter':
         return Difficulty.easy;
       case 'medium':
       case 'bridge':
+      case 'practice':
         return Difficulty.medium;
       case 'hard':
       case 'jee':
+      case 'challenge':
+      case 'very_hard':
+      case 'jee_style':
         return Difficulty.hard;
       default:
         return Difficulty.medium;
@@ -349,6 +354,23 @@ class TopicContentLoader {
       reviewStatus: 'generated',
       questionRole: 'starter',
       formulaeUsed: const ['central_angle = 360° / n'],
+      
+      // Adaptive learning fields
+      conceptTags: ['central_angle', 'full_turn', 'division', shape.toLowerCase()],
+      misconceptionTags: {
+        0: isOctagon ? null : 'confuses_with_octagon',
+        1: isHexagon ? null : 'confuses_with_hexagon', 
+        2: isOctagon || isHexagon ? null : 'confuses_with_square',
+        3: 'confuses_with_triangle',
+      },
+      reinforcementGroup: 'central_angle_basic',
+      nextIfWrong: [],
+      nextIfCorrect: [],
+      sourceLineage: const SourceLineage(
+        origin: 'original_authored',
+        patternSource: 'regular_polygon_central_angle',
+        copiedFromSource: false,
+      ),
     );
   }
 }

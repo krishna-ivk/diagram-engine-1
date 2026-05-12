@@ -400,6 +400,44 @@
       "diagram_required": true,
       "manipulative": "polygon_analyzer",
       "review_status": "draft"
+    },
+    {
+      "question_id": "practice_central_angle_full_turn_repair_001",
+      "source_type": "original_recreated",
+      "source_pattern": "regular_polygon_central_angle",
+      "class_level": "Class 7",
+      "topic": "Central Angle of Regular Polygon",
+      "primary_concept": "central_angle_regular_polygon",
+      "question_role": "practice",
+      "question_text": "A full turn around a point is always 360°. If a regular polygon has 8 equal central angles, what is each angle?",
+      "options": ["30°", "45°", "60°", "90°"],
+      "correct_answer": 1,
+      "formulae_used": ["central_angle = 360° / n"],
+      "why_wrong_explanations": {
+        "0": "30° would be for a 12-sided polygon (360° ÷ 12 = 30°).",
+        "2": "60° would be for a 6-sided polygon (hexagon).",
+        "3": "90° would be for a 4-sided polygon (square)."
+      },
+      "difficulty": "easy",
+      "estimated_time_seconds": 30,
+      "diagram_required": true,
+      "manipulative": "polygon_sides_slider",
+      "review_status": "draft",
+      
+      "concept_tags": ["central_angle", "full_turn", "division", "octagon"],
+      "misconception_tags": {
+        "0": "confuses_with_dodecagon",
+        "2": "confuses_with_hexagon",
+        "3": "confuses_with_square"
+      },
+      "reinforcement_group": "central_angle_basic",
+      "next_if_wrong": ["fundamental_central_angle_square_001"],
+      "next_if_correct": ["practice_central_angle_inverse_002"],
+      "source_lineage": {
+        "origin": "original_recreated",
+        "pattern_source": "regular_polygon_central_angle",
+        "copied_from_source": false
+      }
     }
   ]
 }

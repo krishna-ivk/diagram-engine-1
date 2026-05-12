@@ -3,8 +3,8 @@ import 'package:flutter/foundation.dart';
 import '../models/question_data.dart';
 import '../models/student_attempt.dart';
 import '../models/drill_session.dart';
-import 'attempt_tracker.dart';
-import 'topic_content_loader.dart';
+import '../services/attempt_tracker.dart';
+import '../services/topic_content_loader.dart';
 
 /// Service for selecting reinforcement questions based on student performance
 class ReinforcementSelector {

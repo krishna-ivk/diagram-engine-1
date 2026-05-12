@@ -69,7 +69,10 @@ async def get_next_question(
         next_question = await adaptive_service.select_next_question(
             db, request.student_id, request.topic_id, request.recent_attempts
         )
-        return NextQuestionResponse(question=next_question)
+        return NextQuestionResponse(
+            question=next_question,
+            recommended_time_seconds=next_question.estimated_seconds or 60
+        )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
