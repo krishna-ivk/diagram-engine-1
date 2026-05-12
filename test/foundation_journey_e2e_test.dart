@@ -7,10 +7,10 @@ import 'package:diagram_engine/screens/foundation_journey_question_screen.dart';
 import 'package:diagram_engine/models/foundation_journey.dart';
 import 'package:diagram_engine/models/journey_progression_engine.dart';
 import 'package:diagram_engine/models/journey_state.dart';
-import 'package:diagram_engine/models/performance_tracker.dart';
+import 'package:diagram_engine/models/performance_tracker.dart' hide QuestionAttempt;
 import 'package:diagram_engine/models/premium_state.dart';
 import 'package:diagram_engine/models/student_profile.dart';
-import 'package:diagram_engine/models/question_attempt.dart';
+import 'package:diagram_engine/models/question_attempt.dart' as attempt;
 import 'package:diagram_engine/services/content_loader.dart';
 import 'package:diagram_engine/services/journey_persistence.dart';
 
@@ -198,7 +198,7 @@ void main() {
         studentId: 'test_student',
         currentLevelIndex: 2, // L2
         attempts: [
-          QuestionAttempt(
+          attempt.QuestionAttempt(
             questionId: 'class7_square_parts_001',
             isCorrect: true,
             confidenceLevel: ConfidenceLevel.verySure,
@@ -207,10 +207,10 @@ void main() {
             levelIndex: 0,
           ),
         ],
-        levelProgress: {
-          'L0': LevelProgress(isUnlocked: true, isCompleted: true),
-          'L1': LevelProgress(isUnlocked: true, isCompleted: true),
-          'L2': LevelProgress(isUnlocked: true, isCompleted: false),
+        levelStates: {
+          'L0': LevelState.mastered,
+          'L1': LevelState.mastered,
+          'L2': LevelState.notStarted,
         },
         journeyStartTime: DateTime.now().subtract(Duration(minutes: 10)),
         lastActivityTime: DateTime.now(),

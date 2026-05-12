@@ -3,6 +3,7 @@ import '../models/performance_tracker.dart';
 import '../models/premium_state.dart';
 import '../models/practice_mode.dart';
 import '../models/question_data.dart';
+import '../models/topic_capsule.dart';
 import '../services/topic_content_loader.dart';
 import '../widgets/diagram_manipulatives.dart';
 import 'question_screen.dart';
@@ -31,11 +32,7 @@ class _TopicSynopsisScreenState extends State<TopicSynopsisScreen> {
   @override
   void initState() {
     super.initState();
-    _topicFuture = _loadTopic();
-  }
-
-  Future<TopicCapsule> _loadTopic() async {
-    return await TopicContentLoader.loadTopicCapsule(widget.topicId);
+    _topicFuture = TopicContentLoader.loadTopicCapsule(widget.topicId);
   }
 
   @override
@@ -101,8 +98,6 @@ class _TopicSynopsisScreenState extends State<TopicSynopsisScreen> {
   }
 
   Widget _buildTopicContent(TopicCapsule topic) {
-    final theme = Theme.of(context);
-
     if (_showPractice) {
       return _buildPracticeSection(topic);
     }
@@ -255,6 +250,7 @@ class _TopicSynopsisScreenState extends State<TopicSynopsisScreen> {
   }
 }
 
+// Helper widgets for the topic capsule UI
 class _TopicHeader extends StatelessWidget {
   final TopicCapsule topic;
 
