@@ -10,6 +10,7 @@ import '../models/practice_mode.dart';
 import '../models/question_attempt.dart';
 import '../models/question_data.dart';
 import '../services/content_loader.dart';
+import '../widgets/polygon_manipulative.dart';
 
 class FoundationJourneyQuestionScreen extends StatefulWidget {
   final JourneyLevel level;
@@ -171,6 +172,7 @@ class _FoundationJourneyQuestionScreenState
             Expanded(
               child: _QuestionContent(
                 question: question,
+                manipulatives: widget.level.manipulatives,
                 onAnswerSelected: _handleAnswerSelected,
                 isProcessing: _isProcessingAnswer,
               ),
@@ -439,14 +441,33 @@ class _ConfidenceSelector extends StatelessWidget {
 
 class _QuestionContent extends StatelessWidget {
   final QuestionData question;
+  final List<String> manipulatives;
   final ValueChanged<int> onAnswerSelected;
   final bool isProcessing;
 
   const _QuestionContent({
     required this.question,
+    required this.manipulatives,
     required this.onAnswerSelected,
     required this.isProcessing,
   });
+
+  bool get _hasPolygonManipulative =>
+      manipulatives.any((m) =>
+          m.contains('sides') ||
+          m.contains('polygon') ||
+          m.contains('hexagon') ||
+          m.contains('octagon') ||
+          m == 'full_toolset');
+
+  int _initialSidesForQuestion() {
+    final concept = question.primaryConcept;
+    if (concept.contains('hexagon')) return 6;
+    if (concept.contains('octagon')) return 8;
+    if (concept.contains('pentagon')) return 5;
+    if (concept.contains('triangle')) return 3;
+    return 4; // default to square
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -459,34 +480,39 @@ class _QuestionContent extends StatelessWidget {
         children: [
           Text(question.text, style: theme.textTheme.titleLarge),
           const SizedBox(height: 24),
-          Container(
-            width: double.infinity,
-            height: 200,
-            decoration: BoxDecoration(
-              color: theme.colorScheme.surfaceContainerHighest,
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(
-                color: theme.colorScheme.outline.withOpacity(0.2),
-              ),
-            ),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  Icons.schema,
-                  size: 48,
-                  color: theme.colorScheme.onSurfaceVariant,
+          if (_hasPolygonManipulative)
+            PolygonManipulative(
+              initialSides: _initialSidesForQuestion(),
+            )
+          else
+            Container(
+              width: double.infinity,
+              height: 200,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.surfaceContainerHighest,
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(
+                  color: theme.colorScheme.outline.withValues(alpha: 0.2),
                 ),
-                const SizedBox(height: 8),
-                Text(
-                  question.diagram.title ?? 'Diagram',
-                  style: theme.textTheme.bodyMedium?.copyWith(
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(
+                    Icons.schema,
+                    size: 48,
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
-                ),
-              ],
+                  const SizedBox(height: 8),
+                  Text(
+                    question.diagram.title ?? 'Diagram',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
           const SizedBox(height: 24),
           ...question.options.asMap().entries.map((entry) {
             final index = entry.key;

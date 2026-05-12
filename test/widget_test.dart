@@ -1,8 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:diagram_engine/main.dart';
 
 void main() {
+  setUp(() {
+    SharedPreferences.setMockInitialValues({});
+  });
   testWidgets('App launches and shows home screen', (tester) async {
     await tester.pumpWidget(const DiagramEngineApp());
     expect(find.text('Diagram Engine'), findsOneWidget);
