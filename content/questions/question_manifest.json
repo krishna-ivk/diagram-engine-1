@@ -1,13 +1,12 @@
 {
-  "version": "1.0",
-  "last_updated": "2025-05-12",
-  "files": [
+  "metadata": {
+    "generated_date": "2026-05-12T06:59:00.000Z",
+    "total_question_files": 1,
+    "total_questions": 16,
+    "description": "Manifest for all question files in content/questions/ directory",
+    "version": "1.0"
+  },
+  "question_files": [
     "central_angle_regular_polygon_questions.json"
-  ],
-  "total_questions": 2,
-  "topics_covered": [
-    "Regular Polygons",
-    "Central Angles",
-    "Interior Angles"
   ]
 }

@@ -30,7 +30,7 @@ class TopicContentLoader {
 
       final Map<String, QuestionData> questions = {};
       
-      // Load each question file listed in the manifest
+      // Load each question file listed in manifest
       for (final fileName in manifest['files'] as List<dynamic>) {
         final fileContent = await rootBundle
             .loadString('$_contentBasePath/$fileName');
