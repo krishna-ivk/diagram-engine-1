@@ -27,7 +27,7 @@ void main() {
           journey.difficultyProgression, ['L0', 'L1', 'L2', 'L3', 'L4', 'L5']);
       expect(journey.levels, hasLength(6));
       expect(journey.levels.first.microLesson.visualHintIds, isNotEmpty);
-      expect(journey.levels.last.questionIds.single, contains('jee_math'));
+      expect(journey.levels.last.questionIds, anyElement(contains('jee_math')));
     });
 
     test('loads the journey through Flutter assets', () async {

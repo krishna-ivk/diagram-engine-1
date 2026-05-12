@@ -49,7 +49,8 @@ void main() {
       );
 
       // Wait for journey to load
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(seconds: 1));
+      await tester.pump();
 
       // Should show the first level (L0)
       expect(find.text('From Square to JEE Octagon'), findsOneWidget);
@@ -57,91 +58,111 @@ void main() {
       
       // Tap to start L0
       await tester.tap(find.text('Start'));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
 
       // Should load first question
       expect(find.textContaining('square is divided into 4 equal triangles'), findsOneWidget);
       
       // Answer the first question correctly (option B = 1/4)
       await tester.tap(find.text('1/4'));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
 
       // Should show confidence selector
       expect(find.text('How confident are you?'), findsOneWidget);
       
       // Select high confidence
       await tester.tap(find.text('Very Sure'));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
 
       // Confirm answer
       await tester.tap(find.text('Confirm'));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
 
       // Should show correct answer dialog
       expect(find.text('Correct!'), findsOneWidget);
       await tester.tap(find.text('Continue'));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
 
       // Should load second question
       expect(find.textContaining('square has side length 4 cm'), findsOneWidget);
       
       // Answer correctly (option B = 8√2 cm)
       await tester.tap(find.text('8√2 cm'));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
       
       await tester.tap(find.text('Very Sure'));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
       await tester.tap(find.text('Confirm'));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
       
       await tester.tap(find.text('Continue'));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
 
       // Should load third question
       expect(find.textContaining('area of one triangle is 9 cm²'), findsOneWidget);
       
       // Answer correctly (option A = 24 cm)
       await tester.tap(find.text('24 cm'));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
       
       await tester.tap(find.text('Very Sure'));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
       await tester.tap(find.text('Confirm'));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
       
       await tester.tap(find.text('Continue'));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
 
       // Should complete L0 and show level complete
       expect(find.text('Level Complete!'), findsOneWidget);
       await tester.tap(find.text('Continue to Next Level'));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
 
       // Should now be on L1
       expect(find.text('Foundation: Central Angles'), findsOneWidget);
       
       // Continue through L1 questions
       for (int i = 0; i < 3; i++) {
-        await tester.pumpAndSettle();
+        await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
         
         // Find and tap an answer option
         final answerOption = find.byType(RadioListTile<int>).first;
         await tester.tap(answerOption);
-        await tester.pumpAndSettle();
+        await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
         
         // Confirm confidence and answer
         await tester.tap(find.text('Very Sure'));
-        await tester.pumpAndSettle();
+        await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
         await tester.tap(find.text('Confirm'));
-        await tester.pumpAndSettle();
+        await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
         await tester.tap(find.text('Continue'));
-        await tester.pumpAndSettle();
+        await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
       }
 
       // Should complete L1 and move to L2
       if (find.text('Level Complete!').evaluate().isNotEmpty) {
         await tester.tap(find.text('Continue to Next Level'));
-        await tester.pumpAndSettle();
+        await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
       }
 
       // Verify journey progress is saved
@@ -165,28 +186,34 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
       
       // Start L0
       await tester.tap(find.text('Start'));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
 
       // Answer incorrectly (option A = 1/2)
       await tester.tap(find.text('1/2'));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
 
       // Select low confidence
       await tester.tap(find.text('Not Sure'));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
       await tester.tap(find.text('Confirm'));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
 
       // Should show incorrect answer dialog with explanation
       expect(find.text('Not quite right'), findsOneWidget);
       expect(find.textContaining('1/2 would mean only 2 parts'), findsOneWidget);
       
       await tester.tap(find.text('Continue'));
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
 
       // Should still be on same level for another attempt
       expect(find.textContaining('square is divided into 4 equal triangles'), findsOneWidget);
@@ -229,7 +256,8 @@ void main() {
         ),
       );
 
-      await tester.pumpAndSettle();
+      await tester.pump(Duration(milliseconds: 500));
+      await tester.pump();
 
       // Should show saved progress - L2 should be unlocked
       expect(find.text('Bridge: Hexagon Challenge'), findsOneWidget);
