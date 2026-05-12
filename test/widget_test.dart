@@ -31,10 +31,11 @@ void main() {
 
   testWidgets('Navigate to Topic Capsule and load content', (tester) async {
     await tester.pumpWidget(const DiagramEngineApp());
-    final topicCapsuleCta = find.text('Start Topic Capsule');
+    final topicCapsuleCta = find.text('Start Topic Capsule').first;
     await tester.ensureVisible(topicCapsuleCta);
     await tester.tap(topicCapsuleCta);
-    await tester.pumpAndSettle();
+    await tester.pump(Duration(milliseconds: 500));
+    await tester.pump();
 
     expect(find.text('Central Angle of a Regular Polygon'), findsOneWidget);
     expect(find.text('Class 7-8'), findsOneWidget);
