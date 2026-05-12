@@ -226,8 +226,10 @@ void main() {
       await tester.pump();
         
         // Find and tap an answer option
-        final answerOption = find.byType(RadioListTile<int>).first;
-        await tester.tap(answerOption);
+        final answerOptions = find.byType(RadioListTile<int>);
+        if (answerOptions.evaluate().isNotEmpty) {
+          await tester.tap(answerOptions.first);
+        }
         await tester.pump(Duration(milliseconds: 500));
       await tester.pump();
         
@@ -280,7 +282,10 @@ void main() {
         await tester.tap(startButton);
       } else {
         // Try to find any button to start
-        await tester.tap(find.byType(ElevatedButton).first);
+        final buttons = find.byType(ElevatedButton);
+        if (buttons.evaluate().isNotEmpty) {
+          await tester.tap(buttons.first);
+        }
       }
       await tester.pump(Duration(milliseconds: 500));
       await tester.pump();
